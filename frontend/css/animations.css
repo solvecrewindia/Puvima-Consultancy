@@ -16,7 +16,7 @@
   transform: translateX(-50%);
   width: 1000px;
   height: 600px;
-  background: radial-gradient(circle 500px at center, rgba(139, 124, 255, 0.09), transparent 70%);
+  background: radial-gradient(circle 500px at center, rgba(0, 114, 206, 0.09), transparent 70%);
   filter: blur(80px);
   animation: pulse-ambient 12s ease-in-out infinite alternate;
 }
@@ -27,7 +27,7 @@
   right: -10%;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle 350px at center, rgba(84, 226, 208, 0.05), transparent 75%);
+  background: radial-gradient(circle 350px at center, rgba(0, 163, 255, 0.05), transparent 75%);
   filter: blur(100px);
   animation: pulse-ambient 16s ease-in-out infinite alternate-reverse;
 }
@@ -36,8 +36,8 @@
   position: fixed;
   inset: 0;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 80%);
   pointer-events: none;
@@ -71,9 +71,9 @@
 }
 
 @keyframes pulse-teal {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(84, 226, 208, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(84, 226, 208, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(84, 226, 208, 0); }
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 163, 255, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 163, 255, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 163, 255, 0); }
 }
 
 @keyframes float-gentle {
@@ -106,8 +106,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--accent-teal, #54E2D0);
-  box-shadow: 0 0 8px var(--accent-teal, #54E2D0);
+  background-color: var(--accent-teal, #00A3FF);
+  box-shadow: 0 0 8px var(--accent-teal, #00A3FF);
   animation: pulse-teal 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
   flex-shrink: 0;
 }

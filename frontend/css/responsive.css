@@ -5,7 +5,7 @@
   display: none;
   background: transparent;
   border: 1px solid var(--border-light, rgba(255, 255, 255, 0.12));
-  color: var(--text-primary, #F7F7FC);
+  color: var(--text-primary, #0F172A);
   width: 42px;
   height: 42px;
   border-radius: var(--radius-sm, 8px);
@@ -17,8 +17,8 @@
 }
 
 .mobile-nav-toggle:hover {
-  background: rgba(139, 124, 255, 0.1);
-  border-color: var(--electric-violet, #8B7CFF);
+  background: rgba(0, 114, 206, 0.1);
+  border-color: var(--electric-violet, #0072CE);
 }
 
 .mobile-nav-toggle svg {
@@ -32,7 +32,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(8, 9, 16, 0.98);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   z-index: 990;
@@ -75,7 +75,7 @@
 
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
-  color: var(--electric-violet, #8B7CFF);
+  color: var(--electric-violet, #0072CE);
   padding-left: 8px;
 }
 
