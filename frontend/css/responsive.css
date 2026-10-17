@@ -1,0 +1,243 @@
+
+
+
+.mobile-nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-light, rgba(255, 255, 255, 0.12));
+  color: var(--text-primary, #F7F7FC);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm, 8px);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  transition: all var(--duration-fast, 200ms);
+}
+
+.mobile-nav-toggle:hover {
+  background: rgba(139, 124, 255, 0.1);
+  border-color: var(--electric-violet, #8B7CFF);
+}
+
+.mobile-nav-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 9, 16, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 990;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.35s;
+  overflow-y: auto;
+  border-bottom: 1px solid var(--border-light, rgba(255, 255, 255, 0.12));
+}
+
+.mobile-drawer.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.mobile-nav-link {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary, #A5A7B8);
+  text-decoration: none;
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.07));
+  transition: color var(--duration-fast, 200ms);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: var(--electric-violet, #8B7CFF);
+  padding-left: 8px;
+}
+
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .service-deep-columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 24px;
+  }
+
+  .footer-brand-col {
+    grid-column: span 2;
+  }
+
+  .bento-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .nav-wrapper,
+  .header-actions .header-btn {
+    display: none;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
+  .section {
+    padding-top: clamp(48px, 8vw, 72px);
+    padding-bottom: clamp(48px, 8vw, 72px);
+  }
+
+  .display-headline {
+    font-size: clamp(2rem, 7vw, 2.75rem);
+  }
+
+  .editorial-subhead {
+    font-size: 1rem;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .principles-grid,
+  .services-catalog-grid,
+  .team-roster-grid,
+  .case-studies-grid,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .meeting-format-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .receipt-modal-content {
+    padding: 24px 20px;
+    width: 95%;
+  }
+
+  .receipt-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand-col {
+    grid-column: span 1;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .footer-bottom-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .brand-text {
+    font-size: 1.15rem;
+  }
+
+  .brand-symbol svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .channel-card,
+  .team-card,
+  .service-card-deep {
+    padding: 20px 16px;
+  }
+
+  .topic-choice-card {
+    padding: 14px 12px;
+  }
+
+  .page-meta-row {
+    gap: 8px;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+}

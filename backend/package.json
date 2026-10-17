@@ -1,0 +1,30 @@
+{
+  "name": "puvima-consultancy-backend",
+  "version": "1.0.0",
+  "description": "Enterprise REST API backend for PUVIMA Consultancy",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "puvima",
+    "consultancy",
+    "robotics",
+    "fintech",
+    "ai-ml",
+    "research"
+  ],
+  "author": "PUVIMA Consultancy",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "mysql2": "^3.12.0"
+  }
+}

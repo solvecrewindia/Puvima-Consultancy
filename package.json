@@ -1,0 +1,23 @@
+{
+  "name": "puvima-consultancy",
+  "version": "1.0.0",
+  "description": "PUVIMA Consultancy — Innovation. Research. Excellence. Full-Stack Technology and Research Consultancy Platform",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "dev": "node --watch backend/src/server.js",
+    "test": "cd backend && npm test",
+    "install:backend": "cd backend && npm install",
+    "postinstall": "cd backend && npm install"
+  },
+  "keywords": [
+    "puvima",
+    "robotics",
+    "autonomous-systems",
+    "fintech",
+    "stock-market-analytics",
+    "ai-ml",
+    "research-solutions"
+  ],
+  "author": "PUVIMA Consultancy",
+  "license": "ISC"
+}
