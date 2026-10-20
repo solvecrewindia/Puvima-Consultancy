@@ -1,41 +1,24 @@
 
 
-const db = require('../config/database');
+const storeService = require('./store.service');
 const { generateReferenceId, hashIp } = require('../utils/referenceId');
 const emailService = require('./email.service');
 
 class ContactService {
-  
   async createEnquiry(data, clientIp = null) {
     const referenceId = generateReferenceId('CNT');
     const ipHash = hashIp(clientIp);
 
-    const sql = `
-      INSERT INTO contact_enquiries (
-        reference_id, name, email, company, subject, message, status, ip_hash
-      ) VALUES (?, ?, ?, ?, ?, ?, 'new', ?)
-    `;
+    await storeService.addContact({
+      reference_id: referenceId,
+      name: data.name,
+      email: data.email,
+      company: data.company || null,
+      subject: data.subject || null,
+      message: data.message,
+      ip_hash: ipHash
+    });
 
-    const params = [
-      referenceId,
-      data.name,
-      data.email,
-      data.company || null,
-      data.subject || null,
-      data.message,
-      ipHash
-    ];
-
-    try {
-      await db.query(sql, params);
-    } catch (err) {
-      console.error('[ContactService] Database insertion failed:', err.message);
-      const dbError = new Error('Unable to record enquiry due to a database service issue.');
-      dbError.statusCode = 503;
-      throw dbError;
-    }
-
-    
     emailService.notifyContactEnquiry({
       referenceId,
       name: data.name,

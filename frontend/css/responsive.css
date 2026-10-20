@@ -101,6 +101,12 @@
     gap: 24px;
   }
 
+  .services-compact-grid,
+  .principles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
   .contact-layout {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -157,6 +163,7 @@
   }
 
   .principles-grid,
+  .services-compact-grid,
   .services-catalog-grid,
   .team-roster-grid,
   .case-studies-grid,

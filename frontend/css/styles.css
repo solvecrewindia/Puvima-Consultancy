@@ -150,20 +150,7 @@ a {
 }
 
 .eyebrow-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #0072CE;
-  background: rgba(0, 114, 206, 0.08);
-  border: 1px solid rgba(0, 114, 206, 0.22);
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  margin-bottom: var(--space-sm);
+  display: none !important;
 }
 
 .badge {
@@ -558,6 +545,102 @@ main {
 }
 
 
+/* Home Page Compact 3-Card Services Grid */
+.services-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.service-card-compact {
+  background: #FFFFFF;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 32px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform var(--duration-normal), box-shadow var(--duration-normal), border-color var(--duration-normal);
+  position: relative;
+}
+
+.service-card-compact:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(0, 114, 206, 0.4);
+}
+
+.service-compact-header {
+  margin-bottom: 16px;
+}
+
+.service-compact-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.service-compact-icon.robotics {
+  background: rgba(0, 114, 206, 0.08);
+  color: var(--accent-blue);
+  border: 1px solid rgba(0, 114, 206, 0.15);
+}
+
+.service-compact-icon.fintech {
+  background: rgba(20, 184, 166, 0.08);
+  color: var(--accent-teal);
+  border: 1px solid rgba(20, 184, 166, 0.18);
+}
+
+.service-compact-icon.aiml {
+  background: rgba(124, 58, 237, 0.08);
+  color: #7c3aed;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+}
+
+.service-compact-title {
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 8px 0 10px 0;
+  line-height: 1.35;
+}
+
+.service-compact-desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.service-compact-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.service-compact-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #F1F5F9;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.service-compact-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle);
+}
+
 .services-catalog-grid {
   display: flex;
   flex-direction: column;
@@ -570,6 +653,7 @@ main {
   border-radius: var(--radius-lg);
   padding: clamp(28px, 4vw, 44px);
   position: relative;
+  scroll-margin-top: 100px;
   transition: border-color var(--duration-fast);
 }
 
@@ -667,7 +751,7 @@ main {
 
 .principles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
@@ -1218,3 +1302,68 @@ main {
   display: flex;
   gap: 20px;
 }
+
+/* ==========================================================================
+   ANNOUNCEMENT RIBBON & ADMIN LINK
+   ========================================================================== */
+.announcement-ribbon {
+  display: none !important;
+}
+
+.announcement-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.announcement-badge {
+  background: rgba(2, 132, 199, 0.2);
+  border: 1px solid var(--accent-teal);
+  color: var(--accent-teal);
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.announcement-text {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.announcement-link {
+  color: var(--accent-teal);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: underline;
+  transition: color var(--duration-fast);
+}
+
+.announcement-link:hover {
+  color: #38bdf8;
+}
+
+.admin-footer-link {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.admin-footer-link:hover {
+  opacity: 1;
+  color: var(--accent-teal);
+}
+

@@ -1,46 +1,27 @@
 
 
-const db = require('../config/database');
+const storeService = require('./store.service');
 const { generateReferenceId, hashIp } = require('../utils/referenceId');
 const emailService = require('./email.service');
 
 class BookingService {
-  
   async createBooking(data, clientIp = null) {
     const referenceId = generateReferenceId('REQ');
     const ipHash = hashIp(clientIp);
 
-    const sql = `
-      INSERT INTO consultation_bookings (
-        reference_id, name, email, company, topic,
-        preferred_date, preferred_time, meeting_format,
-        message, status, ip_hash
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_review', ?)
-    `;
+    await storeService.addBooking({
+      reference_id: referenceId,
+      name: data.name,
+      email: data.email,
+      company: data.company || null,
+      topic: data.topic,
+      preferred_date: data.preferredDate,
+      preferred_time: data.preferredTime,
+      meeting_format: data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
+      message: data.message || null,
+      ip_hash: ipHash
+    });
 
-    const params = [
-      referenceId,
-      data.name,
-      data.email,
-      data.company || null,
-      data.topic,
-      data.preferredDate,
-      data.preferredTime,
-      data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
-      data.message || null,
-      ipHash
-    ];
-
-    try {
-      await db.query(sql, params);
-    } catch (err) {
-      console.error('[BookingService] Database insertion failed:', err.message);
-      const dbError = new Error('Unable to record consultation request due to a database service issue.');
-      dbError.statusCode = 503;
-      throw dbError;
-    }
-
-    
     emailService.notifyBookingRequest({
       referenceId,
       name: data.name,

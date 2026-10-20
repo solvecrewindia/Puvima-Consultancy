@@ -1,0 +1,340 @@
+/* ==========================================================================
+   PUVIMA Consultancy — Customer Reviews & Rotating Carousel Stylesheet
+   Matches site light theme UI: rounded cards, clean typography, monogram avatars
+   ========================================================================== */
+
+.section-reviews {
+  padding: clamp(64px, 8vw, 96px) 0;
+  background: #F8FAFC;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.reviews-header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.reviews-subtitle {
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  color: var(--text-secondary);
+  max-width: 620px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.btn-write-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 114, 206, 0.25);
+}
+
+.btn-write-review:hover {
+  background: #005bb5;
+  border-color: #005bb5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 114, 206, 0.35);
+}
+
+/* ==========================================================================
+   INFINITE ROTATING CAROUSEL (MOVE LEFT SIDEWAYS)
+   ========================================================================== */
+.reviews-marquee-viewport {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 20px 0 28px 0;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.reviews-marquee-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  animation: moveLeftSideways 40s linear infinite;
+  will-change: transform;
+}
+
+.reviews-marquee-viewport:hover .reviews-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes moveLeftSideways {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+   REVIEW CARD (MATCHING PUVIMA CLEAN ENTERPRISE UI)
+   ========================================================================== */
+.customer-review-card {
+  width: 360px;
+  min-width: 360px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 26px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  user-select: none;
+}
+
+.customer-review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 114, 206, 0.12);
+  border-color: rgba(0, 114, 206, 0.35);
+}
+
+/* Card Top: Avatar, Name, Date, Platform Icon */
+.review-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.reviewer-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewer-avatar-monogram {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 114, 206, 0.25);
+}
+
+.reviewer-info-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewer-name {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.reviewer-meta {
+  font-size: 0.78rem;
+  color: var(--accent-blue);
+  margin-top: 3px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+}
+
+/* Platform Badges (Google, Facebook, LinkedIn) */
+.review-platform-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.platform-google {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+}
+
+.platform-facebook {
+  background: #1877F2;
+  color: #FFFFFF;
+}
+
+.platform-linkedin {
+  background: #0A66C2;
+  color: #FFFFFF;
+}
+
+/* Rating Stars Row */
+.review-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.review-star {
+  color: #F59E0B;
+  width: 19px;
+  height: 19px;
+}
+
+/* Review Text */
+.review-body-text {
+  font-family: var(--font-sans);
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  flex-grow: 1;
+  margin: 0;
+}
+
+/* Optional company tag */
+.review-company-tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ==========================================================================
+   WRITE A REVIEW MODAL (LIGHT THEME MATCHING UI)
+   ========================================================================== */
+.review-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.review-modal-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 520px;
+  padding: 32px 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  position: relative;
+  color: var(--text-primary);
+}
+
+.review-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.review-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.review-modal-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.review-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.15s ease;
+}
+
+.review-modal-close:hover {
+  color: var(--text-primary);
+}
+
+/* Interactive Star Rating Picker */
+.star-rating-picker {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0 18px 0;
+  cursor: pointer;
+}
+
+.star-rating-picker svg {
+  width: 28px;
+  height: 28px;
+  fill: #CBD5E1;
+  color: #CBD5E1;
+  transition: transform 0.15s, fill 0.15s;
+}
+
+.star-rating-picker svg.active,
+.star-rating-picker svg.hover {
+  fill: #F59E0B;
+  color: #F59E0B;
+  transform: scale(1.1);
+}
+
+.review-status-alert {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  display: none;
+}
+.review-status-alert.success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #047857;
+}
+.review-status-alert.error {
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  color: #be123c;
+}
+
+@media (max-width: 640px) {
+  .customer-review-card {
+    width: 290px;
+    min-width: 290px;
+    padding: 20px 18px;
+  }
+}

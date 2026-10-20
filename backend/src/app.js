@@ -10,6 +10,9 @@ const { apiRateLimiter } = require('./middleware/rateLimiter');
 const healthRoutes = require('./routes/health.routes');
 const contactRoutes = require('./routes/contact.routes');
 const bookingRoutes = require('./routes/booking.routes');
+const adminRoutes = require('./routes/admin.routes');
+const settingsRoutes = require('./routes/settings.routes');
+const reviewRoutes = require('./routes/review.routes');
 
 const app = express();
 
@@ -63,8 +66,8 @@ app.use(
       }
       return callback(new Error('Cross-Origin Request Blocked by PUVIMA CORS Policy'));
     },
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'],
     credentials: true
   })
 );
@@ -79,6 +82,13 @@ app.use('/api', apiRateLimiter);
 app.use('/api', healthRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', bookingRoutes);
+app.use('/api', adminRoutes);
+app.use('/api', settingsRoutes);
+app.use('/api', reviewRoutes);
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'admin', 'index.html'));
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendDir, 'index.html'));
