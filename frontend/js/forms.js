@@ -6,6 +6,7 @@ const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || 
 export function initForms() {
   initContactForm();
   initBookingForm();
+  initUnifiedContactTabs();
 }
 
 
@@ -380,6 +381,66 @@ function initBookingForm() {
     if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
       closeModal();
     }
+  });
+}
+
+function initUnifiedContactTabs() {
+  const tabsNav = document.querySelector('.unified-tabs-nav');
+  if (!tabsNav) return;
+
+  const tabButtons = tabsNav.querySelectorAll('.unified-tab-btn');
+  const tabPanels = document.querySelectorAll('.unified-tab-panel');
+
+  function switchTab(tabId) {
+    tabButtons.forEach(btn => {
+      const isActive = btn.dataset.tab === tabId;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    tabPanels.forEach(panel => {
+      const isActive = panel.id === `tab-${tabId}`;
+      panel.classList.toggle('active', isActive);
+      panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    });
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.tab;
+      switchTab(tabId);
+      if (tabId === 'booking') {
+        history.replaceState(null, '', '#booking');
+      } else {
+        history.replaceState(null, '', '#inquiry');
+      }
+    });
+  });
+
+  const checkHash = () => {
+    const hash = window.location.hash.toLowerCase();
+    const urlParams = new URLSearchParams(window.location.search);
+    if (hash === '#booking' || hash === '#book' || hash === '#consultation' || urlParams.get('mode') === 'booking') {
+      switchTab('booking');
+    } else {
+      switchTab('inquiry');
+    }
+  };
+
+  checkHash();
+  window.addEventListener('hashchange', checkHash);
+
+  document.querySelectorAll('[data-switch-tab]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetTab = link.dataset.switchTab;
+      switchTab(targetTab);
+      window.location.hash = targetTab;
+      const targetPanel = document.getElementById(`tab-${targetTab}`);
+      if (targetPanel) {
+        targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
   });
 }
 

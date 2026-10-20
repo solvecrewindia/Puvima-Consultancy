@@ -49,16 +49,10 @@
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://puvima.com/pages/booking.html</loc>
-    <lastmod>2026-10-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://puvima.com/pages/contact.html</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://puvima.com/pages/faq.html</loc>
