@@ -523,6 +523,21 @@ class StoreService {
     const bookings = await this.getBookings();
     const reviews = await this.getReviews();
 
+    let openPositions = 0;
+    let totalPositions = 0;
+    let totalApplications = 0;
+    let pendingApplications = 0;
+
+    try {
+      const careersService = require('./careers.service');
+      const positions = await careersService.getAllPositionsAdmin();
+      const apps = await careersService.getApplicationsAdmin();
+      totalPositions = positions.length;
+      openPositions = positions.filter(p => p.status === 'published').length;
+      totalApplications = apps.total;
+      pendingApplications = apps.applications.filter(a => a.recruitment_status === 'received').length;
+    } catch (e) {}
+
     const newContacts = contacts.filter(c => c.status === 'new').length;
     const pendingBookings = bookings.filter(b => b.status === 'pending_review').length;
     const confirmedBookings = bookings.filter(b => b.status === 'confirmed').length;
@@ -544,6 +559,10 @@ class StoreService {
       totalReviews: reviews.length,
       pendingReviews,
       approvedReviews,
+      openPositions,
+      totalPositions,
+      totalApplications,
+      pendingApplications,
       dbStatus: dbHealthy ? 'connected' : 'degraded_file_fallback',
       uptimeSeconds: Math.floor(process.uptime()),
       timestamp: new Date().toISOString()

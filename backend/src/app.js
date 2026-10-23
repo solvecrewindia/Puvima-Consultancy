@@ -13,8 +13,10 @@ const bookingRoutes = require('./routes/booking.routes');
 const adminRoutes = require('./routes/admin.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const reviewRoutes = require('./routes/review.routes');
+const careersRoutes = require('./routes/careers.routes');
 
 const app = express();
+
 
 app.set('trust proxy', 1);
 
@@ -85,14 +87,20 @@ app.use('/api', bookingRoutes);
 app.use('/api', adminRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
+app.use('/api', careersRoutes);
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(frontendDir, 'admin', 'index.html'));
 });
 
+app.get('/careers', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'pages', 'careers.html'));
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendDir, 'index.html'));
 });
+
 
 app.use(notFound);
 app.use(errorHandler);

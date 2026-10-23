@@ -1,0 +1,5 @@
+# Ignore all uploaded applicant files
+*
+!.gitignore
+!*/
+!.gitkeep
