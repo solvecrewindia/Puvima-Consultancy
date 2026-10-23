@@ -417,9 +417,9 @@
           </p>
         </div>
 
-        <div class="principles-grid">
+        <div class="principles-grid" data-timeline data-delay-step="0.25">
           
-          <div class="principle-editorial-card reveal-init">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="0">
             <div class="principle-card-top">
               <span class="principle-number">01 // VALUE</span>
               <div class="principle-icon">
@@ -432,7 +432,7 @@
             </p>
           </div>
 
-          <div class="principle-editorial-card reveal-init delay-1">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="1">
             <div class="principle-card-top">
               <span class="principle-number">02 // VALUE</span>
               <div class="principle-icon">
@@ -445,7 +445,7 @@
             </p>
           </div>
 
-          <div class="principle-editorial-card reveal-init delay-2">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="2">
             <div class="principle-card-top">
               <span class="principle-number">03 // VALUE</span>
               <div class="principle-icon">
@@ -458,7 +458,7 @@
             </p>
           </div>
 
-          <div class="principle-editorial-card reveal-init delay-3">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="3">
             <div class="principle-card-top">
               <span class="principle-number">04 // VALUE</span>
               <div class="principle-icon">
@@ -471,7 +471,7 @@
             </p>
           </div>
 
-          <div class="principle-editorial-card reveal-init">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="4">
             <div class="principle-card-top">
               <span class="principle-number">05 // VALUE</span>
               <div class="principle-icon">
@@ -484,7 +484,7 @@
             </p>
           </div>
 
-          <div class="principle-editorial-card reveal-init delay-1">
+          <div class="principle-editorial-card timeline-animation" data-animation-num="5">
             <div class="principle-card-top">
               <span class="principle-number">06 // VALUE</span>
               <div class="principle-icon">
@@ -501,6 +501,65 @@
       </div>
     </section>
 
+    <!-- Engineering & Research Engagement Roadmap (Timeline) -->
+    <section class="section" id="engagement-timeline">
+      <div class="container">
+        
+        <div style="text-align: center; max-width: 720px; margin: 0 auto 40px auto;" class="reveal-init">
+          <div class="eyebrow-badge">
+            <span class="status-dot"></span>
+            <span>Lifecycle &amp; Methodology</span>
+          </div>
+          <h2 class="section-headline">Consultancy Engagement Roadmap</h2>
+          <p class="editorial-subhead" style="margin: 0 auto;">
+            Our battle-tested 4-stage engineering lifecycle, delivering verifiable technical outcomes from initial discovery to production handover.
+          </p>
+        </div>
+
+        <!-- Timeline Container with Framer Motion TimelineAnimation behavior -->
+        <div class="timeline-container timeline-process-grid" data-timeline data-delay-step="0.4" data-once="true">
+          
+          <!-- Step 0 -->
+          <div class="timeline-card timeline-animation" data-animation-num="0">
+            <div class="timeline-step-badge">Stage 01 // Discovery</div>
+            <h3 class="timeline-step-title">Technical Discovery &amp; Feasibility</h3>
+            <p class="timeline-step-desc">
+              Comprehensive stakeholder requirements gathering, mathematical domain modeling, constraints evaluation, and architectural blueprinting.
+            </p>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="timeline-card timeline-animation" data-animation-num="1">
+            <div class="timeline-step-badge">Stage 02 // Prototyping</div>
+            <h3 class="timeline-step-title">Empirical Research &amp; Feasibility</h3>
+            <p class="timeline-step-desc">
+              Algorithmic verification, sandbox model training, sensor bench testing, and reproducible scientific validation against benchmark metrics.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="timeline-card timeline-animation" data-animation-num="2">
+            <div class="timeline-step-badge">Stage 03 // Engineering</div>
+            <h3 class="timeline-step-title">Full-Scale Systems Development</h3>
+            <p class="timeline-step-desc">
+              Production-grade code implementation, hardware-in-the-loop firmware builds, REST API pipelines, and edge-device hardware integration.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="timeline-card timeline-animation" data-animation-num="3">
+            <div class="timeline-step-badge">Stage 04 // Handover</div>
+            <h3 class="timeline-step-title">Verification, Delivery &amp; Support</h3>
+            <p class="timeline-step-desc">
+              End-to-end stress testing, complete technical documentation &amp; whitepaper publication, client knowledge transfer, and operational support.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
     
     <section class="section" id="demonstrations" style="background: #FFFFFF; box-shadow: var(--shadow-card); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
       <div class="container">
@@ -509,66 +568,69 @@
           <div>
             <div class="eyebrow-badge">
               <span class="status-dot"></span>
-              <span>Engineering Demonstrations</span>
+              <span>Featured Engineering Deployments</span>
             </div>
-            <h2 class="section-headline">Conceptual Demonstrations</h2>
+            <h2 class="section-headline">Featured Projects &amp; Deployments</h2>
             <p class="editorial-subhead">
-              Clearly labeled technical prototypes showcasing our core capabilities in robotics, financial analytics, and predictive AI.
+              Real-world software systems, intelligent robotics, and medical deep learning architectures developed by PUVIMA Consultancy.
             </p>
           </div>
-          <a href="pages/portfolio.html" class="btn btn-secondary">View Complete Portfolio &rarr;</a>
+          <a href="pages/portfolio.html" class="btn btn-secondary">View Complete Portfolio (12 Projects) &rarr;</a>
         </div>
 
         <div class="portfolio-grid">
           
-          
+          <!-- Card 1: SHINE -->
           <article class="portfolio-card reveal-init">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <span class="badge badge-violet">Robotics Prototype</span>
-              <span class="badge badge-draft">Conceptual Demo</span>
+              <span class="badge badge-violet">Enterprise Web</span>
+              <span class="badge badge-production">In Production</span>
             </div>
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Autonomous Mobile Surface Drone (AMR-Marine)</h3>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">“SHINE” — Student Data Management</h3>
             <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
-              Conceptual architecture for environmental robotics: an autonomous catamaran drone utilizing computer vision and edge LiDAR for coastal waste detection and retrieval.
+              Full-stack academic management platform actively in daily production use by second-year CTech Faculty and students, facilitating attendance, academic profiles, and grading workflows.
             </p>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
-              <span class="member-tag">ROS2</span>
-              <span class="member-tag">LiDAR Fusion</span>
-              <span class="member-tag">YOLOv8</span>
+              <span class="member-tag">Node.js</span>
+              <span class="member-tag">Relational DB</span>
+              <span class="member-tag">REST API</span>
+              <span class="member-tag">Active Production</span>
             </div>
           </article>
 
-          
+          <!-- Card 2: Beach Clean Robot -->
           <article class="portfolio-card reveal-init delay-1">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <span class="badge badge-teal">FinTech Model</span>
-              <span class="badge badge-draft">Conceptual Demo</span>
+              <span class="badge badge-teal">Robotics &amp; Autonomous</span>
+              <span class="badge badge-development">In Development</span>
             </div>
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Market Trend Backtester &amp; Volatility Surface</h3>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Autonomous Beach Cleaning Robot</h3>
             <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
-              Algorithmic data pipeline processing historical tick data to visualize technical indicators, drawdown metrics, and Sharpe ratios across simulated asset portfolios.
+              Autonomous mobile surface robot engineered with high-traction treads and mechanical sand sifting to autonomously extract marine debris and plastic waste from shoreline beaches.
             </p>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
-              <span class="member-tag">Python</span>
-              <span class="member-tag">Pandas</span>
-              <span class="member-tag">Backtrader</span>
+              <span class="member-tag">Mobile Robotics</span>
+              <span class="member-tag">Mechanical Sifting</span>
+              <span class="member-tag">Obstacle Avoidance</span>
+              <span class="member-tag">Environmental AI</span>
             </div>
           </article>
 
-          
+          <!-- Card 3: Hyperspectral MRI Segmentation -->
           <article class="portfolio-card reveal-init delay-2">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <span class="badge badge-violet">AI/ML Pipeline</span>
-              <span class="badge badge-draft">Conceptual Demo</span>
+              <span class="badge badge-violet">Medical AI / DL</span>
+              <span class="badge badge-verified">Model Developed</span>
             </div>
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Edge Computer Vision Object Recognition</h3>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px;">Hyperspectral Brain MRI Segmentation</h3>
             <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
-              Low-power embedded vision prototype optimized for edge inference on TensorRT devices, providing sub-15ms bounding box and feature extraction.
+              Deep Learning segmentation architecture extracting joint spectral-spatial neural tissue representations from high-dimensional hyperspectral magnetic resonance imaging volumes.
             </p>
             <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+              <span class="member-tag">Deep Learning</span>
               <span class="member-tag">PyTorch</span>
-              <span class="member-tag">ONNX</span>
-              <span class="member-tag">TensorRT</span>
+              <span class="member-tag">Hyperspectral</span>
+              <span class="member-tag">Dice Loss</span>
             </div>
           </article>
 

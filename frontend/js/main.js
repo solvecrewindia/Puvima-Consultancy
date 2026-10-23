@@ -4,6 +4,7 @@ import { initNavigation } from './navigation.js';
 import { initForms } from './forms.js';
 import { initFAQ } from './faq.js';
 import { initPortfolio } from './portfolio.js';
+import { initTimelineAnimation } from './timeline-animation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -11,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
   initScrollReveals();
+
+  
+  initTimelineAnimation();
 
   
   initForms();
