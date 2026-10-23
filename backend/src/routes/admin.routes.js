@@ -33,4 +33,20 @@ router.get('/admin/reviews', adminAuth, (req, res) => adminController.getReviews
 router.patch('/admin/reviews/:id', adminAuth, (req, res) => adminController.updateReview(req, res));
 router.delete('/admin/reviews/:id', adminAuth, (req, res) => adminController.deleteReview(req, res));
 
+// Careers & Recruitment management
+const careersController = require('../controllers/careers.controller');
+
+router.get('/admin/careers', adminAuth, (req, res) => careersController.getAllPositionsAdmin(req, res));
+router.post('/admin/careers', adminAuth, (req, res) => careersController.createPositionAdmin(req, res));
+router.put('/admin/careers/:id', adminAuth, (req, res) => careersController.updatePositionAdmin(req, res));
+router.patch('/admin/careers/:id/status', adminAuth, (req, res) => careersController.updatePositionStatusAdmin(req, res));
+router.delete('/admin/careers/:id', adminAuth, (req, res) => careersController.deletePositionAdmin(req, res));
+
+// Candidate applications management
+router.get('/admin/applications', adminAuth, (req, res) => careersController.getApplicationsAdmin(req, res));
+router.get('/admin/applications/:id', adminAuth, (req, res) => careersController.getApplicationByIdAdmin(req, res));
+router.patch('/admin/applications/:id/status', adminAuth, (req, res) => careersController.updateApplicationStatusAdmin(req, res));
+router.get('/admin/applications/:id/resume', adminAuth, (req, res) => careersController.getApplicationResumeAdmin(req, res));
+
 module.exports = router;
+

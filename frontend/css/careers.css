@@ -1,0 +1,508 @@
+/**
+ * PUVIMA Consultancy — Careers & Recruitment Stylesheet
+ * Strictly preserves PUVIMA's clean modern enterprise design system and visual tokens.
+ */
+
+.careers-section {
+  padding: 40px 0 80px;
+}
+
+/* Category Filter Bar */
+.careers-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.filter-chip {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-smooth);
+}
+
+.filter-chip:hover {
+  background: var(--bg-surface-active);
+  color: var(--puvima-blue);
+  border-color: var(--border-interactive);
+}
+
+.filter-chip.active {
+  background: var(--puvima-blue);
+  color: #ffffff;
+  border-color: var(--puvima-blue);
+  box-shadow: 0 4px 12px var(--electric-violet-glow);
+}
+
+/* Job Positions List */
+.job-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.job-card {
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-normal) var(--ease-out-smooth),
+              box-shadow var(--duration-normal) var(--ease-out-smooth),
+              border-color var(--duration-normal) var(--ease-out-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--puvima-blue), var(--accent-teal));
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+
+.job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevated);
+  border-color: var(--border-interactive);
+}
+
+.job-card:hover::before {
+  opacity: 1;
+}
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.job-card-title-group {
+  flex: 1;
+  min-width: 260px;
+}
+
+.job-card-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.job-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.job-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.job-badge-dept {
+  background: rgba(0, 114, 206, 0.08);
+  color: var(--puvima-blue);
+  border: 1px solid rgba(0, 114, 206, 0.2);
+}
+
+.job-badge-type {
+  background: rgba(2, 132, 199, 0.08);
+  color: var(--accent-teal);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.job-badge-arrangement {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+/* Meta Grid */
+.job-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 0;
+  margin: 16px 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.job-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.job-meta-item svg {
+  color: var(--puvima-blue);
+  flex-shrink: 0;
+}
+
+.job-description-text {
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.job-responsibilities-box {
+  margin-bottom: 18px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  border-left: 3px solid var(--puvima-blue);
+}
+
+.job-section-heading {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.job-skills-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.skill-chip {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+}
+
+.job-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.job-ref-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Empty State */
+.careers-empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  background: var(--bg-surface-card);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  max-width: 680px;
+  margin: 20px auto;
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: rgba(0, 114, 206, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--puvima-blue);
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.empty-state-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* Skeleton Loading State */
+.job-skeleton-card {
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.6s infinite;
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   APPLICATION MODAL
+   ========================================================================== */
+.app-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.app-modal-overlay.open {
+  display: flex;
+}
+
+.app-modal-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 660px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  animation: modalEnter 0.25s var(--ease-out-smooth);
+}
+
+@keyframes modalEnter {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.app-modal-header {
+  padding: 24px 28px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.app-modal-sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.app-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  transition: color var(--duration-fast);
+}
+
+.app-modal-close:hover {
+  color: var(--text-primary);
+}
+
+.app-modal-body {
+  padding: 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* File Upload Dropzone */
+.file-dropzone {
+  border: 2px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  position: relative;
+}
+
+.file-dropzone:hover, .file-dropzone.dragover {
+  border-color: var(--puvima-blue);
+  background: rgba(0, 114, 206, 0.04);
+}
+
+.dropzone-icon {
+  color: var(--puvima-blue);
+  margin-bottom: 8px;
+}
+
+.dropzone-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.dropzone-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.file-selected-card {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(0, 114, 206, 0.06);
+  border: 1px solid rgba(0, 114, 206, 0.2);
+  border-radius: var(--radius-md);
+  margin-top: 10px;
+}
+
+.file-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.file-replace-btn {
+  background: transparent;
+  border: none;
+  color: var(--puvima-blue);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Field validation styles */
+.form-control.is-invalid {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.03);
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: #dc2626;
+  margin-top: 5px;
+  display: none;
+}
+
+.field-error.visible {
+  display: block;
+}
+
+.privacy-notice-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 18px 0;
+}
+
+/* Modal Submission Success Message */
+.app-success-view {
+  text-align: center;
+  padding: 40px 24px;
+  display: none;
+}
+
+.app-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.app-ref-display {
+  display: inline-block;
+  padding: 6px 14px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--puvima-blue);
+  margin: 14px 0;
+}
+
+@media (max-width: 640px) {
+  .job-card {
+    padding: 24px 20px;
+  }
+  .job-card-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .app-modal-card {
+    max-height: 96vh;
+  }
+}

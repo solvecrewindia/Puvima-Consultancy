@@ -49,6 +49,55 @@ Stores structured consultation and appointment requests submitted through `/page
 | `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | UTC timestamp |
 | `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP ON UPDATE | UTC timestamp |
 
+### 3. `job_positions`
+Stores careers vacancies and positions managed through the executive admin portal and displayed on `/pages/careers.html`.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | BIGINT UNSIGNED | AUTO_INCREMENT, PK | Internal surrogate key |
+| `reference_id` | VARCHAR(64) | UNIQUE, NOT NULL | Public reference ID (e.g. `JOB-2026-ROB1`) |
+| `title` | VARCHAR(255) | NOT NULL | Job position title |
+| `department` | VARCHAR(128) | NOT NULL, INDEX | Division / Practice area |
+| `description` | TEXT | NOT NULL | Summary / Role overview |
+| `responsibilities` | TEXT | NULL | Core duties & deliverables |
+| `required_skills` | TEXT | NULL | Comma/line separated qualifications |
+| `employment_type` | VARCHAR(64) | NOT NULL, DEFAULT 'Full-time' | Full-time, Part-time, Contract, Internship |
+| `work_arrangement` | VARCHAR(64) | NOT NULL, DEFAULT 'Hybrid' | On-site, Hybrid, Remote |
+| `location` | VARCHAR(128) | NOT NULL | Office / base location |
+| `experience_requirements`| VARCHAR(128) | NULL | Experience level required |
+| `salary_range` | VARCHAR(128) | NULL | Optional compensation band |
+| `status` | ENUM | NOT NULL, DEFAULT 'draft' | Values: `'draft'`, `'published'`, `'closed'` |
+| `application_deadline` | DATE | NULL | Optional cutoff date |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | UTC timestamp |
+| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP ON UPDATE | UTC timestamp |
+
+### 4. `job_applications`
+Stores candidate job applications submitted through `/pages/careers.html` and processed via `POST /api/careers/:id/apply`.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | BIGINT UNSIGNED | AUTO_INCREMENT, PK | Internal surrogate key |
+| `reference_id` | VARCHAR(64) | UNIQUE, NOT NULL | Public unique tracking ID (e.g. `APP-2026-X1Y2Z3`) |
+| `job_position_id` | BIGINT UNSIGNED | NOT NULL, FK, INDEX | References `job_positions(id)` (ON DELETE RESTRICT) |
+| `applicant_name` | VARCHAR(128) | NOT NULL | Submitter full name |
+| `applicant_email` | VARCHAR(255) | NOT NULL, INDEX | Validated applicant contact email |
+| `applicant_phone` | VARCHAR(64) | NOT NULL | Contact phone number |
+| `education` | VARCHAR(255) | NULL | Degree or qualification |
+| `skills` | TEXT | NULL | Applicant declared competencies |
+| `experience_years` | VARCHAR(64) | NULL | Years of experience |
+| `linkedin_url` | VARCHAR(255) | NULL | Professional profile URL |
+| `portfolio_url` | VARCHAR(255) | NULL | Portfolio / GitHub profile URL |
+| `cover_letter` | TEXT | NULL | Candidate motivation or summary |
+| `resume_filename` | VARCHAR(255) | NOT NULL | Cleaned original upload filename |
+| `resume_storage_key`| VARCHAR(255) | NOT NULL | Server-side secure file identifier outside web root |
+| `resume_mime_type` | VARCHAR(128) | NOT NULL | Validated MIME type (PDF, DOC, DOCX) |
+| `resume_size_bytes` | INT UNSIGNED | NOT NULL | File size in bytes (max 5 MB) |
+| `recruitment_status`| ENUM | NOT NULL, DEFAULT 'received' | Values: `'received'`, `'under_review'`, `'shortlisted'`, `'interview'`, `'selected'`, `'rejected'` |
+| `admin_notes` | TEXT | NULL | Internal hiring notes |
+| `ip_hash` | VARCHAR(64) | NULL | One-way SHA-256 IP hash for abuse mitigation |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | UTC timestamp |
+| `updated_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP ON UPDATE | UTC timestamp |
+
 ---
 
 ## Setup Instructions

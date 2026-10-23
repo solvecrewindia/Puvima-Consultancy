@@ -33,10 +33,21 @@ function createPool() {
 }
 
 
-async function testConnection() {
+let lastTestTime = 0;
+let lastTestResult = null;
+const TEST_CACHE_MS = 5000;
+
+async function testConnection(force = false) {
+  const now = Date.now();
+  if (!force && lastTestResult && (now - lastTestTime < TEST_CACHE_MS)) {
+    return lastTestResult;
+  }
+
   const p = createPool();
   if (!p) {
-    return { isConnected: false, message: lastError || 'Pool initialization failed' };
+    lastTestResult = { isConnected: false, message: lastError || 'Pool initialization failed' };
+    lastTestTime = now;
+    return lastTestResult;
   }
 
   try {
@@ -45,11 +56,15 @@ async function testConnection() {
     connection.release();
     isConnected = true;
     lastError = null;
-    return { isConnected: true, message: 'MySQL connection established successfully.' };
+    lastTestResult = { isConnected: true, message: 'MySQL connection established successfully.' };
+    lastTestTime = now;
+    return lastTestResult;
   } catch (err) {
     isConnected = false;
     lastError = err.message;
-    return { isConnected: false, message: `Database unavailable: ${err.message}` };
+    lastTestResult = { isConnected: false, message: `Database unavailable: ${err.message}` };
+    lastTestTime = now;
+    return lastTestResult;
   }
 }
 

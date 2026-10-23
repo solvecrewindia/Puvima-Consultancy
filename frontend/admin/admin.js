@@ -19,6 +19,12 @@
   let currentFilterBooking = 'all';
   let currentFilterReview = 'all';
   let activeModalItem = null; // { type: 'contact' | 'booking', data }
+  let jobsList = [];
+  let applicationsList = [];
+  let currentFilterJob = 'all';
+  let currentFilterApp = 'all';
+  let selectedAppJobFilter = 'all';
+  let activeAppItem = null;
 
   // DOM Elements
   const loginView = document.getElementById('loginView');
@@ -228,6 +234,108 @@
     if (saveSettingsBtn) {
       saveSettingsBtn.addEventListener('click', handleSaveSettings);
     }
+
+    // Careers & Recruitment Subtab Switching
+    const subtabJobsBtn = document.getElementById('subtabJobsBtn');
+    const subtabAppsBtn = document.getElementById('subtabAppsBtn');
+    const careersJobsSubView = document.getElementById('careersJobsSubView');
+    const careersAppsSubView = document.getElementById('careersAppsSubView');
+
+    if (subtabJobsBtn && subtabAppsBtn) {
+      subtabJobsBtn.addEventListener('click', () => {
+        subtabJobsBtn.classList.add('active');
+        subtabAppsBtn.classList.remove('active');
+        if (careersJobsSubView) careersJobsSubView.style.display = 'block';
+        if (careersAppsSubView) careersAppsSubView.style.display = 'none';
+      });
+      subtabAppsBtn.addEventListener('click', () => {
+        subtabAppsBtn.classList.add('active');
+        subtabJobsBtn.classList.remove('active');
+        if (careersJobsSubView) careersJobsSubView.style.display = 'none';
+        if (careersAppsSubView) careersAppsSubView.style.display = 'block';
+      });
+    }
+
+    // Careers Job Management Events
+    const openCreateJobModalBtn = document.getElementById('openCreateJobModalBtn');
+    if (openCreateJobModalBtn) openCreateJobModalBtn.addEventListener('click', openCreateJobModal);
+
+    const reloadJobsBtn = document.getElementById('reloadJobsBtn');
+    if (reloadJobsBtn) reloadJobsBtn.addEventListener('click', loadJobs);
+
+    document.querySelectorAll('[data-job-status]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-job-status]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilterJob = btn.getAttribute('data-job-status');
+        renderJobsTable();
+      });
+    });
+
+    const jobSearchInput = document.getElementById('jobSearchInput');
+    if (jobSearchInput) {
+      jobSearchInput.addEventListener('input', () => renderJobsTable());
+    }
+
+    // Job Modal Form & Overlay Events
+    const jobModalOverlay = document.getElementById('jobModalOverlay');
+    const closeJobModalBtn = document.getElementById('closeJobModalBtn');
+    const cancelJobModalBtn = document.getElementById('cancelJobModalBtn');
+    const jobPositionForm = document.getElementById('jobPositionForm');
+
+    if (closeJobModalBtn) closeJobModalBtn.addEventListener('click', closeJobModal);
+    if (cancelJobModalBtn) cancelJobModalBtn.addEventListener('click', closeJobModal);
+    if (jobModalOverlay) {
+      jobModalOverlay.addEventListener('click', (e) => {
+        if (e.target === jobModalOverlay) closeJobModal();
+      });
+    }
+    if (jobPositionForm) {
+      jobPositionForm.addEventListener('submit', handleJobFormSubmit);
+    }
+
+    // Candidate Applications Management Events
+    const reloadAppsBtn = document.getElementById('reloadAppsBtn');
+    if (reloadAppsBtn) reloadAppsBtn.addEventListener('click', loadApplications);
+
+    document.querySelectorAll('[data-app-status]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-app-status]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilterApp = btn.getAttribute('data-app-status');
+        renderApplicationsTable();
+      });
+    });
+
+    const appJobFilterSelect = document.getElementById('appJobFilterSelect');
+    if (appJobFilterSelect) {
+      appJobFilterSelect.addEventListener('change', () => {
+        selectedAppJobFilter = appJobFilterSelect.value;
+        renderApplicationsTable();
+      });
+    }
+
+    const appSearchInput = document.getElementById('appSearchInput');
+    if (appSearchInput) {
+      appSearchInput.addEventListener('input', () => renderApplicationsTable());
+    }
+
+    // Application Detail Modal Events
+    const appDetailModalOverlay = document.getElementById('appDetailModalOverlay');
+    const closeAppDetailModalBtn = document.getElementById('closeAppDetailModalBtn');
+    const closeAppDetailFooterBtn = document.getElementById('closeAppDetailFooterBtn');
+    const saveAppDetailStatusBtn = document.getElementById('saveAppDetailStatusBtn');
+    const downloadAppResumeBtn = document.getElementById('downloadAppResumeBtn');
+
+    if (closeAppDetailModalBtn) closeAppDetailModalBtn.addEventListener('click', closeAppDetailModal);
+    if (closeAppDetailFooterBtn) closeAppDetailFooterBtn.addEventListener('click', closeAppDetailModal);
+    if (appDetailModalOverlay) {
+      appDetailModalOverlay.addEventListener('click', (e) => {
+        if (e.target === appDetailModalOverlay) closeAppDetailModal();
+      });
+    }
+    if (saveAppDetailStatusBtn) saveAppDetailStatusBtn.addEventListener('click', handleSaveAppStatus);
+    if (downloadAppResumeBtn) downloadAppResumeBtn.addEventListener('click', handleDownloadResume);
   }
 
   // ==========================================================================
@@ -308,7 +416,9 @@
       loadContacts(),
       loadBookings(),
       loadReviews(),
-      loadSettings()
+      loadSettings(),
+      loadJobs(),
+      loadApplications()
     ]);
   }
 
@@ -327,6 +437,13 @@
         if (pendingRevEl) pendingRevEl.textContent = s.pendingReviews || 0;
         const appRevEl = document.getElementById('kpiApprovedReviews');
         if (appRevEl) appRevEl.textContent = s.approvedReviews || 0;
+
+        const openPosEl = document.getElementById('kpiOpenPositions');
+        if (openPosEl) openPosEl.textContent = s.openPositions || 0;
+        const totalAppsEl = document.getElementById('kpiTotalApplications');
+        if (totalAppsEl) totalAppsEl.textContent = s.totalApplications || 0;
+        const careersBadge = document.getElementById('careersApplicationsBadge');
+        if (careersBadge) careersBadge.textContent = s.pendingApplications || s.totalApplications || 0;
 
         // Health & Uptime
         const healthDot = document.getElementById('systemHealthDot');
@@ -1016,6 +1133,504 @@
     }
   }
 
+  // ==========================================================================
+  // 10. CAREERS & RECRUITMENT MANAGEMENT
+  // ==========================================================================
+
+  // --- JOB POSITIONS ---
+  async function loadJobs() {
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/careers`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        jobsList = data.positions || [];
+        const jobsCountBadge = document.getElementById('jobsCountBadge');
+        if (jobsCountBadge) jobsCountBadge.textContent = jobsList.length;
+        populateAppJobFilterDropdown();
+        renderJobsTable();
+      }
+    } catch (e) {
+      showToast('Error loading job positions.', 'error');
+    }
+  }
+
+  function populateAppJobFilterDropdown() {
+    const select = document.getElementById('appJobFilterSelect');
+    if (!select) return;
+    const currentVal = select.value;
+    select.innerHTML = '<option value="all">All Configured Positions</option>';
+    jobsList.forEach(job => {
+      const opt = document.createElement('option');
+      opt.value = String(job.id);
+      opt.textContent = `${job.title} (${job.department})`;
+      select.appendChild(opt);
+    });
+    if (jobsList.some(j => String(j.id) === currentVal)) {
+      select.value = currentVal;
+    }
+  }
+
+  function renderJobsTable() {
+    const tbody = document.getElementById('jobsTableBody');
+    if (!tbody) return;
+
+    const search = (document.getElementById('jobSearchInput')?.value || '').toLowerCase().trim();
+
+    let filtered = jobsList.filter(job => {
+      if (currentFilterJob !== 'all' && job.status !== currentFilterJob) {
+        return false;
+      }
+      if (search) {
+        const str = `${job.id} ${job.title} ${job.department} ${job.work_arrangement} ${job.location || ''} ${job.required_skills || ''}`.toLowerCase();
+        return str.includes(search);
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-table-state">
+            <div class="empty-icon">💼</div>
+            <div style="font-weight: 600; font-size: 1rem; color: var(--text-main); margin-bottom: 4px;">No job positions found</div>
+            <p style="font-size: 0.85rem;">Click "Create Job Position" to configure technical roles for PUVIMA.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(job => {
+      const statusClass = `status-${job.status || 'draft'}`;
+      const statusLabel = (job.status || 'draft').toUpperCase();
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.92rem;">${escapeHtml(job.title)}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+              <code style="font-family: var(--font-mono); color: var(--accent-teal);">ID #${job.id}</code>
+              ${job.salary_range ? ` &bull; <span style="color: var(--accent-emerald);">${escapeHtml(job.salary_range)}</span>` : ''}
+            </div>
+          </td>
+          <td>
+            <span style="display: inline-block; background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-weight: 600;">
+              ${escapeHtml(job.department)}
+            </span>
+          </td>
+          <td>
+            <div style="font-size: 0.84rem; color: var(--text-main); font-weight: 500;">
+              ${escapeHtml(job.work_arrangement)} &bull; ${escapeHtml(job.employment_type || 'Full-time')}
+            </div>
+            <div style="font-size: 0.76rem; color: var(--text-muted);">${escapeHtml(job.location || 'Chennai / Bangalore')}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">${escapeHtml(job.experience_level || 'Open')}</div>
+          </td>
+          <td>
+            <span class="status-pill ${statusClass}">${statusLabel}</span>
+          </td>
+          <td>
+            <div class="action-btn-group" style="justify-content: flex-end;">
+              <button class="btn-icon" title="Edit Position" onclick="window.PUVIMA_ADMIN.openEditJobModal('${job.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              ${job.status === 'published' ? `
+                <button class="btn-icon" title="Unpublish / Set to Draft" onclick="window.PUVIMA_ADMIN.quickStatusJob('${job.id}', 'draft')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                  </svg>
+                </button>
+                <button class="btn-icon danger" title="Close Vacancy" onclick="window.PUVIMA_ADMIN.quickStatusJob('${job.id}', 'closed')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </button>
+              ` : `
+                <button class="btn-icon" title="Publish on Careers Page" onclick="window.PUVIMA_ADMIN.quickStatusJob('${job.id}', 'published')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </button>
+              `}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openCreateJobModal() {
+    const form = document.getElementById('jobPositionForm');
+    if (form) form.reset();
+    document.getElementById('jobModalPositionId').value = '';
+    document.getElementById('jobModalTitle').textContent = 'Create New Job Position';
+    document.getElementById('jobModalOverlay').style.display = 'flex';
+  }
+
+  function openEditJobModal(jobId) {
+    const job = jobsList.find(j => String(j.id) === String(jobId));
+    if (!job) return;
+
+    document.getElementById('jobModalPositionId').value = job.id;
+    document.getElementById('jobModalTitle').textContent = `Edit Position: ${job.title}`;
+    document.getElementById('jobTitleInput').value = job.title || '';
+    document.getElementById('jobDeptSelect').value = job.department || 'Software Development';
+    document.getElementById('jobStatusSelect').value = job.status || 'draft';
+    document.getElementById('jobTypeSelect').value = job.employment_type || 'Full-time';
+    document.getElementById('jobArrangementSelect').value = job.work_arrangement || 'Hybrid';
+    document.getElementById('jobExpInput').value = job.experience_level || '';
+    document.getElementById('jobLocationInput').value = job.location || 'Chennai / Bangalore, India';
+    document.getElementById('jobSalaryInput').value = job.salary_range || '';
+    document.getElementById('jobDescInput').value = job.description || '';
+    document.getElementById('jobRespInput').value = job.responsibilities || '';
+    document.getElementById('jobSkillsInput').value = job.required_skills || '';
+
+    document.getElementById('jobModalOverlay').style.display = 'flex';
+  }
+
+  function closeJobModal() {
+    const overlay = document.getElementById('jobModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  async function handleJobFormSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('jobModalPositionId').value;
+    const saveBtn = document.getElementById('saveJobModalBtn');
+
+    const payload = {
+      title: document.getElementById('jobTitleInput').value.trim(),
+      department: document.getElementById('jobDeptSelect').value,
+      status: document.getElementById('jobStatusSelect').value,
+      employment_type: document.getElementById('jobTypeSelect').value,
+      work_arrangement: document.getElementById('jobArrangementSelect').value,
+      experience_level: document.getElementById('jobExpInput').value.trim(),
+      location: document.getElementById('jobLocationInput').value.trim(),
+      salary_range: document.getElementById('jobSalaryInput').value.trim() || null,
+      description: document.getElementById('jobDescInput').value.trim(),
+      responsibilities: document.getElementById('jobRespInput').value.trim() || null,
+      required_skills: document.getElementById('jobSkillsInput').value.trim() || null
+    };
+
+    if (!payload.title || !payload.description) {
+      showToast('Job Title and Role Overview are required.', 'error');
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span>Saving...</span>';
+
+    try {
+      const url = id ? `${API_BASE}/api/admin/careers/${id}` : `${API_BASE}/api/admin/careers`;
+      const method = id ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(id ? 'Job position updated successfully.' : 'Job position created successfully.', 'success');
+        closeJobModal();
+        loadJobs();
+        loadStats();
+      } else {
+        showToast(data.message || 'Failed to save job position.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while saving job position.', 'error');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span>Save Job Position</span>';
+    }
+  }
+
+  async function quickStatusJob(jobId, newStatus) {
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/careers/${jobId}/status`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        showToast(`Position status updated to ${newStatus}.`, 'success');
+        loadJobs();
+        loadStats();
+      } else {
+        showToast('Error updating position status.', 'error');
+      }
+    } catch (e) {
+      showToast('Network error while updating position.', 'error');
+    }
+  }
+
+  // --- CANDIDATE APPLICATIONS ---
+  async function loadApplications() {
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/applications`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        applicationsList = data.applications || [];
+        const appsCountBadge = document.getElementById('appsCountBadge');
+        if (appsCountBadge) appsCountBadge.textContent = applicationsList.length;
+        const careersBadge = document.getElementById('careersApplicationsBadge');
+        const unreviewed = applicationsList.filter(a => a.recruitment_status === 'received').length;
+        if (careersBadge) careersBadge.textContent = unreviewed;
+        renderApplicationsTable();
+      }
+    } catch (e) {
+      showToast('Error loading candidate applications.', 'error');
+    }
+  }
+
+  function renderApplicationsTable() {
+    const tbody = document.getElementById('applicationsTableBody');
+    if (!tbody) return;
+
+    const search = (document.getElementById('appSearchInput')?.value || '').toLowerCase().trim();
+
+    let filtered = applicationsList.filter(app => {
+      if (currentFilterApp !== 'all' && app.recruitment_status !== currentFilterApp) {
+        return false;
+      }
+      if (selectedAppJobFilter !== 'all' && String(app.job_position_id) !== String(selectedAppJobFilter)) {
+        return false;
+      }
+      if (search) {
+        const str = `${app.reference_id || ''} ${app.applicant_name} ${app.applicant_email} ${app.applicant_phone || ''} ${app.position_title || ''} ${app.skills || ''}`.toLowerCase();
+        return str.includes(search);
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-table-state">
+            <div class="empty-icon">📁</div>
+            <div style="font-weight: 600; font-size: 1rem; color: var(--text-main); margin-bottom: 4px;">No candidate applications found</div>
+            <p style="font-size: 0.85rem;">Applications submitted by candidates will appear here.</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(app => {
+      const statusClass = `status-${app.recruitment_status || 'received'}`;
+      const statusLabel = (app.recruitment_status || 'received').replace('_', ' ').toUpperCase();
+      const submittedDate = new Date(app.created_at || Date.now()).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+
+      return `
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.92rem;">${escapeHtml(app.applicant_name)}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1px;">
+              ${escapeHtml(app.applicant_email)} &bull; ${escapeHtml(app.applicant_phone)}
+            </div>
+            <div style="margin-top: 2px;">
+              <code style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent-teal);">${escapeHtml(app.reference_id || 'APP-' + app.id)}</code>
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 600; font-size: 0.86rem; color: #f1f5f9;">${escapeHtml(app.position_title || 'Position #' + app.job_position_id)}</div>
+            ${app.education ? `<div style="font-size: 0.76rem; color: var(--accent-violet); margin-top: 2px;">${escapeHtml(app.education)}</div>` : ''}
+          </td>
+          <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">
+            ${submittedDate}
+          </td>
+          <td>
+            <span class="status-pill ${statusClass}">${statusLabel}</span>
+          </td>
+          <td>
+            <div class="action-btn-group" style="justify-content: flex-end;">
+              <button class="btn-icon" title="Inspect Candidate &amp; Resume" onclick="window.PUVIMA_ADMIN.openAppDetailModal('${app.id}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openAppDetailModal(appId) {
+    const app = applicationsList.find(a => String(a.id) === String(appId));
+    if (!app) return;
+
+    activeAppItem = app;
+
+    document.getElementById('appDetailApplicantName').textContent = app.applicant_name;
+    const badge = document.getElementById('appDetailStatusBadge');
+    badge.className = `status-pill status-${app.recruitment_status || 'received'}`;
+    badge.textContent = (app.recruitment_status || 'received').replace('_', ' ').toUpperCase();
+
+    document.getElementById('appDetailRefId').textContent = app.reference_id || ('APP-' + app.id);
+    document.getElementById('appDetailPositionTitle').textContent = app.position_title || ('Position #' + app.job_position_id);
+    document.getElementById('appDetailCreatedAt').textContent = new Date(app.created_at || Date.now()).toLocaleString();
+
+    const emailLink = document.getElementById('appDetailEmailLink');
+    emailLink.textContent = app.applicant_email;
+    emailLink.href = `mailto:${app.applicant_email}?subject=PUVIMA Consultancy — Application for ${encodeURIComponent(app.position_title || 'Technical Position')} [${app.reference_id || app.id}]`;
+
+    document.getElementById('appDetailPhone').textContent = app.applicant_phone || 'N/A';
+    document.getElementById('appDetailEducationExp').textContent = `${app.education || 'N/A'}${app.years_of_experience ? ` • ${app.years_of_experience} yrs exp` : ''}`;
+
+    // Links Row
+    const linksRow = document.getElementById('appDetailLinksRow');
+    const linkedinWrap = document.getElementById('appDetailLinkedinWrap');
+    const linkedinLink = document.getElementById('appDetailLinkedinLink');
+    const portfolioWrap = document.getElementById('appDetailPortfolioWrap');
+    const portfolioLink = document.getElementById('appDetailPortfolioLink');
+
+    let hasLink = false;
+    if (app.linkedin_url) {
+      hasLink = true;
+      linkedinWrap.style.display = 'block';
+      linkedinLink.href = app.linkedin_url;
+    } else {
+      linkedinWrap.style.display = 'none';
+    }
+
+    if (app.portfolio_url) {
+      hasLink = true;
+      portfolioWrap.style.display = 'block';
+      portfolioLink.href = app.portfolio_url;
+    } else {
+      portfolioWrap.style.display = 'none';
+    }
+
+    if (linksRow) linksRow.style.display = hasLink ? 'flex' : 'none';
+
+    // Skills
+    const skillsList = document.getElementById('appDetailSkillsList');
+    if (skillsList) {
+      skillsList.innerHTML = '';
+      const skillsArray = Array.isArray(app.skills) ? app.skills : (app.skills ? String(app.skills).split(',').map(s => s.trim()).filter(Boolean) : []);
+      if (skillsArray.length > 0) {
+        skillsArray.forEach(sk => {
+          const pill = document.createElement('span');
+          pill.className = 'tab-pill';
+          pill.style.cssText = 'background: rgba(14, 165, 233, 0.12); color: var(--accent-teal); border: 1px solid rgba(14, 165, 233, 0.25); padding: 3px 8px; border-radius: 4px; font-size: 0.76rem; font-weight: 500;';
+          pill.textContent = sk;
+          skillsList.appendChild(pill);
+        });
+      } else {
+        skillsList.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">None provided</span>';
+      }
+    }
+
+    // Cover letter
+    document.getElementById('appDetailCoverLetterBody').textContent = app.cover_letter || 'No cover letter or message was provided.';
+
+    // Resume meta
+    document.getElementById('appDetailResumeFileName').textContent = app.resume_original_name || 'Resume_Document.pdf';
+    document.getElementById('appDetailResumeMeta').textContent = `${app.resume_size_bytes ? formatBytes(app.resume_size_bytes) : 'Document'} • ${app.resume_mime_type || 'Securely Stored in Private Vault'}`;
+
+    // Status & Notes
+    document.getElementById('appDetailStatusSelect').value = app.recruitment_status || 'received';
+    document.getElementById('appDetailAdminNotes').value = app.admin_notes || '';
+
+    document.getElementById('appDetailModalOverlay').style.display = 'flex';
+  }
+
+  function closeAppDetailModal() {
+    const overlay = document.getElementById('appDetailModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+    activeAppItem = null;
+  }
+
+  async function handleSaveAppStatus() {
+    if (!activeAppItem) return;
+    const newStatus = document.getElementById('appDetailStatusSelect').value;
+    const notes = document.getElementById('appDetailAdminNotes').value.trim();
+    const btn = document.getElementById('saveAppDetailStatusBtn');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Updating...</span>';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/applications/${activeAppItem.id}/status`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ recruitment_status: newStatus, admin_notes: notes })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Candidate recruitment status updated.', 'success');
+        closeAppDetailModal();
+        loadApplications();
+        loadStats();
+      } else {
+        showToast(data.message || 'Failed to update recruitment status.', 'error');
+      }
+    } catch (e) {
+      showToast('Network error while updating application status.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Update Candidate Status</span>';
+    }
+  }
+
+  async function handleDownloadResume() {
+    if (!activeAppItem) return;
+    const btn = document.getElementById('downloadAppResumeBtn');
+    const originalContent = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Retrieving...</span>';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/applications/${activeAppItem.id}/resume`, {
+        headers: { 'Authorization': `Bearer ${getStoredToken()}` }
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        showToast(errData.message || 'Unable to retrieve resume file from private storage.', 'error');
+        return;
+      }
+
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = activeAppItem.resume_original_name || `resume_${activeAppItem.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
+      showToast('Resume downloaded securely.', 'success');
+    } catch (err) {
+      showToast('Network error downloading resume.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalContent;
+    }
+  }
+
+  function formatBytes(bytes) {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
   // Toast Utility
   function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
@@ -1056,7 +1671,11 @@
     deleteBooking,
     pushReviewToMainPage,
     unpublishReview,
-    deleteReview
+    deleteReview,
+    openCreateJobModal,
+    openEditJobModal,
+    quickStatusJob,
+    openAppDetailModal
   };
 
   // Launch on DOM ready
