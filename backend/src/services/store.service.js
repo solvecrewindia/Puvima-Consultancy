@@ -7,6 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const db = require('../config/database');
+const supabase = require('../config/supabase');
 
 const DATA_DIR = path.resolve(__dirname, '../../data');
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
@@ -37,7 +38,8 @@ const DEFAULT_SETTINGS = {
     activePrototypes: '18',
     researchDomains: '4',
     clientSatisfaction: '99.4%'
-  }
+  },
+  careersFormUrl: ''
 };
 
 class StoreService {
@@ -130,27 +132,46 @@ class StoreService {
 
   // --- CONTACTS ---
   async addContact(data) {
-    // 1. Try MySQL if connected
+    // 1. Try Supabase cloud first if configured, else MySQL
     let dbSuccess = false;
-    try {
-      const sql = `
-        INSERT INTO contact_enquiries (
-          reference_id, name, email, company, subject, message, status, ip_hash
-        ) VALUES (?, ?, ?, ?, ?, ?, 'new', ?)
-      `;
-      const params = [
-        data.reference_id,
-        data.name,
-        data.email,
-        data.company || null,
-        data.subject || null,
-        data.message,
-        data.ip_hash || null
-      ];
-      await db.query(sql, params);
-      dbSuccess = true;
-    } catch (err) {
-      // MySQL unavailable or failed; will fallback to local file
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        const { error } = await sb.from('contact_enquiries').insert([{
+          reference_id: data.reference_id,
+          name: data.name,
+          email: data.email,
+          company: data.company || null,
+          subject: data.subject || null,
+          message: data.message,
+          status: 'new',
+          ip_hash: data.ip_hash || null
+        }]);
+        if (!error) dbSuccess = true;
+      } catch (err) {}
+    }
+
+    if (!dbSuccess) {
+      try {
+        const sql = `
+          INSERT INTO contact_enquiries (
+            reference_id, name, email, company, subject, message, status, ip_hash
+          ) VALUES (?, ?, ?, ?, ?, ?, 'new', ?)
+        `;
+        const params = [
+          data.reference_id,
+          data.name,
+          data.email,
+          data.company || null,
+          data.subject || null,
+          data.message,
+          data.ip_hash || null
+        ];
+        await db.query(sql, params);
+        dbSuccess = true;
+      } catch (err) {
+        // MySQL unavailable or failed; will fallback to local file
+      }
     }
 
     // 2. Always persist to local storage as well for guaranteed zero data loss
@@ -247,6 +268,15 @@ class StoreService {
       // Ignored if DB offline
     }
 
+    const sb = supabase.getSupabaseClient();
+    if (sb && status) {
+      try {
+        const updatePayload = { status, updated_at: new Date().toISOString() };
+        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
+        await sb.from('contact_enquiries').update(updatePayload).eq('reference_id', id);
+      } catch (e) {}
+    }
+
     return contact;
   }
 
@@ -266,30 +296,53 @@ class StoreService {
   // --- BOOKINGS ---
   async addBooking(data) {
     let dbSuccess = false;
-    try {
-      const sql = `
-        INSERT INTO consultation_bookings (
-          reference_id, name, email, company, topic,
-          preferred_date, preferred_time, meeting_format,
-          message, status, ip_hash
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_review', ?)
-      `;
-      const params = [
-        data.reference_id,
-        data.name,
-        data.email,
-        data.company || null,
-        data.topic,
-        data.preferred_date || data.preferredDate,
-        data.preferred_time || data.preferredTime,
-        data.meeting_format || data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
-        data.message || null,
-        data.ip_hash || null
-      ];
-      await db.query(sql, params);
-      dbSuccess = true;
-    } catch (err) {
-      // MySQL unavailable; store locally
+    // 1. Try Supabase cloud first
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        const { error } = await sb.from('consultation_bookings').insert([{
+          reference_id: data.reference_id,
+          name: data.name,
+          email: data.email,
+          company: data.company || null,
+          topic: data.topic,
+          preferred_date: data.preferred_date || data.preferredDate,
+          preferred_time: data.preferred_time || data.preferredTime,
+          meeting_format: data.meeting_format || data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
+          message: data.message || null,
+          status: 'pending_review',
+          ip_hash: data.ip_hash || null
+        }]);
+        if (!error) dbSuccess = true;
+      } catch (err) {}
+    }
+
+    if (!dbSuccess) {
+      try {
+        const sql = `
+          INSERT INTO consultation_bookings (
+            reference_id, name, email, company, topic,
+            preferred_date, preferred_time, meeting_format,
+            message, status, ip_hash
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_review', ?)
+        `;
+        const params = [
+          data.reference_id,
+          data.name,
+          data.email,
+          data.company || null,
+          data.topic,
+          data.preferred_date || data.preferredDate,
+          data.preferred_time || data.preferredTime,
+          data.meeting_format || data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
+          data.message || null,
+          data.ip_hash || null
+        ];
+        await db.query(sql, params);
+        dbSuccess = true;
+      } catch (err) {
+        // MySQL unavailable; store locally
+      }
     }
 
     const submissions = this.readSubmissionsFile();
@@ -382,6 +435,17 @@ class StoreService {
       }
     } catch (e) {}
 
+    const sb = supabase.getSupabaseClient();
+    if (sb && status) {
+      try {
+        const updatePayload = { status, updated_at: new Date().toISOString() };
+        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
+        if (preferred_date) updatePayload.preferred_date = preferred_date;
+        if (preferred_time) updatePayload.preferred_time = preferred_time;
+        await sb.from('consultation_bookings').update(updatePayload).eq('reference_id', id);
+      } catch (e) {}
+    }
+
     return booking;
   }
 
@@ -418,9 +482,22 @@ class StoreService {
       announcement: { ...current.announcement, ...(newSettings.announcement || {}) },
       hero: { ...current.hero, ...(newSettings.hero || {}) },
       contact: { ...current.contact, ...(newSettings.contact || {}) },
-      stats: { ...current.stats, ...(newSettings.stats || {}) }
+      stats: { ...current.stats, ...(newSettings.stats || {}) },
+      careersFormUrl: newSettings.careersFormUrl !== undefined
+        ? String(newSettings.careersFormUrl).trim()
+        : (newSettings.careers && newSettings.careers.formUrl !== undefined ? String(newSettings.careers.formUrl).trim() : (current.careersFormUrl || ''))
     };
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
+
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      sb.from('site_settings').upsert({
+        id: 'main_page',
+        data: merged,
+        updated_at: new Date().toISOString()
+      }).then(() => {}).catch(() => {});
+    }
+
     return merged;
   }
 
@@ -545,9 +622,20 @@ class StoreService {
     const approvedReviews = reviews.filter(r => r.status === 'approved').length;
 
     let dbHealthy = false;
+    let dbProvider = 'file_fallback';
+
     try {
-      const res = await db.testConnection();
-      dbHealthy = res.isConnected;
+      const sbRes = await supabase.testConnection();
+      if (sbRes.isConnected) {
+        dbHealthy = true;
+        dbProvider = 'supabase_postgres';
+      } else {
+        const res = await db.testConnection();
+        if (res.isConnected) {
+          dbHealthy = true;
+          dbProvider = 'mysql';
+        }
+      }
     } catch (e) {}
 
     return {
@@ -564,6 +652,7 @@ class StoreService {
       totalApplications,
       pendingApplications,
       dbStatus: dbHealthy ? 'connected' : 'degraded_file_fallback',
+      dbProvider,
       uptimeSeconds: Math.floor(process.uptime()),
       timestamp: new Date().toISOString()
     };

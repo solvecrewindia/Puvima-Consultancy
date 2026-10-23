@@ -256,6 +256,37 @@
       });
     }
 
+    // Careers Quick Form URL sync and save
+    const careersSettingInput = document.getElementById('careersFormUrlSetting');
+    const careersQuickInput = document.getElementById('careersQuickFormUrl');
+    const testCareersBtn = document.getElementById('testCareersUrlBtn');
+    const saveQuickCareersBtn = document.getElementById('saveQuickCareersUrlBtn');
+
+    function syncCareersFormUrl(val) {
+      if (careersSettingInput && careersSettingInput.value !== val) careersSettingInput.value = val;
+      if (careersQuickInput && careersQuickInput.value !== val) careersQuickInput.value = val;
+      if (testCareersBtn) {
+        testCareersBtn.href = val || '#';
+        testCareersBtn.style.opacity = val ? '1' : '0.5';
+      }
+    }
+
+    if (careersSettingInput) {
+      careersSettingInput.addEventListener('input', (e) => syncCareersFormUrl(e.target.value.trim()));
+    }
+    if (careersQuickInput) {
+      careersQuickInput.addEventListener('input', (e) => syncCareersFormUrl(e.target.value.trim()));
+    }
+    if (saveQuickCareersBtn) {
+      saveQuickCareersBtn.addEventListener('click', async () => {
+        saveQuickCareersBtn.disabled = true;
+        saveQuickCareersBtn.innerHTML = '<span>Saving...</span>';
+        await handleSaveSettings();
+        saveQuickCareersBtn.disabled = false;
+        saveQuickCareersBtn.innerHTML = '<span>Save Form Link</span>';
+      });
+    }
+
     // Careers Job Management Events
     const openCreateJobModalBtn = document.getElementById('openCreateJobModalBtn');
     if (openCreateJobModalBtn) openCreateJobModalBtn.addEventListener('click', openCreateJobModal);
@@ -448,12 +479,20 @@
         // Health & Uptime
         const healthDot = document.getElementById('systemHealthDot');
         const healthText = document.getElementById('systemHealthText');
-        if (s.dbStatus === 'connected') {
-          healthDot.className = 'status-dot';
-          healthText.textContent = 'System: MySQL Synchronized';
+        const storageEngineLabel = document.getElementById('storageEngineLabel');
+
+        if (s.dbProvider === 'supabase_postgres') {
+          if (healthDot) healthDot.className = 'status-dot';
+          if (healthText) healthText.textContent = 'System: Supabase Cloud Connected';
+          if (storageEngineLabel) storageEngineLabel.textContent = 'Supabase PostgreSQL (Cloud: jarrtmqdhfcijarbuntl)';
+        } else if (s.dbStatus === 'connected') {
+          if (healthDot) healthDot.className = 'status-dot';
+          if (healthText) healthText.textContent = 'System: MySQL Synchronized';
+          if (storageEngineLabel) storageEngineLabel.textContent = 'MySQL Enterprise Database';
         } else {
-          healthDot.className = 'status-dot degraded';
-          healthText.textContent = 'System: Resilient File Fallback Active';
+          if (healthDot) healthDot.className = 'status-dot degraded';
+          if (healthText) healthText.textContent = 'System: Local File Fallback Active';
+          if (storageEngineLabel) storageEngineLabel.textContent = 'Resilient Local Store (Supabase Ready)';
         }
 
         const uptimeLabel = document.getElementById('serverUptimeLabel');
@@ -719,9 +758,23 @@
     document.getElementById('statPrototypes').value = stats.activePrototypes || '18';
     document.getElementById('statDomains').value = stats.researchDomains || '4';
     document.getElementById('statSatisfaction').value = stats.clientSatisfaction || '99.4%';
+
+    // Careers Application Form URL
+    const careersUrl = s.careersFormUrl || (s.careers && s.careers.formUrl) || '';
+    const careersSettingInput = document.getElementById('careersFormUrlSetting');
+    const careersQuickInput = document.getElementById('careersQuickFormUrl');
+    const testCareersBtn = document.getElementById('testCareersUrlBtn');
+    if (careersSettingInput) careersSettingInput.value = careersUrl;
+    if (careersQuickInput) careersQuickInput.value = careersUrl;
+    if (testCareersBtn) {
+      testCareersBtn.href = careersUrl || '#';
+      testCareersBtn.style.opacity = careersUrl ? '1' : '0.5';
+    }
   }
 
   async function handleSaveSettings() {
+    const careersUrlVal = (document.getElementById('careersFormUrlSetting')?.value || document.getElementById('careersQuickFormUrl')?.value || '').trim();
+
     const payload = {
       announcement: {
         enabled: document.getElementById('announcementEnabled').checked,
@@ -747,7 +800,8 @@
         activePrototypes: document.getElementById('statPrototypes').value.trim(),
         researchDomains: document.getElementById('statDomains').value.trim(),
         clientSatisfaction: document.getElementById('statSatisfaction').value.trim()
-      }
+      },
+      careersFormUrl: careersUrlVal
     };
 
     saveSettingsBtn.disabled = true;

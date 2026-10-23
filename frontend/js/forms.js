@@ -147,9 +147,11 @@ function initContactForm() {
 
 function initBookingForm() {
   const bookingForm = document.getElementById('consultationBookingForm');
+  if (!bookingForm) return;
+
   const modal = document.getElementById('bookingReceiptModal');
   const modalCloseBtn = document.getElementById('closeReceiptBtn');
-  const submitBtn = bookingForm ? bookingForm.querySelector('button[type="submit"]') : null;
+  const submitBtn = bookingForm.querySelector('button[type="submit"]');
   const alertBox = document.getElementById('bookingAlertBox');
   const topicCards = document.querySelectorAll('.topic-choice-card');
   const formatPills = document.querySelectorAll('.format-option-pill');

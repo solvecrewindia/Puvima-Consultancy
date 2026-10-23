@@ -19,12 +19,17 @@ async function startServer() {
   console.log('====================================================');
 
   
-  const dbStatus = await db.testConnection();
-  if (dbStatus.isConnected) {
-    console.log('[DB] ' + dbStatus.message);
+  const supabase = require('./config/supabase');
+  const sbStatus = await supabase.testConnection();
+  if (sbStatus.isConnected) {
+    console.log('[SUPABASE CLOUD] ' + sbStatus.message);
   } else {
-    console.warn('[DB WARNING] ' + dbStatus.message);
-    console.warn('[DB WARNING] Database setup required. Run: mysql -u root -p < database/schema.sql');
+    const dbStatus = await db.testConnection();
+    if (dbStatus.isConnected) {
+      console.log('[DB] ' + dbStatus.message);
+    } else {
+      console.warn('[STORAGE] Resilient file store active. To link Supabase: add valid SUPABASE_KEY to backend/.env');
+    }
   }
 
   const server = app.listen(PORT, () => {

@@ -48,6 +48,21 @@
           });
         }
       }
+
+      // 4. Careers Form Link Synchronization
+      const careersUrl = (s.careersFormUrl || (s.careers && s.careers.formUrl) || '').trim();
+      const careersBtns = document.querySelectorAll('[data-careers-form-btn], #homeCareersApplyBtn, #careersApplyBtn');
+      careersBtns.forEach(btn => {
+        if (careersUrl && (careersUrl.startsWith('http://') || careersUrl.startsWith('https://'))) {
+          btn.href = careersUrl;
+          btn.target = '_blank';
+          btn.rel = 'noopener noreferrer';
+        } else {
+          // If on subpage (e.g. pages/), keep relative path correct
+          const isSubpage = window.location.pathname.includes('/pages/');
+          btn.href = isSubpage ? 'careers.html' : 'pages/careers.html';
+        }
+      });
     } catch (e) {
       // Graceful fallback to static HTML content
     }
