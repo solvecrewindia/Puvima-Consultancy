@@ -1,0 +1,7 @@
+/**
+ * Vercel Serverless Function Entrypoint
+ * Mounts the Express application for serverless invocation on Vercel.
+ */
+const app = require('../backend/src/app');
+
+module.exports = app;

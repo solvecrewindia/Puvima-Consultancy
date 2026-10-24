@@ -51,5 +51,8 @@ async function startServer() {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
 }
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  startServer();
+}
 
-startServer();
+module.exports = app;
