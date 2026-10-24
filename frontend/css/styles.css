@@ -431,8 +431,8 @@ main {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 56px;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 4vw, 56px);
   align-items: center;
 }
 
