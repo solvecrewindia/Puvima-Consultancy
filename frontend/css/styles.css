@@ -153,50 +153,118 @@ a {
   display: none !important;
 }
 
+/* Badges & Meta Tags - Professional Executive Styling */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.72rem;
-  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-family: var(--font-sans);
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  text-transform: none;
+  transition: all var(--duration-fast);
 }
 
+/* Category Badges (Left) */
 .badge-violet {
-  background: rgba(0, 114, 206, 0.1);
-  color: var(--soft-lavender);
-  border: 1px solid rgba(0, 114, 206, 0.28);
+  background: #F5F3FF;
+  color: #6D28D9;
+  border: 1px solid #EDE9FE;
 }
 
 .badge-teal {
-  background: rgba(0, 163, 255, 0.08);
-  color: var(--accent-teal);
-  border: 1px solid rgba(0, 163, 255, 0.25);
+  background: #F0FDFA;
+  color: #0F766E;
+  border: 1px solid #CCFBF1;
 }
 
-.badge-draft,
-.badge-prototyping {
-  background: rgba(245, 158, 11, 0.1);
-  color: #B45309;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+.badge-software {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #DBEAFE;
 }
 
-.badge-verified,
+.badge-neutral {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #E2E8F0;
+}
+
+/* Status Indicators (Right) with live status dot */
 .badge-production {
-  background: rgba(22, 163, 74, 0.1);
+  background: #F0FDF4;
   color: #15803D;
-  border: 1px solid rgba(22, 163, 74, 0.3);
+  border: 1px solid #DCFCE7;
+  font-weight: 500;
+}
+
+.badge-production::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16A34A;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.badge-verified {
+  background: #FAF5FF;
+  color: #6D28D9;
+  border: 1px solid #F3E8FF;
+  font-weight: 500;
+}
+
+.badge-verified::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7C3AED;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
 }
 
 .badge-development,
 .badge-progress {
-  background: rgba(2, 132, 199, 0.1);
-  color: #0284C7;
-  border: 1px solid rgba(2, 132, 199, 0.3);
+  background: #F0F9FF;
+  color: #0369A1;
+  border: 1px solid #E0F2FE;
+  font-weight: 500;
+}
+
+.badge-development::before,
+.badge-progress::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0284C7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+}
+
+.badge-draft,
+.badge-prototyping {
+  background: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FEF3C7;
+  font-weight: 500;
+}
+
+.badge-draft::before,
+.badge-prototyping::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F59E0B;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
 }
 
 
@@ -425,15 +493,48 @@ main {
 
 .section-hero {
   padding-top: clamp(130px, 16vh, 180px);
-  padding-bottom: clamp(60px, 10vh, 100px);
+  padding-bottom: 0;
   position: relative;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(32px, 4vw, 56px);
-  align-items: center;
+  align-items: flex-end;
+}
+
+.hero-content {
+  padding-bottom: clamp(36px, 6vh, 60px);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-visual-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  align-self: flex-end;
+  position: relative;
+  width: 100%;
+  line-height: 0;
+  margin-bottom: 0;
+}
+
+.hero-visual-img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 580px;
+  height: auto;
+  max-height: 720px;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: -1px;
+  filter: drop-shadow(0 14px 28px rgba(15, 23, 42, 0.12));
 }
 
 .display-headline {
@@ -554,11 +655,18 @@ main {
 }
 
 
-/* Home Page Compact 3-Card Services Grid */
+/* Home Page 4-Card Practice Services Grid */
 .services-compact-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+@media (max-width: 1200px) {
+  .services-compact-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
 }
 
 .service-card-compact {
@@ -566,7 +674,7 @@ main {
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 32px 26px;
+  padding: 28px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -117,6 +117,17 @@ body {
   .hero-content {
     max-width: 100%;
     text-align: left;
+    padding-bottom: 0;
+  }
+
+  .hero-visual-wrapper {
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .hero-visual-img {
+    margin: 0 auto -1px auto;
+    max-height: 540px;
   }
 
   .intro-grid {

@@ -144,23 +144,79 @@
 }
 
 .timeline-animation,
-[data-timeline-item] {
+[data-timeline-item],
+.blur-card-item,
+.service-card-compact,
+.service-card-deep,
+.principle-editorial-card,
+.portfolio-card,
+.team-card,
+.team-card-compact,
+.timeline-card,
+.timeline-process-card,
+.careers-hub-card,
+.job-card,
+.job-card-editorial,
+.service-column-box,
+.cross-service-card,
+.hero-visual-card,
+.faq-item,
+.bento-card,
+.contact-cta-card,
+.mission-card-box {
   opacity: 0;
   filter: blur(20px);
   transform: translateY(0);
   transition: 
-    filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    filter 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: filter, opacity, transform;
 }
 
 .timeline-animation.is-visible,
-[data-timeline-item].is-visible {
+[data-timeline-item].is-visible,
+.blur-card-item.is-visible,
+.service-card-compact.is-visible,
+.service-card-compact.reveal-visible,
+.service-card-deep.is-visible,
+.service-card-deep.reveal-visible,
+.principle-editorial-card.is-visible,
+.principle-editorial-card.reveal-visible,
+.portfolio-card.is-visible,
+.portfolio-card.reveal-visible,
+.team-card.is-visible,
+.team-card.reveal-visible,
+.team-card-compact.is-visible,
+.team-card-compact.reveal-visible,
+.timeline-card.is-visible,
+.timeline-card.reveal-visible,
+.timeline-process-card.is-visible,
+.timeline-process-card.reveal-visible,
+.careers-hub-card.is-visible,
+.careers-hub-card.reveal-visible,
+.job-card.is-visible,
+.job-card.reveal-visible,
+.job-card-editorial.is-visible,
+.job-card-editorial.reveal-visible,
+.service-column-box.is-visible,
+.service-column-box.reveal-visible,
+.cross-service-card.is-visible,
+.cross-service-card.reveal-visible,
+.hero-visual-card.is-visible,
+.hero-visual-card.reveal-visible,
+.faq-item.is-visible,
+.faq-item.reveal-visible,
+.bento-card.is-visible,
+.bento-card.reveal-visible,
+.contact-cta-card.is-visible,
+.contact-cta-card.reveal-visible,
+.mission-card-box.is-visible,
+.mission-card-box.reveal-visible {
   opacity: 1;
   filter: blur(0px);
   transform: translateY(0);
-  transition-delay: calc(var(--animation-num, 0) * var(--delay-step, 0.5s));
+  transition-delay: calc(var(--animation-num, 0) * var(--delay-step, 0.16s));
 }
 
 /* Timeline Process Cards Grid - Clean Corporate Stepper */
@@ -252,7 +308,26 @@
     transition: none !important;
   }
   .timeline-animation,
-  [data-timeline-item] {
+  [data-timeline-item],
+  .blur-card-item,
+  .service-card-compact,
+  .service-card-deep,
+  .principle-editorial-card,
+  .portfolio-card,
+  .team-card,
+  .team-card-compact,
+  .timeline-card,
+  .timeline-process-card,
+  .careers-hub-card,
+  .job-card,
+  .job-card-editorial,
+  .service-column-box,
+  .cross-service-card,
+  .hero-visual-card,
+  .faq-item,
+  .bento-card,
+  .contact-cta-card,
+  .mission-card-box {
     opacity: 1 !important;
     filter: none !important;
     transform: none !important;

@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initScrollReveals() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.reveal-init').forEach(el => el.classList.add('reveal-visible'));
+    document.querySelectorAll('.reveal-init').forEach(el => el.classList.add('reveal-visible', 'is-visible'));
     return;
   }
 
@@ -39,7 +39,7 @@ function initScrollReveals() {
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('reveal-visible');
+        entry.target.classList.add('reveal-visible', 'is-visible');
         obs.unobserve(entry.target);
       }
     });

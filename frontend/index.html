@@ -168,12 +168,14 @@
               <span class="hero-spec-pill" style="font-size: 0.88rem; color: var(--text-secondary);">FinTech &amp; Market Analytics</span>
               <span class="hero-spec-sep" style="color: var(--border-light);">&bull;</span>
               <span class="hero-spec-pill" style="font-size: 0.88rem; color: var(--text-secondary);">AI/ML &amp; Research</span>
+              <span class="hero-spec-sep" style="color: var(--border-light);">&bull;</span>
+              <span class="hero-spec-pill" style="font-size: 0.88rem; color: var(--text-secondary);">Software Development</span>
             </div>
           </div>
 
           <!-- Right Column: Consultant Visual (Right-Aligned, Clean) -->
-          <div class="hero-visual-wrapper reveal-init delay-1" style="display: flex; justify-content: flex-end; align-items: flex-end; position: relative; width: 100%; align-self: flex-end;">
-            <img src="assets/images/hero/consultant-girl.png" alt="PUVIMA Senior Technical Consultant" style="position: relative; z-index: 1; width: 100%; max-width: 580px; height: auto; max-height: 720px; object-fit: contain; filter: drop-shadow(0 20px 35px rgba(15, 23, 42, 0.14)); display: block; margin-left: auto; margin-right: 0;" loading="eager">
+          <div class="hero-visual-wrapper reveal-init delay-1">
+            <img src="assets/images/hero/consultant-girl.png" alt="PUVIMA Senior Technical Consultant" class="hero-visual-img" loading="eager">
           </div>
 
         </div>
@@ -181,7 +183,7 @@
     </section>
 
     
-    <section class="section" id="about-preview" style="border-top: 1px solid var(--border-subtle); background: #FFFFFF; box-shadow: var(--shadow-card);">
+    <section class="section" id="about-preview" style="background: #FFFFFF; box-shadow: var(--shadow-card);">
       <div class="container">
         <div class="intro-grid" style="display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(32px, 5vw, 64px); align-items: center;">
           
@@ -216,28 +218,28 @@
             Engineering &amp; Research Solutions
           </h2>
           <p class="editorial-subhead" style="margin: 0 auto;">
-            We deliver targeted advisory, technical architectures, and specialized research support across three core divisions.
+            We deliver targeted advisory, technical architectures, and specialized research support across four core divisions.
           </p>
         </div>
 
-        <!-- 3 Horizontal Compact Service Cards -->
-        <div class="services-compact-grid">
+        <!-- 4 Horizontal Compact Service Cards -->
+        <div class="services-compact-grid" data-timeline data-delay-step="0.15">
           
           <!-- Card 1: Robotics -->
-          <article class="service-card-compact reveal-init">
+          <article class="service-card-compact timeline-animation" data-animation-num="0">
             <div>
               <div class="service-compact-header">
                 <span class="service-number-tag" style="color: var(--text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Robotics</span>
                 <h3 class="service-compact-title">Robotics &amp; Autonomous Systems</h3>
               </div>
               <p class="service-compact-desc">
-                Intelligent robotic solutions focused on automation, environmental sustainability, autonomous mobile navigation, and real-world engineering challenges.
+                Autonomous mobile robotics, environmental surface cleanup systems, edge vision, and sensor integration.
               </p>
               <div class="service-compact-pills">
-                <span class="service-compact-pill">Autonomous Mobile Robots</span>
+                <span class="service-compact-pill">Mobile Robots</span>
                 <span class="service-compact-pill">Marine Robotics</span>
-                <span class="service-compact-pill">AI Object Detection</span>
-                <span class="service-compact-pill">Sensor Integration</span>
+                <span class="service-compact-pill">Edge Vision</span>
+                <span class="service-compact-pill">Sensor Fusion</span>
               </div>
             </div>
             <div class="service-compact-footer">
@@ -248,20 +250,20 @@
           </article>
 
           <!-- Card 2: FinTech -->
-          <article class="service-card-compact reveal-init delay-1">
+          <article class="service-card-compact timeline-animation" data-animation-num="1">
             <div>
               <div class="service-compact-header">
                 <span class="service-number-tag" style="color: var(--text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Financial Analytics</span>
                 <h3 class="service-compact-title">FinTech &amp; Stock Market Analytics</h3>
               </div>
               <p class="service-compact-desc">
-                Data-driven financial technology solutions that help users explore market behaviour, analyze historical stock performance, and visualize financial trends.
+                Market trend analytics, interactive financial charts, historical backtesting, and portfolio risk metrics.
               </p>
               <div class="service-compact-pills">
-                <span class="service-compact-pill">Market Trend Analysis</span>
-                <span class="service-compact-pill">Historical Volume</span>
-                <span class="service-compact-pill">Technical Dashboards</span>
-                <span class="service-compact-pill">Portfolio Tracking</span>
+                <span class="service-compact-pill">Trend Analytics</span>
+                <span class="service-compact-pill">Interactive Charts</span>
+                <span class="service-compact-pill">Backtesting</span>
+                <span class="service-compact-pill">Portfolio Metrics</span>
               </div>
             </div>
             <div class="service-compact-footer">
@@ -272,24 +274,48 @@
           </article>
 
           <!-- Card 3: AI/ML -->
-          <article class="service-card-compact reveal-init delay-2">
+          <article class="service-card-compact timeline-animation" data-animation-num="2">
             <div>
               <div class="service-compact-header">
                 <span class="service-number-tag" style="color: var(--text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Applied Science</span>
                 <h3 class="service-compact-title">AI/ML &amp; Research Solutions</h3>
               </div>
               <p class="service-compact-desc">
-                Machine learning, predictive models, computer vision pipelines, and rigorous technical analytics to power intelligent applications and scientific research.
+                Deep learning architectures, computer vision pipelines, predictive analytics, and scientific research.
               </p>
               <div class="service-compact-pills">
-                <span class="service-compact-pill">Machine Learning</span>
+                <span class="service-compact-pill">Deep Learning</span>
                 <span class="service-compact-pill">Predictive Analytics</span>
                 <span class="service-compact-pill">Computer Vision</span>
-                <span class="service-compact-pill">Scientific Research</span>
+                <span class="service-compact-pill">Research Support</span>
               </div>
             </div>
             <div class="service-compact-footer">
               <a href="pages/services.html#ai-ml" class="btn btn-secondary" style="width: 100%; text-align: center; justify-content: center;">
+                <span>Explore Details &rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 4: Software Development -->
+          <article class="service-card-compact timeline-animation" data-animation-num="3">
+            <div>
+              <div class="service-compact-header">
+                <span class="service-number-tag" style="color: var(--text-muted); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">Full-Stack &amp; Cloud</span>
+                <h3 class="service-compact-title">Software Development</h3>
+              </div>
+              <p class="service-compact-desc">
+                Full-stack web applications, secure REST APIs, scalable database schemas, and cloud deployment.
+              </p>
+              <div class="service-compact-pills">
+                <span class="service-compact-pill">Full-Stack Web</span>
+                <span class="service-compact-pill">REST APIs</span>
+                <span class="service-compact-pill">Relational DB</span>
+                <span class="service-compact-pill">Cloud &amp; DevOps</span>
+              </div>
+            </div>
+            <div class="service-compact-footer">
+              <a href="pages/services.html#software" class="btn btn-secondary" style="width: 100%; text-align: center; justify-content: center;">
                 <span>Explore Details &rarr;</span>
               </a>
             </div>
@@ -310,11 +336,11 @@
     <section class="section" id="mission-vision" style="background: #FFFFFF; box-shadow: var(--shadow-card); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
       <div class="container">
         
-        <div class="mission-vision-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(32px, 5vw, 64px);">
+        <div class="mission-vision-grid" data-timeline data-delay-step="0.2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(32px, 5vw, 64px);">
           
           
           <!-- Mission -->
-          <div class="reveal-init" style="background: #FFFFFF; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: clamp(28px, 4vw, 44px);">
+          <div class="mission-card-box timeline-animation" data-animation-num="0" style="background: #FFFFFF; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: clamp(28px, 4vw, 44px);">
             <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 14px; color: var(--electric-violet);">Our Mission</h3>
             <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-primary);">
               "To empower individuals and organizations with innovative, reliable, and high-quality technical and research solutions that turn ideas into meaningful outcomes."
@@ -322,7 +348,7 @@
           </div>
 
           <!-- Vision -->
-          <div class="reveal-init delay-1" style="background: #FFFFFF; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: clamp(28px, 4vw, 44px);">
+          <div class="mission-card-box timeline-animation" data-animation-num="1" style="background: #FFFFFF; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: clamp(28px, 4vw, 44px);">
             <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 14px; color: var(--accent-teal);">Our Vision</h3>
             <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-primary);">
               "To become a trusted consultancy recognized for technological innovation, research excellence, and professional integrity, creating lasting value through knowledge and innovation."
@@ -495,7 +521,7 @@
 
     <section class="section" id="contact-cta">
       <div class="container">
-        <div style="background: #FFFFFF; background-image: radial-gradient(circle at 50% 0%, rgba(0, 114, 206, 0.05) 0%, #FFFFFF 85%); border: 1px solid var(--border-light, #E2E8F0); border-radius: var(--radius-lg, 16px); padding: clamp(44px, 6vw, 68px); text-align: center; box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.06), 0 0 1px 1px rgba(15, 23, 42, 0.03);" class="reveal-init">
+        <div style="background: #FFFFFF; background-image: radial-gradient(circle at 50% 0%, rgba(0, 114, 206, 0.05) 0%, #FFFFFF 85%); border: 1px solid var(--border-light, #E2E8F0); border-radius: var(--radius-lg, 16px); padding: clamp(44px, 6vw, 68px); text-align: center; box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.06), 0 0 1px 1px rgba(15, 23, 42, 0.03);" class="contact-cta-card timeline-animation reveal-init">
           <div class="eyebrow-badge" style="margin-bottom: 20px;">
             <span class="status-dot"></span>
             <span>Direct Advisory &amp; Engagement</span>
@@ -552,6 +578,7 @@
         <div>
           <h4 class="footer-col-title">Service Divisions</h4>
           <ul class="footer-nav-list">
+            <li><a href="pages/services.html#software" class="footer-nav-link">Software Development &amp; Systems</a></li>
             <li><a href="pages/robotics.html" class="footer-nav-link">Robotics &amp; Autonomous Systems</a></li>
             <li><a href="pages/fintech.html" class="footer-nav-link">FinTech &amp; Market Analytics</a></li>
             <li><a href="pages/ai-ml-research.html" class="footer-nav-link">AI/ML &amp; Research Solutions</a></li>
