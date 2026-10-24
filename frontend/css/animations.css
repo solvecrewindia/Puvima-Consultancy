@@ -163,61 +163,69 @@
   transition-delay: calc(var(--animation-num, 0) * var(--delay-step, 0.5s));
 }
 
-/* Timeline Process Cards Grid */
+/* Timeline Process Cards Grid - Clean Corporate Stepper */
 .timeline-process-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
   position: relative;
   margin-top: 40px;
 }
 
+@media (max-width: 1024px) {
+  .timeline-process-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .timeline-process-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
 .timeline-card {
   position: relative;
-  background: #FFFFFF;
-  border: 1px solid var(--border-light, #E2E8F0);
-  border-radius: var(--radius-lg, 16px);
-  padding: 32px 28px;
-  box-shadow: var(--shadow-card, 0 10px 30px -10px rgba(0, 0, 0, 0.06));
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-top: 2px solid var(--border-light, #E2E8F0);
+  border-radius: 0;
+  padding: 24px 0 0 0;
+  box-shadow: none;
+  transition: border-color var(--duration-fast);
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
 }
 
 .timeline-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--puvima-blue, #0072CE), var(--puvima-sky, #0284C7));
-  opacity: 0.9;
+  display: none;
 }
 
 .timeline-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 36px -10px rgba(0, 114, 206, 0.16);
-  border-color: rgba(0, 114, 206, 0.35);
+  transform: none;
+  box-shadow: none;
+  border-top-color: var(--puvima-blue, #0072CE);
+}
+
+.timeline-step-num {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--puvima-blue, #0072CE);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  display: inline-block;
 }
 
 .timeline-step-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--puvima-blue, #0072CE);
-  background: rgba(0, 114, 206, 0.08);
-  padding: 4px 10px;
-  border-radius: 6px;
-  margin-bottom: 16px;
-  font-weight: 600;
+  display: none !important;
 }
 
 .timeline-step-title {
-  font-size: 1.25rem;
+  font-size: 1.18rem;
   font-weight: 700;
   color: var(--text-primary, #0F172A);
   margin-bottom: 10px;
@@ -225,9 +233,9 @@
 }
 
 .timeline-step-desc {
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   line-height: 1.65;
-  color: var(--text-secondary, #475569);
+  color: var(--text-secondary, #64748B);
   margin: 0;
 }
 
