@@ -576,7 +576,7 @@
             ${c.company ? `<div style="font-size: 0.76rem; color: var(--accent-violet); margin-top: 2px;">${escapeHtml(c.company)}</div>` : ''}
           </td>
           <td style="max-width: 380px;">
-            <div style="font-weight: 600; font-size: 0.86rem; color: #f1f5f9; margin-bottom: 4px;">${escapeHtml(c.subject || 'General Inquiry')}</div>
+            <div style="font-weight: 600; font-size: 0.88rem; color: var(--text-main); margin-bottom: 4px;">${escapeHtml(c.subject || 'General Inquiry')}</div>
             <div style="font-size: 0.82rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
               ${escapeHtml(c.message)}
             </div>
@@ -677,8 +677,8 @@
             ${b.company ? `<div style="font-size: 0.76rem; color: var(--accent-teal);">${escapeHtml(b.company)}</div>` : ''}
           </td>
           <td>
-            <div style="font-weight: 600; font-size: 0.86rem; color: #f1f5f9;">${escapeHtml(b.topic)}</div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(b.meeting_format || 'Virtual Session')}</div>
+            <div style="font-weight: 600; font-size: 0.88rem; color: var(--text-main);">${escapeHtml(b.topic)}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(b.meeting_format || 'Virtual Session')}</div>
           </td>
           <td>
             <div style="font-family: var(--font-mono); font-size: 0.86rem; font-weight: 600; color: var(--text-main);">${escapeHtml(b.preferred_date || 'TBD')}</div>
@@ -740,7 +740,8 @@
 
     // Hero
     const hero = s.hero || {};
-    document.getElementById('heroEyebrow').value = hero.eyebrow || '';
+    const heroEyebrowEl = document.getElementById('heroEyebrow');
+    if (heroEyebrowEl) heroEyebrowEl.value = hero.eyebrow || '';
     document.getElementById('heroHeadlineMain').value = hero.headlineMain || 'Innovation.';
     document.getElementById('heroHeadlineGradient').value = hero.headlineGradient || 'Research. Excellence.';
     document.getElementById('heroSubhead').value = hero.subhead || '';
@@ -784,7 +785,7 @@
         linkUrl: document.getElementById('announcementLinkUrl').value.trim()
       },
       hero: {
-        eyebrow: document.getElementById('heroEyebrow').value.trim(),
+        eyebrow: (document.getElementById('heroEyebrow')?.value || '').trim(),
         headlineMain: document.getElementById('heroHeadlineMain').value.trim(),
         headlineGradient: document.getElementById('heroHeadlineGradient').value.trim(),
         subhead: document.getElementById('heroSubhead').value.trim()
@@ -1102,7 +1103,7 @@
             <span style="color: #f59e0b; font-size: 0.95rem; letter-spacing: 2px;">${stars}</span>
           </td>
           <td style="max-width: 320px;">
-            <div style="font-size: 0.84rem; color: #e2e8f0; line-height: 1.5;">"${escapeHtml(r.review_text)}"</div>
+            <div style="font-size: 0.86rem; color: var(--text-secondary); line-height: 1.55;">"${escapeHtml(r.review_text)}"</div>
           </td>
           <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">
             ${escapeHtml(r.date_display || new Date(r.created_at).toLocaleDateString())}
@@ -1268,7 +1269,7 @@
             </div>
           </td>
           <td>
-            <span style="display: inline-block; background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-weight: 600;">
+            <span style="display: inline-block; background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; border-radius: 4px; padding: 2px 8px; font-size: 0.78rem; font-weight: 600;">
               ${escapeHtml(job.department)}
             </span>
           </td>
@@ -1497,7 +1498,7 @@
             </div>
           </td>
           <td>
-            <div style="font-weight: 600; font-size: 0.86rem; color: #f1f5f9;">${escapeHtml(app.position_title || 'Position #' + app.job_position_id)}</div>
+            <div style="font-weight: 600; font-size: 0.88rem; color: var(--text-main);">${escapeHtml(app.position_title || 'Position #' + app.job_position_id)}</div>
             ${app.education ? `<div style="font-size: 0.76rem; color: var(--accent-violet); margin-top: 2px;">${escapeHtml(app.education)}</div>` : ''}
           </td>
           <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">
@@ -1717,6 +1718,7 @@
 
   // Expose global methods for inline HTML event triggers
   window.PUVIMA_ADMIN = {
+    switchTab,
     openContactModal,
     openBookingModal,
     quickStatusContact,
