@@ -1,6 +1,25 @@
 {
   "positions": [
     {
+      "id": 10,
+      "reference_id": "PV-JOB-2026-ARZ8G3",
+      "title": "Robotics & Autonomous Navigation Engineer",
+      "department": "Robotics & Autonomous Systems",
+      "description": "Lead design and sensor fusion algorithms for industrial autonomous mobile robots.",
+      "responsibilities": "Develop ROS2 navigation stacks, sensor fusion with LiDAR/IMU, SLAM testing.",
+      "required_skills": "ROS2, C++, Python, Kalman Filtering, SLAM, Linux",
+      "employment_type": "Full-time",
+      "work_arrangement": "Hybrid",
+      "location": "Chennai, India",
+      "experience_requirements": "4+ Years Experience",
+      "salary_range": "Competitive Enterprise Band",
+      "status": "closed",
+      "application_deadline": null,
+      "created_at": "2026-10-24T04:15:35.738Z",
+      "updated_at": "2026-10-24T04:15:35.836Z",
+      "persisted_in_db": false
+    },
+    {
       "id": 9,
       "reference_id": "PV-JOB-2026-SV3B8C",
       "title": "Robotics & Autonomous Navigation Engineer",
@@ -173,6 +192,34 @@
     }
   ],
   "applications": [
+    {
+      "id": 10,
+      "reference_id": "PV-APP-2026-MKV3ZN",
+      "job_position_id": 10,
+      "job_reference_id": "PV-JOB-2026-ARZ8G3",
+      "job_title": "Robotics & Autonomous Navigation Engineer",
+      "job_department": "Robotics & Autonomous Systems",
+      "applicant_name": "Dr. Ramesh Kumar",
+      "applicant_email": "ramesh.kumar@nexusrobotics.org",
+      "applicant_phone": "+91 98401 23456",
+      "education": "Ph.D. in Autonomous Systems, IIT Madras",
+      "skills": "ROS2, Nav2, C++, PyTorch, Sensor Fusion, SLAM",
+      "experience_years": "5 Years",
+      "linkedin_url": "https://linkedin.com/in/ramesh-kumar-sample",
+      "portfolio_url": "https://github.com/ramesh-kumar-sample",
+      "cover_letter": "I have 5 years experience engineering sensor fusion pipelines for industrial AMRs and would love to contribute to PUVIMA.",
+      "resume_filename": "Ramesh_Kumar_Resume.pdf",
+      "resume_storage_key": "resume_de7522ec3d37e66b781fc393f198bd6c_1792815335814.pdf",
+      "resume_mime_type": "application/pdf",
+      "resume_size_bytes": 74,
+      "recruitment_status": "shortlisted",
+      "admin_notes": "Strong candidate with impressive SLAM portfolio. Proceeding to technical interview.",
+      "notification_status": "failed",
+      "ip_hash": "52ca0665b2be7253e7c2e2fc542223b0",
+      "created_at": "2026-10-24T04:15:35.816Z",
+      "updated_at": "2026-10-24T04:15:35.873Z",
+      "persisted_in_db": false
+    },
     {
       "id": 9,
       "reference_id": "PV-APP-2026-P6PSM2",
