@@ -1132,6 +1132,29 @@ main {
   border-color: var(--border-interactive);
 }
 
+.team-card-compact {
+  padding: 24px 28px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--puvima-blue);
+  min-height: auto;
+  justify-content: center;
+}
+
+.team-card-compact .member-name {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.team-card-compact .member-designation {
+  font-size: 0.92rem;
+  color: var(--puvima-blue);
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
 .member-avatar-holder {
   width: 64px;
   height: 64px;
