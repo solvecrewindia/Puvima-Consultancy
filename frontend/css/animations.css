@@ -2,11 +2,7 @@
 
 
 .ambient-glow-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+  display: none !important;
 }
 
 .ambient-glow-top {
