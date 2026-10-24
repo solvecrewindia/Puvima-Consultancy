@@ -55,6 +55,12 @@ function initMobileDrawer() {
       toggle(false);
     }
   });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && drawer.classList.contains('open')) {
+      toggle(false);
+    }
+  });
 }
 
 function initActiveNavHighlight() {

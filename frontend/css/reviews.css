@@ -332,9 +332,48 @@
 }
 
 @media (max-width: 640px) {
+  .reviews-header-wrap {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .btn-write-review {
+    width: 100%;
+    justify-content: center;
+  }
+
   .customer-review-card {
     width: 290px;
     min-width: 290px;
     padding: 20px 18px;
   }
+
+  .review-modal-card {
+    padding: 24px 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
+
+@media (max-width: 480px) {
+  .customer-review-card {
+    width: 270px;
+    min-width: 270px;
+    padding: 18px 16px;
+  }
+
+  .reviewer-name {
+    font-size: 0.95rem;
+  }
+
+  .review-body-text {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .review-modal-card {
+    padding: 20px 16px;
+  }
+}
+
