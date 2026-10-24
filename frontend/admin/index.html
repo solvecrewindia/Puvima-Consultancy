@@ -117,16 +117,6 @@
         <span class="tab-pill" id="unreadContactsBadge">0</span>
       </button>
 
-      <button class="tab-btn" data-tab="bookings">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <span>Bookings</span>
-        <span class="tab-pill" id="pendingBookingsBadge">0</span>
-      </button>
 
       <button class="tab-btn" data-tab="reviews">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -134,15 +124,6 @@
         </svg>
         <span>Reviews</span>
         <span class="tab-pill" id="pendingReviewsBadge">0</span>
-      </button>
-
-      <button class="tab-btn" data-tab="careers">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-        </svg>
-        <span>Careers</span>
-        <span class="tab-pill" id="careersApplicationsBadge">0</span>
       </button>
 
       <button class="tab-btn" data-tab="settings">
@@ -164,7 +145,7 @@
         <div class="view-header">
           <div>
             <h2 class="view-title">Executive Operations Overview</h2>
-            <p class="view-desc">Monitor live incoming inquiries, pending consultation requests, and customer review approvals.</p>
+            <p class="view-desc">Monitor live incoming inquiries, customer review moderation, and site configuration.</p>
           </div>
           <button class="btn-ghost" id="refreshStatsBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -176,7 +157,7 @@
           </button>
         </div>
 
-        <!-- 4 Primary Action Priority KPI Cards -->
+        <!-- 3 Primary Action Priority KPI Cards -->
         <div class="kpi-grid">
           <!-- 1. New Inquiries -->
           <div class="kpi-card action-priority">
@@ -192,21 +173,7 @@
             </div>
           </div>
 
-          <!-- 2. Pending Consultations -->
-          <div class="kpi-card action-priority" style="border-left-color: var(--accent-amber);">
-            <div>
-              <div class="kpi-title">Pending Consultations</div>
-              <div class="kpi-value" id="kpiPendingBookings" style="color: var(--accent-amber);">0</div>
-            </div>
-            <div class="kpi-footer-row">
-              <span class="kpi-badge badge-warning">Awaiting Schedule</span>
-              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('bookings')">
-                <span>View Bookings &rarr;</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 3. Pending Review Approvals -->
+          <!-- 2. Pending Review Approvals -->
           <div class="kpi-card action-priority" style="border-left-color: var(--accent-emerald);">
             <div>
               <div class="kpi-title">Reviews Pending Approval</div>
@@ -220,16 +187,16 @@
             </div>
           </div>
 
-          <!-- 4. Candidate Applications -->
-          <div class="kpi-card action-priority" style="border-left-color: var(--accent-violet);">
+          <!-- 3. Website & Application Controls -->
+          <div class="kpi-card action-priority" style="border-left-color: var(--accent-indigo);">
             <div>
-              <div class="kpi-title">Candidate Applications</div>
-              <div class="kpi-value" id="kpiTotalApplications" style="color: var(--accent-violet);">0</div>
+              <div class="kpi-title">Website Configuration</div>
+              <div class="kpi-value" style="font-size: 1.35rem; font-weight: 700; color: #4338CA; margin-top: 6px;">Live Settings</div>
             </div>
             <div class="kpi-footer-row">
-              <span class="kpi-badge badge-info">Active Submissions</span>
-              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('careers')">
-                <span>View Candidates &rarr;</span>
+              <span class="kpi-badge badge-info">Announcements &amp; URLs</span>
+              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('settings')">
+                <span>Open Settings &rarr;</span>
               </button>
             </div>
           </div>
@@ -240,13 +207,7 @@
           <div class="kpi-card">
             <div class="kpi-title">Total Inquiries Received</div>
             <div class="kpi-value" id="kpiTotalContacts" style="font-size: 1.7rem; margin-bottom: 6px;">0</div>
-            <span class="kpi-badge badge-info">All Historical Records</span>
-          </div>
-
-          <div class="kpi-card">
-            <div class="kpi-title">Confirmed Consultations</div>
-            <div class="kpi-value" id="kpiConfirmedBookings" style="font-size: 1.7rem; color: var(--accent-emerald); margin-bottom: 6px;">0</div>
-            <span class="kpi-badge badge-success">Schedule Locked</span>
+            <span class="kpi-badge badge-info">All Historical Inquiries</span>
           </div>
 
           <div class="kpi-card">
@@ -256,9 +217,9 @@
           </div>
 
           <div class="kpi-card">
-            <div class="kpi-title">Active Careers Vacancies</div>
-            <div class="kpi-value" id="kpiOpenPositions" style="font-size: 1.7rem; color: var(--primary); margin-bottom: 6px;">0</div>
-            <span class="kpi-badge badge-info">Published Roles</span>
+            <div class="kpi-title">Candidate Application Link</div>
+            <div class="kpi-value" style="font-size: 1.15rem; font-weight: 600; color: var(--accent-teal); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Configured in Settings</div>
+            <span class="kpi-badge badge-success">Active Application Form</span>
           </div>
         </div>
 
@@ -351,64 +312,6 @@
         </div>
       </section>
 
-      <!-- ====================================================================
-           TAB 3: CONSULTATION BOOKINGS
-           ==================================================================== -->
-      <section id="tab-bookings" class="tab-view">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">Consultation Appointments</h2>
-            <p class="view-desc">Review and schedule formal technical consultations requested by corporate and academic partners.</p>
-          </div>
-          <button class="btn-ghost" id="reloadBookingsBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            <span>Refresh Appointments</span>
-          </button>
-        </div>
-
-        <!-- Filter Controls -->
-        <div class="filter-bar">
-          <div class="filter-group">
-            <button class="filter-pill-btn active" data-booking-status="all">All</button>
-            <button class="filter-pill-btn" data-booking-status="pending_review">Pending Review</button>
-            <button class="filter-pill-btn" data-booking-status="under_evaluation">Under Evaluation</button>
-            <button class="filter-pill-btn" data-booking-status="confirmed">Confirmed</button>
-            <button class="filter-pill-btn" data-booking-status="completed">Completed</button>
-            <button class="filter-pill-btn" data-booking-status="cancelled">Cancelled</button>
-          </div>
-
-          <div class="search-input-wrap">
-            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="bookingSearchInput" class="form-control" placeholder="Search by name, email, or topic...">
-          </div>
-        </div>
-
-        <!-- Bookings Table -->
-        <div class="data-table-container">
-          <table class="data-table" id="bookingsTable">
-            <thead>
-              <tr>
-                <th>Booking Ref</th>
-                <th>Client / Organization</th>
-                <th>Domain Topic &amp; Format</th>
-                <th>Requested Date &amp; Time</th>
-                <th>Status</th>
-                <th style="text-align: right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="bookingsTableBody">
-              <!-- Rendered via JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </section>
 
       <!-- ====================================================================
            TAB 4: CUSTOMER REVIEWS (PUSH TO HOMEPAGE)
@@ -471,161 +374,7 @@
         </div>
       </section>
 
-      <!-- ====================================================================
-           TAB 5: CAREERS & RECRUITMENT
-           ==================================================================== -->
-      <section id="tab-careers" class="tab-view">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">Careers &amp; Recruitment Center</h2>
-            <p class="view-desc">Configure technical job openings, update the candidate application form, and review incoming candidate resumes.</p>
-          </div>
-          <button type="button" class="btn-primary" id="openCreateJobModalBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            <span>Create Job Position</span>
-          </button>
-        </div>
 
-        <!-- Live Application Form Link Box -->
-        <div class="settings-panel" style="margin-bottom: 24px; border-left: 4px solid var(--primary); background: #EFF6FF; border-color: #BFDBFE;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 280px;">
-              <h3 style="font-size: 1.05rem; font-weight: 700; color: #1E3A8A; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                </svg>
-                <span>Live Careers Application Form Link</span>
-              </h3>
-              <p style="font-size: 0.85rem; color: #3B82F6; margin-bottom: 12px; line-height: 1.5;">
-                Candidates clicking <strong>"Submit Application Form"</strong> on the Careers Page will be opened to this destination URL (e.g. Google Forms / Typeform).
-              </p>
-              <div style="display: flex; gap: 10px; align-items: center; max-width: 760px; flex-wrap: wrap;">
-                <input type="url" id="careersQuickFormUrl" class="form-control" placeholder="https://docs.google.com/forms/d/e/.../viewform" style="flex: 1; min-width: 260px; background: #FFFFFF;">
-                <button type="button" id="saveQuickCareersUrlBtn" class="btn-primary" style="white-space: nowrap;">
-                  <span>Save Form Link</span>
-                </button>
-                <a href="#" id="testCareersUrlBtn" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="white-space: nowrap;">
-                  <span>Test Link ↗</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-Navigation Toggle between Positions and Applications -->
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-          <button type="button" class="filter-pill-btn active" id="subtabJobsBtn">
-            <span>Job Positions</span>
-            <span class="tab-pill" id="jobsCountBadge">0</span>
-          </button>
-          <button type="button" class="filter-pill-btn" id="subtabAppsBtn">
-            <span>Candidate Applications</span>
-            <span class="tab-pill" id="appsCountBadge">0</span>
-          </button>
-        </div>
-
-        <!-- 1. JOB POSITIONS SUB-VIEW -->
-        <div id="careersJobsSubView">
-          <div class="filter-bar">
-            <div class="filter-group">
-              <button class="filter-pill-btn active" data-job-status="all">All Positions</button>
-              <button class="filter-pill-btn" data-job-status="published">Published</button>
-              <button class="filter-pill-btn" data-job-status="draft">Drafts</button>
-              <button class="filter-pill-btn" data-job-status="closed">Closed</button>
-              <button class="btn-ghost" id="reloadJobsBtn" title="Reload Positions" style="padding: 6px 10px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-              </button>
-            </div>
-
-            <div class="search-input-wrap">
-              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <input type="text" id="jobSearchInput" class="form-control" placeholder="Search by title, department, or ref...">
-            </div>
-          </div>
-
-          <div class="data-table-container">
-            <table class="data-table" id="jobsTable">
-              <thead>
-                <tr>
-                  <th>Job Title &amp; Reference</th>
-                  <th>Department</th>
-                  <th>Work Arrangement</th>
-                  <th>Experience Level</th>
-                  <th>Status</th>
-                  <th style="text-align: right;">Management Actions</th>
-                </tr>
-              </thead>
-              <tbody id="jobsTableBody">
-                <!-- Injected via JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 2. CANDIDATE APPLICATIONS SUB-VIEW -->
-        <div id="careersAppsSubView" style="display: none;">
-          <div class="filter-bar">
-            <div class="filter-group">
-              <button class="filter-pill-btn active" data-app-status="all">All Applications</button>
-              <button class="filter-pill-btn" data-app-status="received">Received</button>
-              <button class="filter-pill-btn" data-app-status="under_review">Under Review</button>
-              <button class="filter-pill-btn" data-app-status="shortlisted">Shortlisted</button>
-              <button class="filter-pill-btn" data-app-status="interview">Interview</button>
-              <button class="filter-pill-btn" data-app-status="selected">Selected</button>
-              <button class="filter-pill-btn" data-app-status="rejected">Rejected</button>
-              <button class="btn-ghost" id="reloadAppsBtn" title="Reload Applications" style="padding: 6px 10px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="23 4 23 10 17 10"></polyline>
-                  <polyline points="1 20 1 14 7 14"></polyline>
-                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                </svg>
-              </button>
-            </div>
-
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <select id="appJobFilterSelect" class="form-control" style="width: auto; padding: 7px 12px; font-size: 0.84rem;">
-                <option value="all">All Configured Positions</option>
-              </select>
-
-              <div class="search-input-wrap">
-                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" id="appSearchInput" class="form-control" placeholder="Search applicant, skills, or ref...">
-              </div>
-            </div>
-          </div>
-
-          <div class="data-table-container">
-            <table class="data-table" id="applicationsTable">
-              <thead>
-                <tr>
-                  <th>Applicant Name &amp; Contact</th>
-                  <th>Applied Position</th>
-                  <th>Submitted Date</th>
-                  <th>Recruitment Status</th>
-                  <th style="text-align: right;">Review &amp; Resume</th>
-                </tr>
-              </thead>
-              <tbody id="applicationsTableBody">
-                <!-- Injected via JavaScript -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================================
            TAB 6: MANAGE MAIN PAGE CONTENT
@@ -803,7 +552,7 @@
 
 
   <!-- ========================================================================
-       3. DETAIL INSPECTION MODAL (FOR INQUIRIES & BOOKINGS)
+       3. DETAIL INSPECTION MODAL (FOR INQUIRIES)
        ======================================================================== -->
   <div id="detailModalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal-card">
@@ -873,243 +622,6 @@
 
           <button type="button" id="modalSaveActionBtn" class="btn-primary">
             <span>Update Record</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================
-       4. JOB POSITION MODAL (CREATE & EDIT VACANCIES)
-       ======================================================================== -->
-  <div id="jobModalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-card" style="max-width: 680px;">
-      <div class="modal-header">
-        <div>
-          <h3 class="modal-title" id="jobModalTitle">Create Technical Opportunity</h3>
-          <p class="modal-subtitle" style="font-size: 0.84rem; color: var(--text-muted); margin-top: 4px;">Configure roles aligned with PUVIMA's engineering and research focus areas.</p>
-        </div>
-        <button type="button" class="modal-close-btn" id="closeJobModalBtn" aria-label="Close modal">&times;</button>
-      </div>
-
-      <form id="jobPositionForm" novalidate style="margin-top: 10px;">
-        <input type="hidden" id="jobModalPositionId" value="">
-
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" for="jobTitleInput">Role Title *</label>
-          <input type="text" id="jobTitleInput" class="form-control" placeholder="e.g. Autonomous Navigation & SLAM Engineer" required>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobDeptSelect">Practice Domain *</label>
-            <select id="jobDeptSelect" class="form-control" required>
-              <option value="Robotics & Autonomous Systems">Robotics &amp; Autonomous Systems</option>
-              <option value="FinTech & Stock Market Analytics">FinTech &amp; Stock Market Analytics</option>
-              <option value="AI/ML & Research Solutions">AI/ML &amp; Research Solutions</option>
-              <option value="Software Development">Software Development</option>
-              <option value="Research & Technical Analysis">Research &amp; Technical Analysis</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobStatusSelect">Publication Status</label>
-            <select id="jobStatusSelect" class="form-control">
-              <option value="draft">Draft (Hidden)</option>
-              <option value="published">Published (Live on Website)</option>
-              <option value="closed">Closed (Archived)</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobTypeSelect">Employment Type</label>
-            <select id="jobTypeSelect" class="form-control">
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Contract">Contract</option>
-              <option value="Internship">Internship</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobArrangementSelect">Arrangement</label>
-            <select id="jobArrangementSelect" class="form-control">
-              <option value="Hybrid">Hybrid</option>
-              <option value="On-site">On-site</option>
-              <option value="Remote">Remote</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobExpInput">Experience</label>
-            <input type="text" id="jobExpInput" class="form-control" placeholder="e.g. 3+ Years">
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobLocationInput">Base Location</label>
-            <input type="text" id="jobLocationInput" class="form-control" placeholder="Chennai & Bangalore, India" value="Chennai & Bangalore, India">
-          </div>
-
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="jobSalaryInput">Compensation Band (Optional)</label>
-            <input type="text" id="jobSalaryInput" class="form-control" placeholder="Competitive Industry Band">
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" for="jobDescInput">Role Overview &amp; Project Mission *</label>
-          <textarea id="jobDescInput" class="form-control" rows="3" placeholder="Provide a concise summary of the engagement, problem space, and technical mission..." required></textarea>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" for="jobRespInput">Key Deliverables &amp; Responsibilities</label>
-          <textarea id="jobRespInput" class="form-control" rows="3" placeholder="Bullet points or summary of core day-to-day engineering deliverables..."></textarea>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 22px;">
-          <label class="form-label" for="jobSkillsInput">Required Skills &amp; Competencies (Comma separated)</label>
-          <input type="text" id="jobSkillsInput" class="form-control" placeholder="e.g. ROS2, Python, C++, PyTorch, SLAM, Linux">
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 12px;">
-          <button type="button" class="btn-ghost" id="cancelJobModalBtn">Cancel</button>
-          <button type="submit" class="btn-primary" id="saveJobModalBtn">
-            <span>Save Job Position</span>
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========================================================================
-       5. APPLICATION DETAIL MODAL (REVIEW & RESUME ACCESS)
-       ======================================================================== -->
-  <div id="appDetailModalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-card" style="max-width: 720px;">
-      <div class="modal-header">
-        <div>
-          <span class="status-pill status-received" id="appDetailStatusBadge">RECEIVED</span>
-          <h3 class="modal-title" id="appDetailApplicantName" style="margin-top: 8px;">Candidate Application</h3>
-        </div>
-        <button type="button" class="modal-close-btn" id="closeAppDetailModalBtn" aria-label="Close modal">&times;</button>
-      </div>
-
-      <!-- Application Metadata Row -->
-      <div class="modal-meta-row">
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Reference ID</div>
-          <div class="modal-meta-value" id="appDetailRefId" style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">--</div>
-        </div>
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Position Applied For</div>
-          <div class="modal-meta-value" id="appDetailPositionTitle" style="font-weight: 700;">--</div>
-        </div>
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Submitted On</div>
-          <div class="modal-meta-value" id="appDetailCreatedAt">--</div>
-        </div>
-      </div>
-
-      <!-- Applicant Contact Row -->
-      <div class="modal-meta-row">
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Contact Email</div>
-          <div class="modal-meta-value">
-            <a href="#" id="appDetailEmailLink" style="color: var(--primary); text-decoration: underline;">--</a>
-          </div>
-        </div>
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Phone Number</div>
-          <div class="modal-meta-value" id="appDetailPhone">--</div>
-        </div>
-        <div class="modal-meta-item">
-          <div class="modal-meta-label">Qualification / Experience</div>
-          <div class="modal-meta-value" id="appDetailEducationExp">--</div>
-        </div>
-      </div>
-
-      <!-- URLs row -->
-      <div class="modal-meta-row" id="appDetailLinksRow" style="display: none;">
-        <div class="modal-meta-item" id="appDetailLinkedinWrap" style="display: none;">
-          <div class="modal-meta-label">LinkedIn Profile</div>
-          <div class="modal-meta-value">
-            <a href="#" id="appDetailLinkedinLink" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">Open Profile &rarr;</a>
-          </div>
-        </div>
-        <div class="modal-meta-item" id="appDetailPortfolioWrap" style="display: none;">
-          <div class="modal-meta-label">Portfolio / GitHub</div>
-          <div class="modal-meta-value">
-            <a href="#" id="appDetailPortfolioLink" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">Open Repository &rarr;</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Skills Chips -->
-      <div id="appDetailSkillsSection" style="margin-bottom: 14px;">
-        <div class="modal-meta-label">Applicant Skills:</div>
-        <div id="appDetailSkillsList" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
-          <!-- Skills pills -->
-        </div>
-      </div>
-
-      <!-- Cover Letter -->
-      <div id="appDetailCoverLetterSection" style="margin-bottom: 18px;">
-        <div class="modal-meta-label">Cover Letter / Statement:</div>
-        <div class="modal-message-box" id="appDetailCoverLetterBody">--</div>
-      </div>
-
-      <!-- Secure Resume Access Card -->
-      <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-          <div>
-            <div id="appDetailResumeFileName" style="font-weight: 700; font-size: 0.9rem; color: #1E3A8A;">Resume_Document.pdf</div>
-            <div id="appDetailResumeMeta" style="font-size: 0.76rem; color: #3B82F6; font-family: var(--font-mono);">PDF Document &bull; Securely Stored</div>
-          </div>
-        </div>
-
-        <button type="button" class="btn-primary" id="downloadAppResumeBtn" style="padding: 8px 16px; font-size: 0.84rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Download Resume PDF</span>
-        </button>
-      </div>
-
-      <!-- Recruitment Workflow Status & Notes -->
-      <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 18px;">
-        <div style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.04em;">Hiring Workflow &amp; Candidate Evaluation</div>
-
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="appDetailStatusSelect">Recruitment Status</label>
-          <select id="appDetailStatusSelect" class="form-control">
-            <option value="received">Received (Unreviewed)</option>
-            <option value="under_review">Under Review (Evaluating Credentials)</option>
-            <option value="shortlisted">Shortlisted (Selected for Interview)</option>
-            <option value="interview">Interview Scheduled</option>
-            <option value="selected">Selected / Offer Extended</option>
-            <option value="rejected">Rejected (Does Not Meet Criteria)</option>
-          </select>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 16px;">
-          <label class="form-label" for="appDetailAdminNotes">Internal Interview &amp; Evaluation Notes</label>
-          <textarea id="appDetailAdminNotes" class="form-control" rows="2" placeholder="Record interview notes, technical assessment scores, or remarks..."></textarea>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" class="btn-ghost" id="closeAppDetailFooterBtn">Close</button>
-          <button type="button" id="saveAppDetailStatusBtn" class="btn-primary">
-            <span>Update Candidate Status</span>
           </button>
         </div>
       </div>
