@@ -66,6 +66,10 @@
       const cardsHtml = reviews.map(r => createCardHtml(r)).join('');
       // Duplicate at least once for infinite scrolling
       track.innerHTML = cardsHtml + cardsHtml;
+
+      // Slow, comfortable reading speed (approx 16-18s per review card)
+      const slowDuration = Math.max(90, reviews.length * 16);
+      track.style.animationDuration = `${slowDuration}s`;
     } catch (e) {
       console.error('Error loading reviews:', e);
     }
