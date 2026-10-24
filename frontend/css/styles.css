@@ -144,9 +144,9 @@ a {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #0F172A 0%, #0072CE 55%, #0284C7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--puvima-blue);
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 
 .eyebrow-badge {
@@ -216,15 +216,15 @@ a {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0072CE 0%, #083670 100%);
+  background: var(--puvima-blue);
   color: #FFFFFF;
-  box-shadow: 0 4px 16px -2px rgba(0, 114, 206, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #005FA8 0%, #062B59 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px -2px rgba(0, 114, 206, 0.45);
+  background: var(--puvima-navy);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(8, 54, 112, 0.3);
 }
 
 .btn-secondary {
@@ -635,13 +635,13 @@ main {
 }
 
 .service-compact-pill {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
+  font-weight: 500;
   padding: 4px 10px;
-  border-radius: 999px;
-  background: #F1F5F9;
+  border-radius: var(--radius-xs);
+  background: #F8FAFC;
   color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-light);
 }
 
 .service-compact-footer {
@@ -788,10 +788,10 @@ main {
 }
 
 .principle-number {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  color: var(--soft-lavender);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .principle-icon {

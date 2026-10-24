@@ -103,23 +103,21 @@
 
 
 .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background-color: var(--accent-teal, #00A3FF);
-  box-shadow: 0 0 8px var(--accent-teal, #00A3FF);
-  animation: pulse-teal 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  background-color: var(--puvima-blue, #0072CE);
   flex-shrink: 0;
+  display: inline-block;
 }
 
 .status-dot-green {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background-color: #22C55E;
-  box-shadow: 0 0 8px #22C55E;
-  animation: pulse-teal 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  background-color: #10B981;
   flex-shrink: 0;
+  display: inline-block;
 }
 
 

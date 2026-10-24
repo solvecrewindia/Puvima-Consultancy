@@ -1,5 +1,32 @@
 [
   {
+    "id": 55,
+    "reference_id": "REV-2026-FOL7",
+    "name": "Jordan Lee",
+    "company": "FinTech Algorithmic",
+    "date_display": "24 Oct, 13:45 PM",
+    "avatar_url": "assets/images/team/member-1.svg",
+    "platform": "linkedin",
+    "rating": 5,
+    "review_text": "Remarkable quantitative execution and backtesting precision.",
+    "status": "approved",
+    "created_at": "2026-10-24T08:15:39.511Z",
+    "updated_at": "2026-10-24T08:15:39.516Z"
+  },
+  {
+    "id": 54,
+    "reference_id": "REV-2026-I9N5",
+    "name": "Samantha Wright",
+    "company": "Autonomous Robotics Inc",
+    "date_display": "24 Oct, 13:45 PM",
+    "avatar_url": "assets/images/team/member-1.svg",
+    "platform": "google",
+    "rating": 5,
+    "review_text": "Outstanding technical advisory and SLAM sensor integration!",
+    "status": "pending",
+    "created_at": "2026-10-24T08:15:39.499Z"
+  },
+  {
     "id": 53,
     "reference_id": "REV-2026-C2LW",
     "name": "Jordan Lee",
