@@ -34,8 +34,8 @@
   align-items: center;
   gap: 8px;
   padding: 11px 22px;
-  background: var(--primary);
-  border: 1px solid var(--primary);
+  background: linear-gradient(135deg, #0072CE 0%, #083670 100%);
+  border: 1px solid rgba(0, 114, 206, 0.3);
   border-radius: var(--radius-pill);
   color: #FFFFFF;
   font-family: var(--font-display);
@@ -47,10 +47,10 @@
 }
 
 .btn-write-review:hover {
-  background: #005bb5;
-  border-color: #005bb5;
+  background: linear-gradient(135deg, #005FA8 0%, #062B59 100%);
+  border-color: rgba(0, 114, 206, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 114, 206, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 114, 206, 0.4);
 }
 
 /* ==========================================================================
