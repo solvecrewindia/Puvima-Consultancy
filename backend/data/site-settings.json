@@ -1,27 +1,28 @@
 {
-  "announcement": {
-    "enabled": false,
-    "badge": "",
-    "text": "",
-    "linkText": "",
-    "linkUrl": ""
-  },
   "hero": {
+    "eyebrow": "",
+    "subhead": "PUVIMA Consultancy transforms innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration.",
     "headlineMain": "Innovation.",
-    "headlineGradient": "Research. Excellence.",
-    "subhead": "PUVIMA Consultancy transforms innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration."
+    "headlineGradient": "Research. Excellence."
+  },
+  "stats": {
+    "researchDomains": "4",
+    "activePrototypes": "18",
+    "clientSatisfaction": "99.4%",
+    "consultationsDelivered": "120+"
   },
   "contact": {
     "email": "advisory@puvima.com",
-    "phone": "+91 (0) 44 2810 5000",
     "hours": "Mon – Fri: 09:00 – 18:00 IST",
+    "phone": "+91 (0) 44 2810 5000",
     "location": "Chennai & Bangalore, India"
   },
-  "stats": {
-    "consultationsDelivered": "120+",
-    "activePrototypes": "18",
-    "researchDomains": "4",
-    "clientSatisfaction": "99.4%"
+  "announcement": {
+    "text": "",
+    "badge": "NEW",
+    "enabled": false,
+    "linkUrl": "",
+    "linkText": ""
   },
-  "careersFormUrl": ""
+  "careersFormUrl": "https://docs.google.com/forms/d/e/1FAIpQLScnFzzCD8l965i_6MpB72Y-ShW571aAXeBa2-J1w2EpO1QRtg/viewform"
 }

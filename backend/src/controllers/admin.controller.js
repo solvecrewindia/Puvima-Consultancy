@@ -200,18 +200,25 @@ class AdminController {
   }
 
   // GET /api/admin/settings
-  getSettings(req, res) {
-    const settings = storeService.getSettings();
-    return res.status(200).json({
-      success: true,
-      settings
-    });
+  async getSettings(req, res) {
+    try {
+      const settings = await storeService.getSettings();
+      return res.status(200).json({
+        success: true,
+        settings
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve site settings: ' + err.message
+      });
+    }
   }
 
   // PUT /api/admin/settings
-  updateSettings(req, res) {
+  async updateSettings(req, res) {
     try {
-      const updated = storeService.updateSettings(req.body);
+      const updated = await storeService.updateSettings(req.body);
       return res.status(200).json({
         success: true,
         message: 'Main page configuration saved successfully.',

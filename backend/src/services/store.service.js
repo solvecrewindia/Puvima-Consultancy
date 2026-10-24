@@ -45,6 +45,21 @@ const DEFAULT_SETTINGS = {
 class StoreService {
   constructor() {
     this.ensureDataDir();
+    // Asynchronously warm-up / sync settings from Supabase
+    setTimeout(() => {
+      this.syncSettingsFromSupabase().catch(() => {});
+    }, 100);
+  }
+
+  async syncSettingsFromSupabase() {
+    const sb = supabase.getSupabaseClient();
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main_page').single();
+      if (!error && data && data.data) {
+        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+      }
+    } catch (e) {}
   }
 
   ensureDataDir() {
@@ -198,7 +213,35 @@ class StoreService {
   }
 
   async getContacts({ status, search } = {}) {
-    // Attempt DB first
+    // 1. Try Supabase cloud first
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('contact_enquiries').select('*').order('created_at', { ascending: false });
+        if (status && status !== 'all') {
+          query = query.eq('status', status);
+        }
+        const { data, error } = await query;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          let list = data;
+          if (search) {
+            const q = search.toLowerCase();
+            list = list.filter(r => 
+              (r.name && r.name.toLowerCase().includes(q)) ||
+              (r.email && r.email.toLowerCase().includes(q)) ||
+              (r.company && r.company.toLowerCase().includes(q)) ||
+              (r.subject && r.subject.toLowerCase().includes(q)) ||
+              (r.reference_id && r.reference_id.toLowerCase().includes(q))
+            );
+          }
+          return list;
+        }
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    // 2. Try MySQL
     try {
       const dbStatus = await db.testConnection();
       if (dbStatus.isConnected) {
@@ -226,7 +269,7 @@ class StoreService {
       // Fallback
     }
 
-    // Fallback to local file
+    // 3. Fallback to local file
     const submissions = this.readSubmissionsFile();
     let list = submissions.contacts;
     if (status && status !== 'all') {
@@ -246,17 +289,30 @@ class StoreService {
   }
 
   async updateContactStatus(id, { status, admin_notes }) {
-    // Update local file
-    const submissions = this.readSubmissionsFile();
-    const contact = submissions.contacts.find(c => String(c.id) === String(id) || c.reference_id === id);
-    if (contact) {
-      if (status) contact.status = status;
-      if (admin_notes !== undefined) contact.admin_notes = admin_notes;
-      contact.updated_at = new Date().toISOString();
-      this.writeSubmissionsFile(submissions);
+    let updatedContact = null;
+
+    // 1. Update Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        const updatePayload = { updated_at: new Date().toISOString() };
+        if (status) updatePayload.status = status;
+        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
+
+        let query = sb.from('contact_enquiries').update(updatePayload);
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        const { data, error } = await query.select();
+        if (!error && data && data.length > 0) {
+          updatedContact = data[0];
+        }
+      } catch (e) {}
     }
 
-    // Try DB
+    // 2. Try MySQL
     try {
       if (status) {
         await db.query(
@@ -268,28 +324,47 @@ class StoreService {
       // Ignored if DB offline
     }
 
-    const sb = supabase.getSupabaseClient();
-    if (sb && status) {
-      try {
-        const updatePayload = { status, updated_at: new Date().toISOString() };
-        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
-        await sb.from('contact_enquiries').update(updatePayload).eq('reference_id', id);
-      } catch (e) {}
+    // 3. Update local file
+    const submissions = this.readSubmissionsFile();
+    const contact = submissions.contacts.find(c => String(c.id) === String(id) || c.reference_id === id);
+    if (contact) {
+      if (status) contact.status = status;
+      if (admin_notes !== undefined) contact.admin_notes = admin_notes;
+      contact.updated_at = new Date().toISOString();
+      this.writeSubmissionsFile(submissions);
+      if (!updatedContact) updatedContact = contact;
     }
 
-    return contact;
+    return updatedContact || contact || { id, status, admin_notes };
   }
 
   async deleteContact(id) {
+    // 1. Delete from Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('contact_enquiries').delete();
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        await query;
+      } catch (e) {}
+    }
+
+    // 2. Delete from MySQL
+    try {
+      await db.query(`DELETE FROM contact_enquiries WHERE id = ? OR reference_id = ?`, [id, id]);
+    } catch (e) {}
+
+    // 3. Delete from local file
     const submissions = this.readSubmissionsFile();
     const index = submissions.contacts.findIndex(c => String(c.id) === String(id) || c.reference_id === id);
     if (index !== -1) {
       submissions.contacts.splice(index, 1);
       this.writeSubmissionsFile(submissions);
     }
-    try {
-      await db.query(`DELETE FROM contact_enquiries WHERE id = ? OR reference_id = ?`, [id, id]);
-    } catch (e) {}
     return true;
   }
 
@@ -311,7 +386,8 @@ class StoreService {
           meeting_format: data.meeting_format || data.meetingFormat || 'Virtual Video Session (Zoom / Meet)',
           message: data.message || null,
           status: 'pending_review',
-          ip_hash: data.ip_hash || null
+          ip_hash: data.ip_hash || null,
+          admin_notes: ''
         }]);
         if (!error) dbSuccess = true;
       } catch (err) {}
@@ -371,6 +447,33 @@ class StoreService {
   }
 
   async getBookings({ status, search } = {}) {
+    // 1. Try Supabase cloud first
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('consultation_bookings').select('*').order('created_at', { ascending: false });
+        if (status && status !== 'all') {
+          query = query.eq('status', status);
+        }
+        const { data, error } = await query;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          let list = data;
+          if (search) {
+            const q = search.toLowerCase();
+            list = list.filter(r => 
+              (r.name && r.name.toLowerCase().includes(q)) ||
+              (r.email && r.email.toLowerCase().includes(q)) ||
+              (r.company && r.company.toLowerCase().includes(q)) ||
+              (r.topic && r.topic.toLowerCase().includes(q)) ||
+              (r.reference_id && r.reference_id.toLowerCase().includes(q))
+            );
+          }
+          return list;
+        }
+      } catch (e) {}
+    }
+
+    // 2. Try MySQL
     try {
       const dbStatus = await db.testConnection();
       if (dbStatus.isConnected) {
@@ -396,6 +499,7 @@ class StoreService {
       }
     } catch (e) {}
 
+    // 3. Fallback to local file
     const submissions = this.readSubmissionsFile();
     let list = submissions.bookings;
     if (status && status !== 'all') {
@@ -415,17 +519,32 @@ class StoreService {
   }
 
   async updateBookingStatus(id, { status, admin_notes, preferred_date, preferred_time }) {
-    const submissions = this.readSubmissionsFile();
-    const booking = submissions.bookings.find(b => String(b.id) === String(id) || b.reference_id === id);
-    if (booking) {
-      if (status) booking.status = status;
-      if (admin_notes !== undefined) booking.admin_notes = admin_notes;
-      if (preferred_date) booking.preferred_date = preferred_date;
-      if (preferred_time) booking.preferred_time = preferred_time;
-      booking.updated_at = new Date().toISOString();
-      this.writeSubmissionsFile(submissions);
+    let updatedBooking = null;
+
+    // 1. Update Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        const updatePayload = { updated_at: new Date().toISOString() };
+        if (status) updatePayload.status = status;
+        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
+        if (preferred_date) updatePayload.preferred_date = preferred_date;
+        if (preferred_time) updatePayload.preferred_time = preferred_time;
+
+        let query = sb.from('consultation_bookings').update(updatePayload);
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        const { data, error } = await query.select();
+        if (!error && data && data.length > 0) {
+          updatedBooking = data[0];
+        }
+      } catch (e) {}
     }
 
+    // 2. Try MySQL
     try {
       if (status) {
         await db.query(
@@ -435,35 +554,69 @@ class StoreService {
       }
     } catch (e) {}
 
-    const sb = supabase.getSupabaseClient();
-    if (sb && status) {
-      try {
-        const updatePayload = { status, updated_at: new Date().toISOString() };
-        if (admin_notes !== undefined) updatePayload.admin_notes = admin_notes;
-        if (preferred_date) updatePayload.preferred_date = preferred_date;
-        if (preferred_time) updatePayload.preferred_time = preferred_time;
-        await sb.from('consultation_bookings').update(updatePayload).eq('reference_id', id);
-      } catch (e) {}
+    // 3. Update local file
+    const submissions = this.readSubmissionsFile();
+    const booking = submissions.bookings.find(b => String(b.id) === String(id) || b.reference_id === id);
+    if (booking) {
+      if (status) booking.status = status;
+      if (admin_notes !== undefined) booking.admin_notes = admin_notes;
+      if (preferred_date) booking.preferred_date = preferred_date;
+      if (preferred_time) booking.preferred_time = preferred_time;
+      booking.updated_at = new Date().toISOString();
+      this.writeSubmissionsFile(submissions);
+      if (!updatedBooking) updatedBooking = booking;
     }
 
-    return booking;
+    return updatedBooking || booking || { id, status };
   }
 
   async deleteBooking(id) {
+    // 1. Delete from Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('consultation_bookings').delete();
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        await query;
+      } catch (e) {}
+    }
+
+    // 2. Delete from MySQL
+    try {
+      await db.query(`DELETE FROM consultation_bookings WHERE id = ? OR reference_id = ?`, [id, id]);
+    } catch (e) {}
+
+    // 3. Delete from local file
     const submissions = this.readSubmissionsFile();
     const index = submissions.bookings.findIndex(b => String(b.id) === String(id) || b.reference_id === id);
     if (index !== -1) {
       submissions.bookings.splice(index, 1);
       this.writeSubmissionsFile(submissions);
     }
-    try {
-      await db.query(`DELETE FROM consultation_bookings WHERE id = ? OR reference_id = ?`, [id, id]);
-    } catch (e) {}
     return true;
   }
 
   // --- SITE SETTINGS ---
-  getSettings() {
+  async getSettings() {
+    this.ensureDataDir();
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main_page').single();
+        if (!error && data && data.data) {
+          fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+          return data.data;
+        }
+      } catch (e) {}
+    }
+    return this.getSettingsSync();
+  }
+
+  getSettingsSync() {
     this.ensureDataDir();
     try {
       const content = fs.readFileSync(SETTINGS_FILE, 'utf8');
@@ -473,9 +626,9 @@ class StoreService {
     }
   }
 
-  updateSettings(newSettings) {
+  async updateSettings(newSettings) {
     this.ensureDataDir();
-    const current = this.getSettings();
+    const current = await this.getSettings();
     const merged = {
       ...current,
       ...newSettings,
@@ -491,17 +644,32 @@ class StoreService {
 
     const sb = supabase.getSupabaseClient();
     if (sb) {
-      sb.from('site_settings').upsert({
-        id: 'main_page',
-        data: merged,
-        updated_at: new Date().toISOString()
-      }).then(() => {}).catch(() => {});
+      try {
+        await sb.from('site_settings').upsert({
+          id: 'main_page',
+          data: merged,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {}
     }
 
     return merged;
   }
 
   // --- REVIEWS MANAGEMENT ---
+  formatDisplayDate(isoString) {
+    try {
+      const d = new Date(isoString || Date.now());
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const hrs = String(d.getHours()).padStart(2, '0');
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+      return `${d.getDate()} ${months[d.getMonth()]}, ${hrs}:${mins} ${ampm}`;
+    } catch (e) {
+      return '';
+    }
+  }
+
   readReviewsFile() {
     this.ensureDataDir();
     try {
@@ -524,6 +692,45 @@ class StoreService {
   }
 
   async getReviews({ status, search } = {}) {
+    // 1. Try Supabase cloud first
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('customer_reviews').select('*').order('created_at', { ascending: false });
+        if (status && status !== 'all') {
+          query = query.eq('status', status);
+        }
+        const { data, error } = await query;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          let list = data.map(r => ({
+            id: r.id,
+            reference_id: r.reference_id,
+            name: r.name,
+            company: r.company || r.role || '',
+            date_display: this.formatDisplayDate(r.created_at),
+            avatar_url: 'assets/images/team/member-1.svg',
+            platform: r.source || 'google',
+            rating: parseInt(r.rating, 10) || 5,
+            review_text: r.review_text,
+            status: r.status || 'pending',
+            created_at: r.created_at,
+            updated_at: r.updated_at
+          }));
+          if (search) {
+            const q = search.toLowerCase();
+            list = list.filter(r =>
+              (r.name && r.name.toLowerCase().includes(q)) ||
+              (r.company && r.company.toLowerCase().includes(q)) ||
+              (r.review_text && r.review_text.toLowerCase().includes(q)) ||
+              (r.reference_id && r.reference_id.toLowerCase().includes(q))
+            );
+          }
+          return list;
+        }
+      } catch (e) {}
+    }
+
+    // 2. Fallback to local file
     let list = this.readReviewsFile();
 
     if (status && status !== 'all') {
@@ -548,11 +755,7 @@ class StoreService {
     const reference_id = `REV-2026-${refCode}`;
 
     const now = new Date();
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const hrs = String(now.getHours()).padStart(2, '0');
-    const mins = String(now.getMinutes()).padStart(2, '0');
-    const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-    const date_display = `${now.getDate()} ${months[now.getMonth()]}, ${hrs}:${mins} ${ampm}`;
+    const date_display = this.formatDisplayDate(now);
 
     const newReview = {
       id,
@@ -564,16 +767,55 @@ class StoreService {
       platform: data.platform || 'google',
       rating: parseInt(data.rating, 10) || 5,
       review_text: data.review_text,
-      status: 'pending', // Starts pending until approved by admin
+      status: data.status || 'pending',
       created_at: now.toISOString()
     };
 
+    // 1. Try Supabase Cloud
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        await sb.from('customer_reviews').insert([{
+          reference_id: newReview.reference_id,
+          name: newReview.name,
+          role: newReview.company || 'Client',
+          company: newReview.company || 'Private Client',
+          rating: newReview.rating,
+          review_text: newReview.review_text,
+          source: newReview.platform,
+          status: newReview.status,
+          featured: newReview.status === 'approved'
+        }]);
+      } catch (e) {}
+    }
+
+    // 2. Always persist locally
     list.unshift(newReview);
     this.writeReviewsFile(list);
+
     return newReview;
   }
 
   async updateReviewStatus(id, { status }) {
+    // 1. Update Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('customer_reviews').update({
+          status,
+          featured: status === 'approved',
+          updated_at: new Date().toISOString()
+        });
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        await query;
+      } catch (e) {}
+    }
+
+    // 2. Update local file
     const list = this.readReviewsFile();
     const review = list.find(r => String(r.id) === String(id) || r.reference_id === id);
     if (review) {
@@ -581,10 +823,25 @@ class StoreService {
       review.updated_at = new Date().toISOString();
       this.writeReviewsFile(list);
     }
-    return review;
+    return review || { id, status };
   }
 
   async deleteReview(id) {
+    // 1. Delete from Supabase
+    const sb = supabase.getSupabaseClient();
+    if (sb) {
+      try {
+        let query = sb.from('customer_reviews').delete();
+        if (/^\d+$/.test(String(id))) {
+          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        } else {
+          query = query.eq('reference_id', id);
+        }
+        await query;
+      } catch (e) {}
+    }
+
+    // 2. Delete from local file
     const list = this.readReviewsFile();
     const index = list.findIndex(r => String(r.id) === String(id) || r.reference_id === id);
     if (index !== -1) {
