@@ -204,21 +204,9 @@ body {
     line-height: 1.65;
   }
 
-  /* Hero Visual Centered Cleanly on Mobile */
+  /* Consultant Visual: Hidden on Mobile */
   .hero-visual-wrapper {
-    justify-content: center !important;
-    align-items: center !important;
-    align-self: center !important;
-    width: 100% !important;
-    margin: 20px auto 0 !important;
-  }
-
-  .hero-visual-wrapper img {
-    margin: 0 auto !important;
-    max-height: 420px !important;
-    max-width: min(100%, 340px) !important;
-    width: auto !important;
-    object-fit: contain !important;
+    display: none !important;
   }
 
   /* Full-width interactive touch targets */
@@ -319,11 +307,6 @@ body {
   .editorial-subhead {
     font-size: 0.95rem !important;
     line-height: 1.6;
-  }
-
-  .hero-visual-wrapper img {
-    max-height: 330px !important;
-    max-width: min(100%, 280px) !important;
   }
 
   .brand-text {
