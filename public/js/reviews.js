@@ -103,13 +103,19 @@
     return avatarPalettes[idx];
   }
 
+  const verifiedBadge = `
+    <div class="review-platform-badge platform-verified" title="Verified Client Review">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0072ce" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+  `;
+
   function createCardHtml(review) {
     const starsCount = Math.min(5, Math.max(1, review.rating || 5));
     const starsHtml = Array(starsCount).fill(starSvg).join('');
-
-    let platformBadge = googleIconSvg;
-    if (review.platform === 'facebook') platformBadge = facebookIconSvg;
-    if (review.platform === 'linkedin') platformBadge = linkedinIconSvg;
+    const platformBadge = verifiedBadge;
 
     const initials = getInitials(review.name);
     const palette = getPalette(review.name);
@@ -195,13 +201,12 @@
 
         const nameInput = document.getElementById('reviewAuthorName');
         const companyInput = document.getElementById('reviewAuthorCompany');
-        const platformSelect = document.getElementById('reviewPlatformSelect');
         const textInput = document.getElementById('reviewFeedbackText');
         const submitBtn = document.getElementById('submitReviewBtn');
 
         const name = nameInput.value.trim();
         const company = companyInput ? companyInput.value.trim() : '';
-        const platform = platformSelect ? platformSelect.value : 'google';
+        const platform = 'website';
         const review_text = textInput.value.trim();
 
         if (!name || review_text.length < 5) {

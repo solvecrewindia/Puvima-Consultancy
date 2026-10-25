@@ -714,7 +714,7 @@
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="7" class="empty-table-state">
+          <td colspan="6" class="empty-table-state">
             <div class="empty-icon">⭐</div>
             <div style="font-weight: 600; font-size: 1rem; color: var(--text-main); margin-bottom: 4px;">No reviews found</div>
             <p style="font-size: 0.85rem;">Reviews submitted from the main page will appear here for your review and approval.</p>
@@ -740,9 +740,6 @@
                 ${r.company ? `<div style="font-size: 0.78rem; color: var(--accent-teal);">${escapeHtml(r.company)}</div>` : ''}
               </div>
             </div>
-          </td>
-          <td>
-            <span style="text-transform: capitalize; font-weight: 600; font-size: 0.82rem; color: var(--text-muted);">${escapeHtml(r.platform || 'Google')}</span>
           </td>
           <td>
             <span style="color: #f59e0b; font-size: 0.95rem; letter-spacing: 2px;">${stars}</span>
