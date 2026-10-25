@@ -1245,27 +1245,79 @@ main {
   border-color: var(--border-interactive);
 }
 
+/* Glass Matte Card Styling for Compact Team Roster */
+#team-leadership {
+  background: 
+    radial-gradient(circle at 18% 25%, rgba(0, 114, 206, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 82% 75%, rgba(8, 54, 112, 0.05) 0%, transparent 45%),
+    #F8FAFC;
+  position: relative;
+}
+
 .team-card-compact {
-  padding: 24px 28px;
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--puvima-blue);
+  padding: 28px 30px;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  border-left: 4px solid var(--puvima-blue, #0072CE) !important;
+  border-radius: 18px !important;
+  box-shadow: 
+    0 10px 30px -5px rgba(15, 23, 42, 0.06),
+    0 2px 8px -1px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
   min-height: auto;
   justify-content: center;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.team-card-compact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  opacity: 0.8;
+  border-radius: 18px;
+}
+
+.team-card-compact:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border-color: rgba(0, 114, 206, 0.35) !important;
+  border-left: 4px solid #005FA8 !important;
+  box-shadow: 
+    0 20px 40px -8px rgba(0, 114, 206, 0.16),
+    0 4px 12px -2px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 #FFFFFF !important;
 }
 
 .team-card-compact .member-name {
-  font-size: 1.18rem;
+  font-family: var(--font-display, 'Manrope', sans-serif);
+  font-size: 1.22rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-primary, #0F172A);
   margin-bottom: 6px;
-  line-height: 1.35;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
 }
 
 .team-card-compact .member-designation {
+  font-family: var(--font-sans, 'Inter', sans-serif);
   font-size: 0.92rem;
-  color: var(--puvima-blue);
+  color: var(--puvima-blue, #0072CE);
   font-weight: 600;
   margin-bottom: 0;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 1;
 }
 
 .member-avatar-holder {
