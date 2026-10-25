@@ -11,6 +11,14 @@
       "destination": "/api"
     },
     {
+      "source": "/admin.css",
+      "destination": "/admin/admin.css"
+    },
+    {
+      "source": "/admin.js",
+      "destination": "/admin/admin.js"
+    },
+    {
       "source": "/admin",
       "destination": "/admin/index.html"
     },
