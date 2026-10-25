@@ -11,6 +11,12 @@
   var storedUrl = '';
   try {
     storedUrl = localStorage.getItem('puvima_api_base_url') || '';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      if (storedUrl && storedUrl.includes('vercel.app')) {
+        storedUrl = '';
+        localStorage.removeItem('puvima_api_base_url');
+      }
+    }
   } catch (e) {}
 
   var currentConfig = window.PUVIMA_CONFIG || {};

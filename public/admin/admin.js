@@ -8,7 +8,16 @@
 
   const TOKEN_KEY = 'puvima_admin_token';
   const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || (function () {
-    try { return localStorage.getItem('puvima_api_base_url') || ''; } catch (e) { return ''; }
+    try {
+      let stored = localStorage.getItem('puvima_api_base_url') || '';
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        if (stored && stored.includes('vercel.app')) {
+          stored = '';
+          localStorage.removeItem('puvima_api_base_url');
+        }
+      }
+      return stored;
+    } catch (e) { return ''; }
   })(); // Configurable or relative to origin
 
   // State
@@ -455,12 +464,12 @@
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
               </button>
-              <button class="btn-icon" title="Mark as Responded" onclick="window.PUVIMA_ADMIN.quickStatusContact('${c.reference_id}', 'responded')">
+              <button class="btn-icon" title="Mark as Responded" onclick="window.PUVIMA_ADMIN.quickStatusContact('${c.reference_id}', 'responded', this)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </button>
-              <button class="btn-icon danger" title="Delete Inquiry" onclick="window.PUVIMA_ADMIN.deleteContact('${c.reference_id}')">
+              <button class="btn-icon danger" title="Delete Inquiry" onclick="window.PUVIMA_ADMIN.deleteContact('${c.reference_id}', this)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -645,60 +654,87 @@
     const notes = modalNotesInput.value.trim();
 
     modalSaveActionBtn.disabled = true;
+    modalSaveActionBtn.innerHTML = '<span>Saving Changes...</span>';
 
     try {
       if (activeModalItem.type === 'contact') {
-        const res = await fetch(`${API_BASE}/api/admin/contacts/${activeModalItem.data.reference_id}`, {
+        const refId = activeModalItem.data.reference_id;
+        const res = await fetch(`${API_BASE}/api/admin/contacts/${refId}`, {
           method: 'PATCH',
           headers: authHeaders(),
           body: JSON.stringify({ status: newStatus, admin_notes: notes })
         });
-        if (res.ok) {
-          showToast('Contact record updated.', 'success');
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast('Contact record updated successfully.', 'success');
+          // Update local memory in place
+          const contact = contactsList.find(c => c.reference_id === refId);
+          if (contact) {
+            contact.status = newStatus;
+            contact.admin_notes = notes;
+          }
           closeModal();
-          loadContacts();
+          renderContactsTable();
           loadStats();
+        } else {
+          showToast((data && data.message) || 'Failed to update record.', 'error');
         }
       }
     } catch (e) {
       showToast('Error saving record updates.', 'error');
     } finally {
       modalSaveActionBtn.disabled = false;
+      modalSaveActionBtn.innerHTML = '<span>Update Record</span>';
     }
   }
 
   // Quick Action Handlers for table rows
-  async function quickStatusContact(refId, newStatus) {
+  async function quickStatusContact(refId, newStatus, btn) {
+    if (btn) btn.disabled = true;
     try {
       const res = await fetch(`${API_BASE}/api/admin/contacts/${refId}`, {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ status: newStatus })
       });
-      if (res.ok) {
+      const data = await res.json();
+      if (res.ok && data.success) {
         showToast(`Contact inquiry marked as ${newStatus}.`, 'success');
-        loadContacts();
+        const contact = contactsList.find(c => c.reference_id === refId);
+        if (contact) contact.status = newStatus;
+        renderContactsTable();
         loadStats();
+      } else {
+        showToast((data && data.message) || 'Error updating status.', 'error');
+        if (btn) btn.disabled = false;
       }
     } catch (e) {
       showToast('Error updating status.', 'error');
+      if (btn) btn.disabled = false;
     }
   }
 
-  async function deleteContact(refId) {
+  async function deleteContact(refId, btn) {
     if (!confirm(`Are you sure you want to permanently delete inquiry ${refId}?`)) return;
+    if (btn) btn.disabled = true;
     try {
       const res = await fetch(`${API_BASE}/api/admin/contacts/${refId}`, {
         method: 'DELETE',
         headers: authHeaders()
       });
-      if (res.ok) {
-        showToast('Inquiry deleted.', 'info');
-        loadContacts();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Inquiry permanently removed.', 'info');
+        contactsList = contactsList.filter(c => c.reference_id !== refId);
+        renderContactsTable();
         loadStats();
+      } else {
+        showToast((data && data.message) || 'Error deleting inquiry.', 'error');
+        if (btn) btn.disabled = false;
       }
     } catch (e) {
       showToast('Error deleting inquiry.', 'error');
+      if (btn) btn.disabled = false;
     }
   }
 
@@ -756,12 +792,20 @@
       const statusClass = isApproved ? 'status-responded' : 'status-in_review';
       const statusLabel = isApproved ? 'Published on Main Page' : 'Pending Approval';
       const stars = '★'.repeat(Math.min(5, r.rating || 5));
+      const initials = (function(name) {
+        if (!name) return 'CL';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      })(r.name);
 
       return `
         <tr>
           <td>
             <div style="display: flex; align-items: center; gap: 10px;">
-              <img src="../${escapeHtml(r.avatar_url || 'assets/images/team/member-1.svg')}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" onerror="this.src='../assets/images/team/member-1.svg'">
+              <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #0072ce 0%, #0284c7 100%); color: #fff; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);">
+                ${initials}
+              </div>
               <div>
                 <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(r.name)}</div>
                 ${r.company ? `<div style="font-size: 0.78rem; color: var(--accent-teal);">${escapeHtml(r.company)}</div>` : ''}
@@ -783,15 +827,15 @@
           <td>
             <div class="action-btn-group" style="justify-content: flex-end;">
               ${!isApproved ? `
-                <button class="btn-primary" style="padding: 6px 12px; font-size: 0.78rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);" title="Push Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${r.reference_id}')">
+                <button class="btn-primary" style="padding: 6px 12px; font-size: 0.78rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); cursor: pointer;" title="Push Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${r.reference_id || r.id}', this)">
                   <span>🚀 Push to Main Page</span>
                 </button>
               ` : `
-                <button class="btn-ghost" style="padding: 6px 10px; font-size: 0.78rem;" title="Take Down from Main Page" onclick="window.PUVIMA_ADMIN.unpublishReview('${r.reference_id}')">
+                <button class="btn-ghost" style="padding: 6px 10px; font-size: 0.78rem; cursor: pointer;" title="Take Down from Main Page" onclick="window.PUVIMA_ADMIN.unpublishReview('${r.reference_id || r.id}', this)">
                   <span>Take Down</span>
                 </button>
               `}
-              <button class="btn-icon danger" title="Delete Review" onclick="window.PUVIMA_ADMIN.deleteReview('${r.reference_id}')">
+              <button class="btn-icon danger" title="Delete Review" onclick="window.PUVIMA_ADMIN.deleteReview('${r.reference_id || r.id}', this)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -804,55 +848,105 @@
     }).join('');
   }
 
-  async function pushReviewToMainPage(id) {
+  async function pushReviewToMainPage(id, btn) {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Publishing...</span>';
+    }
+    // Optimistically update memory so UI updates immediately
+    const rev = reviewsList.find(x => x.reference_id === id || String(x.id) === String(id));
+    const previousStatus = rev ? rev.status : 'pending';
+    if (rev) rev.status = 'approved';
+    renderReviewsTable();
+
     try {
       const res = await fetch(`${API_BASE}/api/admin/reviews/${id}`, {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ status: 'approved' })
       });
-      if (res.ok) {
-        showToast('Review approved and pushed to the Main Page rotating showcase!', 'success');
-        loadReviews();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Review approved and published to live homepage!', 'success');
         loadStats();
       } else {
-        showToast('Failed to approve review.', 'error');
+        if (rev) rev.status = previousStatus;
+        renderReviewsTable();
+        showToast((data && data.message) || 'Failed to approve review.', 'error');
       }
     } catch (e) {
+      if (rev) rev.status = previousStatus;
+      renderReviewsTable();
       showToast('Network error while pushing review.', 'error');
     }
   }
 
-  async function unpublishReview(id) {
+  async function unpublishReview(id, btn) {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Taking Down...</span>';
+    }
+    // Optimistically update memory so UI updates immediately
+    const rev = reviewsList.find(x => x.reference_id === id || String(x.id) === String(id));
+    const previousStatus = rev ? rev.status : 'approved';
+    if (rev) rev.status = 'pending';
+    renderReviewsTable();
+
     try {
       const res = await fetch(`${API_BASE}/api/admin/reviews/${id}`, {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ status: 'pending' })
       });
-      if (res.ok) {
-        showToast('Review unpublished from main page.', 'info');
-        loadReviews();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Review taken down from main page.', 'info');
         loadStats();
+      } else {
+        if (rev) rev.status = previousStatus;
+        renderReviewsTable();
+        showToast((data && data.message) || 'Failed to update review.', 'error');
       }
     } catch (e) {
+      if (rev) rev.status = previousStatus;
+      renderReviewsTable();
       showToast('Network error while updating review.', 'error');
     }
   }
 
-  async function deleteReview(id) {
+  async function deleteReview(id, btn) {
     if (!confirm('Are you sure you want to permanently delete this customer review?')) return;
+    if (btn) btn.disabled = true;
+
+    // Optimistically remove from list
+    const deletedIndex = reviewsList.findIndex(x => x.reference_id === id || String(x.id) === String(id));
+    let removedItem = null;
+    if (deletedIndex !== -1) {
+      removedItem = reviewsList.splice(deletedIndex, 1)[0];
+      renderReviewsTable();
+    }
+
     try {
       const res = await fetch(`${API_BASE}/api/admin/reviews/${id}`, {
         method: 'DELETE',
         headers: authHeaders()
       });
-      if (res.ok) {
-        showToast('Review deleted.', 'info');
-        loadReviews();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Review permanently removed.', 'info');
         loadStats();
+      } else {
+        if (removedItem) {
+          reviewsList.splice(deletedIndex, 0, removedItem);
+          renderReviewsTable();
+        }
+        showToast((data && data.message) || 'Error deleting review.', 'error');
       }
     } catch (e) {
+      if (removedItem) {
+        reviewsList.splice(deletedIndex, 0, removedItem);
+        renderReviewsTable();
+      }
       showToast('Error deleting review.', 'error');
     }
   }

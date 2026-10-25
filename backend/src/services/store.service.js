@@ -826,7 +826,21 @@ class StoreService {
   }
 
   async updateReviewStatus(id, { status }) {
-    // 1. Update Supabase
+    let refId = String(id);
+    let numId = /^\d+$/.test(String(id)) ? parseInt(id, 10) : null;
+
+    // 1. Update local file first
+    const list = this.readReviewsFile();
+    const review = list.find(r => String(r.id) === String(id) || r.reference_id === id);
+    if (review) {
+      if (status) review.status = status;
+      review.updated_at = new Date().toISOString();
+      refId = review.reference_id || refId;
+      if (review.id && !numId) numId = review.id;
+      this.writeReviewsFile(list);
+    }
+
+    // 2. Update Supabase
     const sb = supabase.getSupabaseClient();
     if (sb) {
       try {
@@ -835,24 +849,16 @@ class StoreService {
           featured: status === 'approved',
           updated_at: new Date().toISOString()
         });
-        if (/^\d+$/.test(String(id))) {
-          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+        if (numId) {
+          query = query.or(`id.eq.${numId},reference_id.eq.${refId}`);
         } else {
-          query = query.eq('reference_id', id);
+          query = query.eq('reference_id', refId);
         }
         await query;
       } catch (e) {}
     }
 
-    // 2. Update local file
-    const list = this.readReviewsFile();
-    const review = list.find(r => String(r.id) === String(id) || r.reference_id === id);
-    if (review) {
-      if (status) review.status = status;
-      review.updated_at = new Date().toISOString();
-      this.writeReviewsFile(list);
-    }
-    return review || { id, status };
+    return review || { id, reference_id: refId, status };
   }
 
   async deleteReview(id) {
