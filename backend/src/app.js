@@ -121,10 +121,21 @@ app.get('/admin', (req, res, next) => {
 
 app.get('/careers', (req, res, next) => {
   const careersHtml = path.join(frontendDir, 'pages', 'careers.html');
-  if (fs.existsSync(careersHtml)) {
-    return res.sendFile(careersHtml);
-  }
+  if (fs.existsSync(careersHtml)) return res.sendFile(careersHtml);
   next();
+});
+
+const pageRoutes = [
+  'contact', 'booking', 'services', 'about', 'portfolio',
+  'testimonials', 'team', 'faq', 'privacy-policy', 'terms'
+];
+
+pageRoutes.forEach(route => {
+  app.get(`/${route}`, (req, res, next) => {
+    const pageHtml = path.join(frontendDir, 'pages', `${route}.html`);
+    if (fs.existsSync(pageHtml)) return res.sendFile(pageHtml);
+    next();
+  });
 });
 
 app.get('/', (req, res, next) => {

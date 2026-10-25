@@ -2,6 +2,7 @@
   "name": "puvima-consultancy",
   "version": "1.0.0",
   "description": "PUVIMA Consultancy — Innovation. Research. Excellence. Full-Stack Technology and Research Consultancy Platform",
+  "main": "index.js",
   "scripts": {
     "start": "node backend/src/server.js",
     "dev": "node --watch backend/src/server.js",
