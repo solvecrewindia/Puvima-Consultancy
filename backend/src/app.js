@@ -156,6 +156,15 @@ app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
 
+// Serverless fallback mounts (for environments where /api prefix is stripped by host)
+app.use(healthRoutes);
+app.use(contactRoutes);
+app.use(bookingRoutes);
+app.use(adminRoutes);
+app.use(settingsRoutes);
+app.use(reviewRoutes);
+app.use(careersRoutes);
+
 app.get('/', (req, res, next) => {
   const indexHtml = path.join(frontendDir, 'index.html');
   if (fs.existsSync(indexHtml)) {

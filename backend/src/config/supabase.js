@@ -12,8 +12,8 @@ if (!process.env.SUPABASE_KEY) {
 
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://jarrtmqdhfcijarbuntl.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.SUPABASE_UR || 'https://jarrtmqdhfcijarbuntl.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'sb_publishable_RXvkWbFuePqt-QdXDt1jzA_sxiJo4ZR';
 
 let client = null;
 let isConnected = false;
