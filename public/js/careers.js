@@ -38,7 +38,7 @@
         applyBtn.target = '_blank';
         applyBtn.rel = 'noopener noreferrer';
       } else {
-        applyBtn.href = 'mailto:careers@puvima.com?subject=PUVIMA%20Career%20Application';
+        applyBtn.href = 'mailto:puvimaconsultancy@gmail.com?subject=PUVIMA%20Career%20Application';
       }
 
       applyBtn.addEventListener('click', (e) => {

@@ -13,8 +13,8 @@ class EmailService {
     this.smtpPort = parseInt(process.env.SMTP_PORT, 10) || 587;
     this.smtpUser = process.env.SMTP_USER || null;
     this.smtpPass = process.env.SMTP_PASS || null;
-    this.fromEmail = process.env.MAIL_FROM || process.env.EMAIL_FROM || 'advisory@puvima.com';
-    this.recruitmentEmail = process.env.RECRUITMENT_EMAIL || 'recruitment@puvima.com';
+    this.fromEmail = process.env.MAIL_FROM || process.env.EMAIL_FROM || 'puvimaconsultancy@gmail.com';
+    this.recruitmentEmail = process.env.RECRUITMENT_EMAIL || 'puvimaconsultancy@gmail.com';
 
     this.provider = process.env.EMAIL_PROVIDER || null;
     this.apiKey = process.env.EMAIL_API_KEY || null;
@@ -180,7 +180,7 @@ class EmailService {
       if (this.transporter) {
         await this.transporter.sendMail({
           from: `"PUVIMA Advisory" <${this.fromEmail}>`,
-          to: process.env.NOTIFICATION_RECIPIENT || 'advisory@puvima.com',
+          to: process.env.NOTIFICATION_RECIPIENT || 'puvimaconsultancy@gmail.com',
           subject: `[Contact Enquiry] ${details.name} - Ref: ${details.referenceId}`,
           text: `Contact enquiry received from ${details.name} (${details.email}) with reference ${details.referenceId}. Subject: ${details.subject || 'N/A'}`
         });
@@ -211,7 +211,7 @@ class EmailService {
       if (this.transporter) {
         await this.transporter.sendMail({
           from: `"PUVIMA Advisory" <${this.fromEmail}>`,
-          to: process.env.NOTIFICATION_RECIPIENT || 'advisory@puvima.com',
+          to: process.env.NOTIFICATION_RECIPIENT || 'puvimaconsultancy@gmail.com',
           subject: `[Consultation Booking] ${booking.name} - Ref: ${booking.referenceId}`,
           text: `Booking requested by ${booking.name} (${booking.email}) for ${booking.topic} on ${booking.preferred_date || booking.preferredDate}.`
         });

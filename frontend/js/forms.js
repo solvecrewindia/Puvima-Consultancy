@@ -135,7 +135,7 @@ function initContactForm() {
       alertBox.innerHTML = `
         <strong>Network Error:</strong> Could not establish connection to the PUVIMA API server.<br>
         Please verify the backend server is running on port 5000, or reach our advisory desk directly at 
-        <a href="mailto:advisory@puvima.com" style="color: #FFFFFF; text-decoration: underline;">advisory@puvima.com</a>.
+        <a href="mailto:puvimaconsultancy@gmail.com" style="color: #FFFFFF; text-decoration: underline;">puvimaconsultancy@gmail.com</a>.
       `;
     } finally {
       if (submitBtn) {
@@ -352,7 +352,7 @@ function initBookingForm() {
         alertBox.innerHTML = `
           <strong>Network Connectivity Notice:</strong> Could not reach the PUVIMA API endpoint.<br>
           Please ensure backend server is running on port 5000 or email your requested window to 
-          <a href="mailto:advisory@puvima.com" style="color: #FFFFFF; text-decoration: underline;">advisory@puvima.com</a>.
+          <a href="mailto:puvimaconsultancy@gmail.com" style="color: #FFFFFF; text-decoration: underline;">puvimaconsultancy@gmail.com</a>.
         `;
       }
     } finally {

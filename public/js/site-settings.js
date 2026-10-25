@@ -44,10 +44,24 @@
       if (s.contact) {
         if (s.contact.email) {
           document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
-            if (el.textContent.includes('@puvima.com')) {
+            if (!el.getAttribute('data-keep-email')) {
               el.textContent = s.contact.email;
               el.href = `mailto:${s.contact.email}`;
             }
+          });
+          document.querySelectorAll('[data-contact-email]').forEach(el => {
+            el.textContent = s.contact.email;
+            if (el.tagName === 'A') el.href = `mailto:${s.contact.email}`;
+          });
+        }
+        if (s.contact.phone) {
+          document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+            el.textContent = s.contact.phone;
+            el.href = `tel:${s.contact.phone.replace(/[^0-9+]/g, '')}`;
+          });
+          document.querySelectorAll('[data-contact-phone]').forEach(el => {
+            el.textContent = s.contact.phone;
+            if (el.tagName === 'A') el.href = `tel:${s.contact.phone.replace(/[^0-9+]/g, '')}`;
           });
         }
       }
