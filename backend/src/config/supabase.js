@@ -6,6 +6,8 @@
 const path = require('path');
 if (!process.env.SUPABASE_KEY) {
   require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+  require('dotenv').config({ path: path.resolve(process.cwd(), '.env') });
+  require('dotenv').config({ path: path.resolve(process.cwd(), 'backend/.env') });
 }
 
 const { createClient } = require('@supabase/supabase-js');

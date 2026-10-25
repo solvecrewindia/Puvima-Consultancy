@@ -3,6 +3,14 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/api",
+      "destination": "/api"
+    },
+    {
       "source": "/admin",
       "destination": "/admin/index.html"
     },
@@ -50,5 +58,13 @@
       "source": "/terms",
       "destination": "/pages/terms.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "{backend/data/**,data/**}"
+    },
+    "index.js": {
+      "includeFiles": "{backend/data/**,data/**}"
+    }
+  }
 }

@@ -9,7 +9,20 @@ const path = require('path');
 const db = require('../config/database');
 const supabase = require('../config/supabase');
 
-const DATA_DIR = path.resolve(__dirname, '../../data');
+function resolveDataDir() {
+  const candidates = [
+    path.resolve(__dirname, '../../data'),
+    path.resolve(__dirname, '../../../backend/data'),
+    path.resolve(process.cwd(), 'backend/data'),
+    path.resolve(process.cwd(), 'data')
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return path.resolve(__dirname, '../../data');
+}
+
+const DATA_DIR = resolveDataDir();
 const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
 const SETTINGS_FILE = path.join(DATA_DIR, 'site-settings.json');
 const REVIEWS_FILE = path.join(DATA_DIR, 'reviews.json');

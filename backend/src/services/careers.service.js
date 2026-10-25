@@ -11,7 +11,20 @@ const { generateReferenceId, hashIp } = require('../utils/referenceId');
 const { RESUMES_DIR } = require('../middleware/resumeUpload');
 const emailService = require('./email.service');
 
-const DATA_DIR = path.resolve(__dirname, '../../data');
+function resolveDataDir() {
+  const candidates = [
+    path.resolve(__dirname, '../../data'),
+    path.resolve(__dirname, '../../../backend/data'),
+    path.resolve(process.cwd(), 'backend/data'),
+    path.resolve(process.cwd(), 'data')
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return path.resolve(__dirname, '../../data');
+}
+
+const DATA_DIR = resolveDataDir();
 const CAREERS_FILE = path.join(DATA_DIR, 'careers.json');
 
 class CareersService {
