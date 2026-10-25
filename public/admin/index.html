@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUVIMA Consultancy — Executive Administration Portal</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. AUTHENTICATION VIEW (LOGIN SCREEN)
+       ======================================================================== -->
+  <div id="loginView" class="login-wrapper">
+    <div class="login-card">
+      <div class="login-brand">
+        <img src="../assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="login-brand-logo">
+        <h1 class="login-title">Executive Portal Sign In</h1>
+        <p class="login-subtitle">Manage client inquiries, consultation appointments, customer reviews, and live website content.</p>
+      </div>
+
+      <!-- Quick Fill Credentials helper -->
+      <div class="demo-chip" id="demoChipBtn" title="Click to autofill administrative credentials">
+        <div class="demo-chip-title">
+          <span>DEFAULT ADMINISTRATOR ACCOUNT</span>
+          <span style="text-decoration: underline; font-weight: 700;">Click to Autofill</span>
+        </div>
+        <div class="demo-chip-meta">
+          admin@puvima.com &bull; admin123
+        </div>
+      </div>
+
+      <div id="loginErrorAlert" class="login-error-alert" role="alert"></div>
+
+      <form id="adminLoginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Administrative Email</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="admin@puvima.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Access Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="login-btn">
+          <span>Sign In to Portal</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. ADMIN DASHBOARD SHELL
+       ======================================================================== -->
+  <div id="adminShell" class="admin-shell">
+    
+    <!-- Top Bar -->
+    <header class="admin-header">
+      <div class="header-left">
+        <a href="index.html" class="header-brand">
+          <img src="../assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA" class="header-logo">
+          <span class="header-badge">ADMIN PORTAL</span>
+        </a>
+
+        <div class="system-status-indicator" id="systemHealthBadge">
+          <span class="status-dot" id="systemHealthDot"></span>
+          <span id="systemHealthText">System: Synchronized</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="../index.html" target="_blank" class="btn-ghost" title="Open live public website">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>View Live Site</span>
+        </a>
+
+        <div class="user-profile-badge">
+          <div class="user-avatar" id="userAvatar">A</div>
+          <span id="adminEmailDisplay" style="font-weight: 600;">admin@puvima.com</span>
+        </div>
+
+        <button id="logoutBtn" class="btn-sm-danger" title="Sign out of portal">Sign Out</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="admin-tab-bar" aria-label="Administration Navigation">
+      <button class="tab-btn active" data-tab="overview">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Overview</span>
+      </button>
+
+      <button class="tab-btn" data-tab="contacts">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        <span>Inquiries</span>
+        <span class="tab-pill" id="unreadContactsBadge">0</span>
+      </button>
+
+
+      <button class="tab-btn" data-tab="reviews">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>Reviews</span>
+        <span class="tab-pill" id="pendingReviewsBadge">0</span>
+      </button>
+
+      <button class="tab-btn" data-tab="settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Website Settings</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Body -->
+    <main class="admin-content">
+      
+      <!-- ====================================================================
+           TAB 1: OVERVIEW (CLEAN & ACTIONABLE)
+           ==================================================================== -->
+      <section id="tab-overview" class="tab-view active">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Executive Operations Overview</h2>
+            <p class="view-desc">Monitor live incoming inquiries, customer review moderation, and site configuration.</p>
+          </div>
+          <button class="btn-ghost" id="refreshStatsBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Refresh Metrics</span>
+          </button>
+        </div>
+
+        <!-- 3 Primary Action Priority KPI Cards -->
+        <div class="kpi-grid">
+          <!-- 1. New Inquiries -->
+          <div class="kpi-card action-priority">
+            <div>
+              <div class="kpi-title">Unread Contact Inquiries</div>
+              <div class="kpi-value" id="kpiNewContacts" style="color: var(--primary);">0</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span class="kpi-badge badge-info">Needs Response</span>
+              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('contacts')">
+                <span>Open Inquiries &rarr;</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Pending Review Approvals -->
+          <div class="kpi-card action-priority" style="border-left-color: var(--accent-emerald);">
+            <div>
+              <div class="kpi-title">Reviews Pending Approval</div>
+              <div class="kpi-value" id="kpiPendingReviews" style="color: var(--accent-emerald);">0</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span class="kpi-badge badge-success">Ready to Publish</span>
+              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('reviews')">
+                <span>Moderate Reviews &rarr;</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Website & Application Controls -->
+          <div class="kpi-card action-priority" style="border-left-color: var(--accent-indigo);">
+            <div>
+              <div class="kpi-title">Website Configuration</div>
+              <div class="kpi-value" style="font-size: 1.35rem; font-weight: 700; color: #4338CA; margin-top: 6px;">Live Settings</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span class="kpi-badge badge-info">Announcements &amp; URLs</span>
+              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('settings')">
+                <span>Open Settings &rarr;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Summary Grid -->
+        <div class="kpi-grid" style="margin-bottom: 24px;">
+          <div class="kpi-card">
+            <div class="kpi-title">Total Inquiries Received</div>
+            <div class="kpi-value" id="kpiTotalContacts" style="font-size: 1.7rem; margin-bottom: 6px;">0</div>
+            <span class="kpi-badge badge-info">All Historical Inquiries</span>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Published on Homepage</div>
+            <div class="kpi-value" id="kpiApprovedReviews" style="font-size: 1.7rem; color: var(--accent-emerald); margin-bottom: 6px;">0</div>
+            <span class="kpi-badge badge-success">Live on Marquee</span>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-title">Candidate Application Link</div>
+            <div class="kpi-value" style="font-size: 1.15rem; font-weight: 600; color: var(--accent-teal); margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Configured in Settings</div>
+            <span class="kpi-badge badge-success">Active Application Form</span>
+          </div>
+        </div>
+
+        <!-- Quick System Status Panel -->
+        <div class="settings-panel">
+          <h3 class="settings-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Platform Status &amp; Verified Storage</span>
+          </h3>
+          <p class="settings-section-desc">PUVIMA's backend operates in high-reliability mode with live Supabase relational sync and verified failover preservation.</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+            <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 14px 18px;">
+              <div style="font-size: 0.76rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.04em;">Database Connection</div>
+              <div style="font-size: 0.96rem; font-weight: 700; color: var(--accent-emerald); margin-top: 4px;" id="storageEngineLabel">Supabase Cloud Connected</div>
+            </div>
+
+            <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 14px 18px;">
+              <div style="font-size: 0.76rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.04em;">Backend Server Uptime</div>
+              <div style="font-size: 0.96rem; font-weight: 600; color: var(--text-main); margin-top: 4px;" id="serverUptimeLabel">Calculating...</div>
+            </div>
+
+            <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 14px 18px;">
+              <div style="font-size: 0.76rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.04em;">Public Website Link</div>
+              <div style="margin-top: 4px;">
+                <a href="../index.html" target="_blank" style="color: var(--primary); text-decoration: underline; font-weight: 600; font-size: 0.96rem;">http://localhost:5000/ ↗</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: CONTACT INQUIRIES
+           ==================================================================== -->
+      <section id="tab-contacts" class="tab-view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Client Contact Inquiries</h2>
+            <p class="view-desc">Review client questions, research requests, and general messages submitted through the website contact form.</p>
+          </div>
+          <button class="btn-ghost" id="reloadContactsBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Refresh List</span>
+          </button>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <button class="filter-pill-btn active" data-filter-status="all">All</button>
+            <button class="filter-pill-btn" data-filter-status="new">New</button>
+            <button class="filter-pill-btn" data-filter-status="in_review">In Review</button>
+            <button class="filter-pill-btn" data-filter-status="responded">Responded</button>
+            <button class="filter-pill-btn" data-filter-status="archived">Archived</button>
+          </div>
+
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="contactSearchInput" class="form-control" placeholder="Search by name, email, or ref ID...">
+          </div>
+        </div>
+
+        <!-- Contacts Table -->
+        <div class="data-table-container">
+          <table class="data-table" id="contactsTable">
+            <thead>
+              <tr>
+                <th>Ref ID</th>
+                <th>Sender / Organization</th>
+                <th>Subject &amp; Inquiry Message</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="contactsTableBody">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           TAB 4: CUSTOMER REVIEWS (PUSH TO HOMEPAGE)
+           ==================================================================== -->
+      <section id="tab-reviews" class="tab-view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Customer Reviews &amp; Moderation</h2>
+            <p class="view-desc">Client feedback submitted on the main page appears here. Click <strong style="color: var(--accent-emerald);">Push to Main Page</strong> to display the review on the rotating carousel.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-ghost" id="reloadReviewsBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              <span>Refresh Reviews</span>
+            </button>
+            <a href="../index.html#customer-reviews" target="_blank" class="btn-ghost">View Live Showcase ↗</a>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <button class="filter-pill-btn active" data-review-status="all">All Reviews</button>
+            <button class="filter-pill-btn" data-review-status="pending">Pending Approval</button>
+            <button class="filter-pill-btn" data-review-status="approved">Published on Main Page</button>
+            <button class="filter-pill-btn" data-review-status="rejected">Archived</button>
+          </div>
+
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="reviewSearchInput" class="form-control" placeholder="Search reviewer, company, or text...">
+          </div>
+        </div>
+
+        <!-- Reviews Table -->
+        <div class="data-table-container">
+          <table class="data-table" id="reviewsTable">
+            <thead>
+              <tr>
+                <th>Reviewer / Organization</th>
+                <th>Source Platform</th>
+                <th>Rating</th>
+                <th>Testimonial Feedback</th>
+                <th>Submission Date</th>
+                <th>Status</th>
+                <th style="text-align: right;">Showcase Action</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTableBody">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+
+      <!-- ====================================================================
+           TAB 6: MANAGE MAIN PAGE CONTENT
+           ==================================================================== -->
+      <section id="tab-settings" class="tab-view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Manage Main Page Content</h2>
+            <p class="view-desc">Update headlines, announcement bar, contact info, and metrics live on the homepage.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="../index.html" target="_blank" class="btn-ghost">Preview Home Page ↗</a>
+            <button type="button" id="saveSettingsBtn" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              <span>Save &amp; Publish Changes</span>
+            </button>
+          </div>
+        </div>
+
+        <form id="siteSettingsForm">
+          <!-- Hidden field to preserve compatibility with admin.js -->
+          <input type="hidden" id="heroEyebrow" value="">
+
+          <!-- 1. Top Announcement Ribbon -->
+          <div class="settings-panel">
+            <h3 class="settings-section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Top Announcement Ribbon</span>
+            </h3>
+            <p class="settings-section-desc">Display an optional notification banner at the very top of the website.</p>
+
+            <div class="toggle-switch-wrap">
+              <label class="toggle-switch">
+                <input type="checkbox" id="announcementEnabled" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <label for="announcementEnabled" style="font-weight: 600; font-size: 0.9rem; cursor: pointer;">Enable Announcement Ribbon on Homepage</label>
+            </div>
+
+            <div class="settings-grid">
+              <div class="form-group">
+                <label class="form-label" for="announcementBadge">Ribbon Badge Text</label>
+                <input type="text" id="announcementBadge" class="form-control" placeholder="e.g. NEW ANNOUNCEMENT">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="announcementLinkText">Button / Link Text</label>
+                <input type="text" id="announcementLinkText" class="form-control" placeholder="e.g. Explore Research">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label" for="announcementText">Announcement Message</label>
+                <input type="text" id="announcementText" class="form-control" placeholder="e.g. Now accepting technical advisory & research partnerships for Q4 / 2026">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label" for="announcementLinkUrl">Destination URL</label>
+                <input type="text" id="announcementLinkUrl" class="form-control" placeholder="pages/ai-ml-research.html">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Hero Section Content -->
+          <div class="settings-panel">
+            <h3 class="settings-section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <span>Main Hero Section Headlines</span>
+            </h3>
+            <p class="settings-section-desc">Configure the primary headline and introductory text displayed on the homepage.</p>
+
+            <div class="settings-grid">
+              <div class="form-group">
+                <label class="form-label" for="heroHeadlineMain">Headline Lead Words</label>
+                <input type="text" id="heroHeadlineMain" class="form-control" placeholder="Innovation.">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="heroHeadlineGradient">Highlight Words (Royal Blue)</label>
+                <input type="text" id="heroHeadlineGradient" class="form-control" placeholder="Research. Excellence.">
+              </div>
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label" for="heroSubhead">Editorial Subheadline Text</label>
+                <textarea id="heroSubhead" class="form-control" rows="3" placeholder="PUVIMA Consultancy transforms innovative ideas into impactful solutions..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Advisory Contact & Operating Details -->
+          <div class="settings-panel">
+            <h3 class="settings-section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span>Advisory Contact &amp; Coordinates</span>
+            </h3>
+            <p class="settings-section-desc">Public contact details shown in the website header, footer, and contact page.</p>
+
+            <div class="settings-grid">
+              <div class="form-group">
+                <label class="form-label" for="contactEmailSetting">Public Advisory Email</label>
+                <input type="email" id="contactEmailSetting" class="form-control" placeholder="advisory@puvima.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contactPhoneSetting">Direct Telephone / Helpline</label>
+                <input type="text" id="contactPhoneSetting" class="form-control" placeholder="+91 (0) 44 2810 5000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contactHoursSetting">Operating Hours</label>
+                <input type="text" id="contactHoursSetting" class="form-control" placeholder="Mon – Fri: 09:00 – 18:00 IST">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contactLocationSetting">Primary Hub / Location</label>
+                <input type="text" id="contactLocationSetting" class="form-control" placeholder="Chennai & Bangalore, India">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Research Metric Numbers -->
+          <div class="settings-panel">
+            <h3 class="settings-section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+              </svg>
+              <span>Key Metric Counters</span>
+            </h3>
+            <p class="settings-section-desc">Operational statistics displayed across showcase sections.</p>
+
+            <div class="settings-grid">
+              <div class="form-group">
+                <label class="form-label" for="statConsultations">Consultations Delivered</label>
+                <input type="text" id="statConsultations" class="form-control" placeholder="120+">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="statPrototypes">Active Technical Prototypes</label>
+                <input type="text" id="statPrototypes" class="form-control" placeholder="18">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="statDomains">Specialized Research Domains</label>
+                <input type="text" id="statDomains" class="form-control" placeholder="4">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="statSatisfaction">Advisory Satisfaction Rate</label>
+                <input type="text" id="statSatisfaction" class="form-control" placeholder="99.4%">
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Careers Application Form Link -->
+          <div class="settings-panel">
+            <h3 class="settings-section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              <span>Careers Application Form URL</span>
+            </h3>
+            <p class="settings-section-desc">Link to your application form (e.g. Google Forms / Typeform) that opens when candidates click "Submit Application Form".</p>
+
+            <div class="form-group">
+              <label class="form-label" for="careersFormUrlSetting">Candidate Application Form URL</label>
+              <input type="url" id="careersFormUrlSetting" class="form-control" placeholder="https://docs.google.com/forms/d/e/.../viewform">
+            </div>
+          </div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+
+  <!-- ========================================================================
+       3. DETAIL INSPECTION MODAL (FOR INQUIRIES)
+       ======================================================================== -->
+  <div id="detailModalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="status-pill status-new" id="modalStatusBadge">NEW</span>
+          <h3 class="modal-title" id="modalSubjectTitle" style="margin-top: 8px;">Inquiry Details</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-meta-row">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Reference ID</div>
+          <div class="modal-meta-value" id="modalRefId" style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Submitted On</div>
+          <div class="modal-meta-value" id="modalCreatedAt">--</div>
+        </div>
+      </div>
+
+      <div class="modal-meta-row">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Sender Name</div>
+          <div class="modal-meta-value" id="modalSenderName">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Contact Email</div>
+          <div class="modal-meta-value">
+            <a href="#" id="modalSenderEmail" style="color: var(--primary); text-decoration: underline;">--</a>
+          </div>
+        </div>
+        <div class="modal-meta-item" id="modalCompanyWrap">
+          <div class="modal-meta-label">Organization</div>
+          <div class="modal-meta-value" id="modalSenderCompany">--</div>
+        </div>
+      </div>
+
+      <div class="modal-meta-label" style="margin-bottom: 6px;">Message / Technical Statement</div>
+      <div class="modal-message-box" id="modalMessageBody">--</div>
+
+      <!-- Action & Status Update controls -->
+      <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 18px; margin-top: 10px;">
+        <div style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.04em;">Update Status &amp; Internal Notes</div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="modalStatusSelect">Workflow Status</label>
+          <select id="modalStatusSelect" class="form-control">
+            <!-- Populated dynamically based on contact vs booking -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="modalNotesInput">Internal Notes (Coordinator only)</label>
+          <textarea id="modalNotesInput" class="form-control" rows="2" placeholder="Record internal discussion notes, consultant assigned, or next actions..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <a href="#" id="modalMailtoBtn" class="btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Reply via Email</span>
+          </a>
+
+          <button type="button" id="modalSaveActionBtn" class="btn-primary">
+            <span>Update Record</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Admin Controller JavaScript -->
+  <script src="../js/config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

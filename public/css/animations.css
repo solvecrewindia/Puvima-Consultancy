@@ -1,0 +1,345 @@
+
+
+
+.ambient-glow-layer {
+  display: none !important;
+}
+
+.ambient-glow-top {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 600px;
+  background: radial-gradient(circle 500px at center, rgba(0, 114, 206, 0.09), transparent 70%);
+  filter: blur(80px);
+  animation: pulse-ambient 12s ease-in-out infinite alternate;
+}
+
+.ambient-glow-accent {
+  position: absolute;
+  top: 40%;
+  right: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle 350px at center, rgba(0, 163, 255, 0.05), transparent 75%);
+  filter: blur(100px);
+  animation: pulse-ambient 16s ease-in-out infinite alternate-reverse;
+}
+
+.ambient-grid {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+.reveal-init {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.delay-1 { transition-delay: 100ms; }
+.delay-2 { transition-delay: 200ms; }
+.delay-3 { transition-delay: 300ms; }
+.delay-4 { transition-delay: 400ms; }
+
+
+@keyframes pulse-ambient {
+  0% { transform: translate(-50%, 0) scale(1); opacity: 0.8; }
+  50% { transform: translate(-48%, 20px) scale(1.08); opacity: 1; }
+  100% { transform: translate(-52%, -10px) scale(0.95); opacity: 0.85; }
+}
+
+@keyframes pulse-teal {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 163, 255, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 163, 255, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 163, 255, 0); }
+}
+
+@keyframes float-gentle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -40; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--puvima-blue, #0072CE);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.status-dot-green {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10B981;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+
+.float-card {
+  animation: float-gentle 6s ease-in-out infinite;
+}
+
+.float-card-alt {
+  animation: float-gentle 7s ease-in-out infinite 1.5s;
+}
+
+
+.radar-scanner {
+  transform-origin: center center;
+  animation: radar-sweep 5s linear infinite;
+}
+
+/* ============================================================================
+   Timeline Blur-Sequence Animation (Framer Motion / motion/react spec)
+   Specification:
+     hidden:  filter: blur(20px), y: 0, opacity: 0
+     visible: filter: blur(0px),  y: 0, opacity: 1, duration: 0.5s, delay: i * 0.5s
+   ============================================================================ */
+
+.timeline-container,
+[data-timeline] {
+  position: relative;
+}
+
+.timeline-animation,
+[data-timeline-item],
+.blur-card-item,
+.service-card-compact,
+.service-card-deep,
+.principle-editorial-card,
+.portfolio-card,
+.team-card,
+.team-card-compact,
+.timeline-card,
+.timeline-process-card,
+.careers-hub-card,
+.job-card,
+.job-card-editorial,
+.service-column-box,
+.cross-service-card,
+.hero-visual-card,
+.faq-item,
+.bento-card,
+.contact-cta-card,
+.mission-card-box {
+  opacity: 0;
+  filter: blur(20px);
+  transform: translateY(0);
+  transition: 
+    filter 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: filter, opacity, transform;
+}
+
+.timeline-animation.is-visible,
+[data-timeline-item].is-visible,
+.blur-card-item.is-visible,
+.service-card-compact.is-visible,
+.service-card-compact.reveal-visible,
+.service-card-deep.is-visible,
+.service-card-deep.reveal-visible,
+.principle-editorial-card.is-visible,
+.principle-editorial-card.reveal-visible,
+.portfolio-card.is-visible,
+.portfolio-card.reveal-visible,
+.team-card.is-visible,
+.team-card.reveal-visible,
+.team-card-compact.is-visible,
+.team-card-compact.reveal-visible,
+.timeline-card.is-visible,
+.timeline-card.reveal-visible,
+.timeline-process-card.is-visible,
+.timeline-process-card.reveal-visible,
+.careers-hub-card.is-visible,
+.careers-hub-card.reveal-visible,
+.job-card.is-visible,
+.job-card.reveal-visible,
+.job-card-editorial.is-visible,
+.job-card-editorial.reveal-visible,
+.service-column-box.is-visible,
+.service-column-box.reveal-visible,
+.cross-service-card.is-visible,
+.cross-service-card.reveal-visible,
+.hero-visual-card.is-visible,
+.hero-visual-card.reveal-visible,
+.faq-item.is-visible,
+.faq-item.reveal-visible,
+.bento-card.is-visible,
+.bento-card.reveal-visible,
+.contact-cta-card.is-visible,
+.contact-cta-card.reveal-visible,
+.mission-card-box.is-visible,
+.mission-card-box.reveal-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+  transition-delay: calc(var(--animation-num, 0) * var(--delay-step, 0.16s));
+}
+
+/* Timeline Process Cards Grid - Clean Corporate Stepper */
+.timeline-process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  position: relative;
+  margin-top: 40px;
+}
+
+@media (max-width: 1024px) {
+  .timeline-process-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .timeline-process-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.timeline-card {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-top: 2px solid var(--border-light, #E2E8F0);
+  border-radius: 0;
+  padding: 24px 0 0 0;
+  box-shadow: none;
+  transition: border-color var(--duration-fast);
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-card::before {
+  display: none;
+}
+
+.timeline-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-top-color: var(--puvima-blue, #0072CE);
+}
+
+.timeline-step-num {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--puvima-blue, #0072CE);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.timeline-step-badge {
+  display: none !important;
+}
+
+.timeline-step-title {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--text-primary, #0F172A);
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.timeline-step-desc {
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #64748B);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-init {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .timeline-animation,
+  [data-timeline-item],
+  .blur-card-item,
+  .service-card-compact,
+  .service-card-deep,
+  .principle-editorial-card,
+  .portfolio-card,
+  .team-card,
+  .team-card-compact,
+  .timeline-card,
+  .timeline-process-card,
+  .careers-hub-card,
+  .job-card,
+  .job-card-editorial,
+  .service-column-box,
+  .cross-service-card,
+  .hero-visual-card,
+  .faq-item,
+  .bento-card,
+  .contact-cta-card,
+  .mission-card-box {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .ambient-glow-top,
+  .ambient-glow-accent,
+  .status-dot,
+  .status-dot-green,
+  .float-card,
+  .float-card-alt,
+  .radar-scanner {
+    animation: none !important;
+  }
+}

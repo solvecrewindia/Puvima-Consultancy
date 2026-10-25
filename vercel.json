@@ -1,61 +1,54 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/admin",
-      "destination": "/frontend/admin/index.html"
+      "destination": "/admin/index.html"
     },
     {
       "source": "/careers",
-      "destination": "/frontend/pages/careers.html"
+      "destination": "/pages/careers.html"
     },
     {
       "source": "/contact",
-      "destination": "/frontend/pages/contact.html"
+      "destination": "/pages/contact.html"
     },
     {
       "source": "/booking",
-      "destination": "/frontend/pages/booking.html"
+      "destination": "/pages/booking.html"
     },
     {
       "source": "/services",
-      "destination": "/frontend/pages/services.html"
+      "destination": "/pages/services.html"
     },
     {
       "source": "/about",
-      "destination": "/frontend/pages/about.html"
+      "destination": "/pages/about.html"
     },
     {
       "source": "/portfolio",
-      "destination": "/frontend/pages/portfolio.html"
+      "destination": "/pages/portfolio.html"
     },
     {
       "source": "/testimonials",
-      "destination": "/frontend/pages/testimonials.html"
+      "destination": "/pages/testimonials.html"
     },
     {
       "source": "/team",
-      "destination": "/frontend/pages/team.html"
+      "destination": "/pages/team.html"
     },
     {
       "source": "/faq",
-      "destination": "/frontend/pages/faq.html"
+      "destination": "/pages/faq.html"
     },
     {
       "source": "/privacy-policy",
-      "destination": "/frontend/pages/privacy-policy.html"
+      "destination": "/pages/privacy-policy.html"
     },
     {
       "source": "/terms",
-      "destination": "/frontend/pages/terms.html"
-    },
-    {
-      "source": "/",
-      "destination": "/frontend/index.html"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/frontend/$1"
+      "destination": "/pages/terms.html"
     }
   ]
 }
