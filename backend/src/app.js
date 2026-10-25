@@ -38,7 +38,7 @@ app.use(
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         imgSrc: ["'self'", "data:", "https:"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", "https://*.supabase.co", "https://*.vercel.app"],
         frameAncestors: ["'none'"],
         formAction: ["'self'"],
         baseUri: ["'self'"],
@@ -100,20 +100,9 @@ app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 const frontendDir = fs.existsSync(path.resolve(__dirname, '../../public'))
   ? path.resolve(__dirname, '../../public')
   : path.resolve(__dirname, '../../frontend');
-if (fs.existsSync(frontendDir)) {
-  app.use(express.static(frontendDir));
-}
 
-app.use('/api', apiRateLimiter);
-app.use('/api', healthRoutes);
-app.use('/api', contactRoutes);
-app.use('/api', bookingRoutes);
-app.use('/api', adminRoutes);
-app.use('/api', settingsRoutes);
-app.use('/api', reviewRoutes);
-app.use('/api', careersRoutes);
-
-app.get('/admin', (req, res, next) => {
+// Admin portal route
+app.get(['/admin', '/admin/'], (req, res, next) => {
   const adminHtml = path.join(frontendDir, 'admin', 'index.html');
   if (fs.existsSync(adminHtml)) {
     return res.sendFile(adminHtml);
@@ -121,14 +110,9 @@ app.get('/admin', (req, res, next) => {
   next();
 });
 
-app.get('/careers', (req, res, next) => {
-  const careersHtml = path.join(frontendDir, 'pages', 'careers.html');
-  if (fs.existsSync(careersHtml)) return res.sendFile(careersHtml);
-  next();
-});
-
+// Clean friendly page routes
 const pageRoutes = [
-  'contact', 'booking', 'services', 'about', 'portfolio',
+  'careers', 'contact', 'booking', 'services', 'about', 'portfolio',
   'testimonials', 'team', 'faq', 'privacy-policy', 'terms'
 ];
 
@@ -139,6 +123,38 @@ pageRoutes.forEach(route => {
     next();
   });
 });
+
+// Static assets CDN / local serving
+if (fs.existsSync(frontendDir)) {
+  app.use(express.static(frontendDir));
+}
+
+// Public API endpoints
+app.get('/api', (req, res) => {
+  res.json({
+    service: 'PUVIMA Consultancy API',
+    status: 'ONLINE',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      contact: '/api/contact',
+      bookings: '/api/booking',
+      careers: '/api/careers',
+      reviews: '/api/reviews',
+      settings: '/api/site-settings',
+      admin: '/api/admin/login'
+    }
+  });
+});
+
+app.use('/api', apiRateLimiter);
+app.use('/api', healthRoutes);
+app.use('/api', contactRoutes);
+app.use('/api', bookingRoutes);
+app.use('/api', adminRoutes);
+app.use('/api', settingsRoutes);
+app.use('/api', reviewRoutes);
+app.use('/api', careersRoutes);
 
 app.get('/', (req, res, next) => {
   const indexHtml = path.join(frontendDir, 'index.html');

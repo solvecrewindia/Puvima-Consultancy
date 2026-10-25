@@ -13,7 +13,8 @@ const formRateLimiter = rateLimit({
 
 const apiRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 120,
+  max: 300,
+  skip: (req) => req.path.startsWith('/admin') || (req.originalUrl && req.originalUrl.includes('/admin')) || !!req.headers['authorization'],
   standardHeaders: true,
   legacyHeaders: false,
   message: {
