@@ -155,10 +155,20 @@
 
     // Refresh Buttons
     const refreshStatsBtn = document.getElementById('refreshStatsBtn');
-    if (refreshStatsBtn) refreshStatsBtn.addEventListener('click', loadStats);
+    if (refreshStatsBtn) {
+      refreshStatsBtn.addEventListener('click', async () => {
+        await refreshAllData();
+        showToast('Dashboard metrics updated.', 'info');
+      });
+    }
 
     const reloadContactsBtn = document.getElementById('reloadContactsBtn');
-    if (reloadContactsBtn) reloadContactsBtn.addEventListener('click', loadContacts);
+    if (reloadContactsBtn) {
+      reloadContactsBtn.addEventListener('click', async () => {
+        await Promise.all([loadContacts(), loadStats()]);
+        showToast('Inquiries list refreshed.', 'info');
+      });
+    }
 
     // Contact Filters
     document.querySelectorAll('[data-filter-status]').forEach(btn => {
@@ -177,7 +187,12 @@
 
     // Review Refresh & Filters
     const reloadReviewsBtn = document.getElementById('reloadReviewsBtn');
-    if (reloadReviewsBtn) reloadReviewsBtn.addEventListener('click', loadReviews);
+    if (reloadReviewsBtn) {
+      reloadReviewsBtn.addEventListener('click', async () => {
+        await Promise.all([loadReviews(), loadStats()]);
+        showToast('Customer reviews refreshed.', 'info');
+      });
+    }
 
     document.querySelectorAll('[data-review-status]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -279,6 +294,18 @@
     document.querySelectorAll('.tab-view').forEach(view => {
       view.classList.toggle('active', view.id === `tab-${tabId}`);
     });
+
+    if (tabId === 'contacts') {
+      loadContacts();
+      loadStats();
+    } else if (tabId === 'reviews') {
+      loadReviews();
+      loadStats();
+    } else if (tabId === 'overview') {
+      loadStats();
+    } else if (tabId === 'settings') {
+      loadSettings();
+    }
   }
 
   // ==========================================================================
