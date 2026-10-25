@@ -7,7 +7,9 @@
   'use strict';
 
   const TOKEN_KEY = 'puvima_admin_token';
-  const API_BASE = ''; // Relative to origin
+  const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || (function () {
+    try { return localStorage.getItem('puvima_api_base_url') || ''; } catch (e) { return ''; }
+  })(); // Configurable or relative to origin
 
   // State
   let currentAdmin = null;

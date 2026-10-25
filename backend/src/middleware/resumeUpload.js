@@ -9,9 +9,15 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 
-const RESUMES_DIR = path.resolve(__dirname, '../../uploads/resumes');
-if (!fs.existsSync(RESUMES_DIR)) {
-  fs.mkdirSync(RESUMES_DIR, { recursive: true });
+const RESUMES_DIR = process.env.VERCEL
+  ? path.join(require('os').tmpdir(), 'puvima-resumes')
+  : path.resolve(__dirname, '../../uploads/resumes');
+try {
+  if (!fs.existsSync(RESUMES_DIR)) {
+    fs.mkdirSync(RESUMES_DIR, { recursive: true });
+  }
+} catch (err) {
+  // Gracefully continue in serverless read-only environments
 }
 
 const MAX_UPLOAD_BYTES = parseInt(process.env.MAX_RESUME_SIZE_BYTES, 10) || 5 * 1024 * 1024; // 5 MB

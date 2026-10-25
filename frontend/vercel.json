@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/careers",
+      "destination": "/pages/careers.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/pages/contact.html"
+    },
+    {
+      "source": "/booking",
+      "destination": "/pages/booking.html"
+    },
+    {
+      "source": "/services",
+      "destination": "/pages/services.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/pages/about.html"
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/pages/portfolio.html"
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/pages/testimonials.html"
+    },
+    {
+      "source": "/team",
+      "destination": "/pages/team.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/pages/faq.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/pages/privacy-policy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/pages/terms.html"
+    }
+  ]
+}

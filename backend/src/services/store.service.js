@@ -57,17 +57,22 @@ class StoreService {
     try {
       const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main_page').single();
       if (!error && data && data.data) {
-        fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+        try {
+          fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+        } catch (e) {}
       }
     } catch (e) {}
   }
 
   ensureDataDir() {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(SUBMISSIONS_FILE)) {
-      const initial = {
+    try {
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+    } catch (e) {}
+    try {
+      if (!fs.existsSync(SUBMISSIONS_FILE)) {
+        const initial = {
         contacts: [
           {
             id: 1,
@@ -118,12 +123,17 @@ class StoreService {
           }
         ]
       };
-      fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(initial, null, 2), 'utf8');
+      try {
+        fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(initial, null, 2), 'utf8');
+      } catch (e) {}
     }
+  } catch (e) {}
+  try {
     if (!fs.existsSync(SETTINGS_FILE)) {
       fs.writeFileSync(SETTINGS_FILE, JSON.stringify(DEFAULT_SETTINGS, null, 2), 'utf8');
     }
-  }
+  } catch (e) {}
+}
 
   readSubmissionsFile() {
     this.ensureDataDir();
@@ -608,7 +618,9 @@ class StoreService {
       try {
         const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main_page').single();
         if (!error && data && data.data) {
-          fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+          try {
+            fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data.data, null, 2), 'utf8');
+          } catch (e) {}
           return data.data;
         }
       } catch (e) {}
@@ -640,7 +652,9 @@ class StoreService {
         ? String(newSettings.careersFormUrl).trim()
         : (newSettings.careers && newSettings.careers.formUrl !== undefined ? String(newSettings.careers.formUrl).trim() : (current.careersFormUrl || ''))
     };
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
+    try {
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
+    } catch (e) {}
 
     const sb = supabase.getSupabaseClient();
     if (sb) {

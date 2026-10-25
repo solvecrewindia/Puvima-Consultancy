@@ -5,6 +5,9 @@
 
 (function () {
   'use strict';
+  const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || (function () {
+    try { return localStorage.getItem('puvima_api_base_url') || ''; } catch (e) { return ''; }
+  })();
 
   let selectedRating = 5;
 
@@ -51,7 +54,7 @@
     if (!track) return;
 
     try {
-      const res = await fetch('/api/reviews');
+      const res = await fetch(`${API_BASE}/api/reviews`);
       if (!res.ok) return;
 
       const data = await res.json();
@@ -210,7 +213,7 @@
         submitBtn.innerHTML = '<span>Transmitting feedback...</span>';
 
         try {
-          const res = await fetch('/api/reviews', {
+          const res = await fetch(`${API_BASE}/api/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

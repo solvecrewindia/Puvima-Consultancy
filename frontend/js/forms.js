@@ -1,7 +1,9 @@
 
 
 
-const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || '';
+const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || (function () {
+  try { return localStorage.getItem('puvima_api_base_url') || ''; } catch (e) { return ''; }
+})();
 
 export function initForms() {
   initContactForm();

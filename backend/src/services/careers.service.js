@@ -20,16 +20,20 @@ class CareersService {
   }
 
   ensureDataDir() {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(CAREERS_FILE)) {
-      const initial = {
-        positions: [],
-        applications: []
-      };
-      fs.writeFileSync(CAREERS_FILE, JSON.stringify(initial, null, 2), 'utf8');
-    }
+    try {
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+    } catch (e) {}
+    try {
+      if (!fs.existsSync(CAREERS_FILE)) {
+        const initial = {
+          positions: [],
+          applications: []
+        };
+        fs.writeFileSync(CAREERS_FILE, JSON.stringify(initial, null, 2), 'utf8');
+      }
+    } catch (e) {}
   }
 
   readCareersFile() {

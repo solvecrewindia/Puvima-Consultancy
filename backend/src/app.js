@@ -59,14 +59,34 @@ app.use(
   })
 );
 
-const allowedOrigin = process.env.FRONTEND_ORIGIN || 'http://localhost:5000';
+const fs = require('fs');
+
+const configuredOrigins = (process.env.FRONTEND_ORIGIN || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || origin === allowedOrigin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      // Allow requests with no origin (like mobile apps, curl, or same-origin)
+      if (!origin) return callback(null, true);
+      // Allow localhost and 127.0.0.1
+      if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
         return callback(null, true);
       }
-      return callback(new Error('Cross-Origin Request Blocked by PUVIMA CORS Policy'));
+      // Allow any Vercel deployment preview or production domain
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      // Allow explicitly configured origins
+      if (configuredOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+      return callback(null, false);
     },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'],
@@ -78,7 +98,9 @@ app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 const frontendDir = path.resolve(__dirname, '../../frontend');
-app.use(express.static(frontendDir));
+if (fs.existsSync(frontendDir)) {
+  app.use(express.static(frontendDir));
+}
 
 app.use('/api', apiRateLimiter);
 app.use('/api', healthRoutes);
@@ -89,16 +111,39 @@ app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(frontendDir, 'admin', 'index.html'));
+app.get('/admin', (req, res, next) => {
+  const adminHtml = path.join(frontendDir, 'admin', 'index.html');
+  if (fs.existsSync(adminHtml)) {
+    return res.sendFile(adminHtml);
+  }
+  next();
 });
 
-app.get('/careers', (req, res) => {
-  res.sendFile(path.join(frontendDir, 'pages', 'careers.html'));
+app.get('/careers', (req, res, next) => {
+  const careersHtml = path.join(frontendDir, 'pages', 'careers.html');
+  if (fs.existsSync(careersHtml)) {
+    return res.sendFile(careersHtml);
+  }
+  next();
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(frontendDir, 'index.html'));
+app.get('/', (req, res, next) => {
+  const indexHtml = path.join(frontendDir, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    return res.sendFile(indexHtml);
+  }
+  res.json({
+    service: 'PUVIMA Consultancy API',
+    status: 'ONLINE',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      contact: '/api/contact',
+      careers: '/api/careers',
+      reviews: '/api/reviews',
+      settings: '/api/settings'
+    }
+  });
 });
 
 

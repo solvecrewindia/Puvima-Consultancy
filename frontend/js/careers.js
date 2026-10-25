@@ -6,6 +6,10 @@
 (function () {
   'use strict';
 
+  const API_BASE = (window.PUVIMA_CONFIG && window.PUVIMA_CONFIG.API_BASE_URL) || (function () {
+    try { return localStorage.getItem('puvima_api_base_url') || ''; } catch (e) { return ''; }
+  })();
+
   let careersFormUrl = '';
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -17,7 +21,7 @@
     const noticeEl = document.getElementById('careersFormNotice');
 
     try {
-      const res = await fetch('/api/site-settings', { cache: 'no-store' });
+      const res = await fetch(`${API_BASE}/api/site-settings`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.settings) {

@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api/index.js"
     },
     {
       "source": "/api",
-      "destination": "/api"
+      "destination": "/api/index.js"
     },
     {
       "source": "/admin",
@@ -16,6 +16,46 @@
     {
       "source": "/careers",
       "destination": "/frontend/pages/careers.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/frontend/pages/contact.html"
+    },
+    {
+      "source": "/booking",
+      "destination": "/frontend/pages/booking.html"
+    },
+    {
+      "source": "/services",
+      "destination": "/frontend/pages/services.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/frontend/pages/about.html"
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/frontend/pages/portfolio.html"
+    },
+    {
+      "source": "/testimonials",
+      "destination": "/frontend/pages/testimonials.html"
+    },
+    {
+      "source": "/team",
+      "destination": "/frontend/pages/team.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/frontend/pages/faq.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/frontend/pages/privacy-policy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/frontend/pages/terms.html"
     },
     {
       "source": "/",
