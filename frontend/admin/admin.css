@@ -398,6 +398,10 @@ body {
   transition: all var(--duration-fast, 150ms);
 }
 
+.tab-btn svg, .tab-btn span, .tab-btn .tab-pill {
+  pointer-events: none;
+}
+
 .tab-btn:hover {
   color: var(--text-main);
   background: #F8FAFC;
