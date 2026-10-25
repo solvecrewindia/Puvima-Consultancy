@@ -129,6 +129,8 @@ describe('Admin & Settings API Test Suite', () => {
     assert.strictEqual(data.success, true);
     assert.strictEqual(data.review.status, 'pending');
     assert.ok(data.review.reference_id.startsWith('REV-2026-'));
+    const storeService = require('../src/services/store.service');
+    await storeService.deleteReview(data.review.reference_id);
   });
 
   test('GET /api/reviews only returns approved reviews to the public main page', async () => {
@@ -174,5 +176,9 @@ describe('Admin & Settings API Test Suite', () => {
     const publicData = await publicRes.json();
     const isNowPublic = publicData.reviews.some(r => r.reference_id === refId);
     assert.strictEqual(isNowPublic, true, 'Approved review must be visible in public reviews');
+
+    // 4. Clean up test review
+    const storeService = require('../src/services/store.service');
+    await storeService.deleteReview(refId);
   });
 });

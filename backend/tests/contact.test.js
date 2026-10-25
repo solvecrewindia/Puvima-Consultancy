@@ -108,6 +108,8 @@ describe('Contact & Health API Test Suite', () => {
     if (res.status === 201) {
       assert.strictEqual(data.success, true);
       assert.ok(data.referenceId.startsWith('PV-CNT-'));
+      const storeService = require('../src/services/store.service');
+      await storeService.deleteContact(data.referenceId);
     } else {
       assert.strictEqual(data.success, false);
       assert.ok(!data.message.includes('ECONNREFUSED'), 'Must not leak low-level socket errors to client');

@@ -102,6 +102,8 @@ describe('Consultation Booking API Test Suite', () => {
       assert.ok(data.referenceId.startsWith('PV-REQ-'), 'Reference ID must follow PV-REQ prefix pattern');
       assert.strictEqual(data.status, 'pending_review', 'Status must be strictly pending_review, never falsely confirmed');
       assert.ok(data.message.includes('pending review'), 'Message must explain that appointment is pending review');
+      const storeService = require('../src/services/store.service');
+      await storeService.deleteBooking(data.referenceId);
     } else {
       assert.strictEqual(data.success, false);
     }

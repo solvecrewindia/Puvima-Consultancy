@@ -38,8 +38,16 @@ describe('Careers & Recruitment API Test Suite', () => {
     });
   });
 
-  after((t, done) => {
-    server.close(done);
+  after(async () => {
+    try {
+      const careersService = require('../src/services/careers.service');
+      if (testPositionId) await careersService.deletePosition(testPositionId);
+      const data = careersService.readCareersFile();
+      data.applications = (data.applications || []).filter(a => a.applicant_email !== 'ramesh.kumar@nexusrobotics.org');
+      data.positions = (data.positions || []).filter(p => !p.title.includes('Robotics & Autonomous Navigation Engineer'));
+      careersService.writeCareersFile(data);
+    } catch (e) {}
+    await new Promise(r => server.close(r));
   });
 
   // ==========================================================================

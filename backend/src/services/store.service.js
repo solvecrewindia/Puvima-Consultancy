@@ -362,15 +362,24 @@ class StoreService {
   }
 
   async deleteContact(id) {
+    let refId = String(id);
+    const submissions = this.readSubmissionsFile();
+    const index = submissions.contacts.findIndex(c => String(c.id) === String(id) || c.reference_id === id);
+    if (index !== -1) {
+      refId = submissions.contacts[index].reference_id || refId;
+      submissions.contacts.splice(index, 1);
+      this.writeSubmissionsFile(submissions);
+    }
+
     // 1. Delete from Supabase
     const sb = supabase.getSupabaseClient();
     if (sb) {
       try {
         let query = sb.from('contact_enquiries').delete();
         if (/^\d+$/.test(String(id))) {
-          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+          query = query.or(`id.eq.${id},reference_id.eq.${refId}`);
         } else {
-          query = query.eq('reference_id', id);
+          query = query.or(`reference_id.eq.${id},reference_id.eq.${refId}`);
         }
         await query;
       } catch (e) {}
@@ -378,16 +387,9 @@ class StoreService {
 
     // 2. Delete from MySQL
     try {
-      await db.query(`DELETE FROM contact_enquiries WHERE id = ? OR reference_id = ?`, [id, id]);
+      await db.query(`DELETE FROM contact_enquiries WHERE id = ? OR reference_id = ? OR reference_id = ?`, [id, id, refId]);
     } catch (e) {}
 
-    // 3. Delete from local file
-    const submissions = this.readSubmissionsFile();
-    const index = submissions.contacts.findIndex(c => String(c.id) === String(id) || c.reference_id === id);
-    if (index !== -1) {
-      submissions.contacts.splice(index, 1);
-      this.writeSubmissionsFile(submissions);
-    }
     return true;
   }
 
@@ -854,26 +856,27 @@ class StoreService {
   }
 
   async deleteReview(id) {
+    let refId = String(id);
+    const list = this.readReviewsFile();
+    const index = list.findIndex(r => String(r.id) === String(id) || r.reference_id === id);
+    if (index !== -1) {
+      refId = list[index].reference_id || refId;
+      list.splice(index, 1);
+      this.writeReviewsFile(list);
+    }
+
     // 1. Delete from Supabase
     const sb = supabase.getSupabaseClient();
     if (sb) {
       try {
         let query = sb.from('customer_reviews').delete();
         if (/^\d+$/.test(String(id))) {
-          query = query.or(`id.eq.${id},reference_id.eq.${id}`);
+          query = query.or(`id.eq.${id},reference_id.eq.${refId}`);
         } else {
-          query = query.eq('reference_id', id);
+          query = query.or(`reference_id.eq.${id},reference_id.eq.${refId}`);
         }
         await query;
       } catch (e) {}
-    }
-
-    // 2. Delete from local file
-    const list = this.readReviewsFile();
-    const index = list.findIndex(r => String(r.id) === String(id) || r.reference_id === id);
-    if (index !== -1) {
-      list.splice(index, 1);
-      this.writeReviewsFile(list);
     }
     return true;
   }
