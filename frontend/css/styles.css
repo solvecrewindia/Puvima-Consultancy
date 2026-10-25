@@ -936,7 +936,10 @@ main {
 
 .form-input,
 .form-select,
-.form-textarea {
+.form-textarea,
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
   width: 100%;
   padding: 12px 16px;
   background: #FFFFFF; border: 1px solid var(--border-light); color: var(--text-primary);
@@ -956,7 +959,9 @@ main {
 
 .form-input:focus,
 .form-select:focus,
-.form-textarea:focus {
+.form-textarea:focus,
+.form-control:focus {
+  outline: none;
   border-color: var(--electric-violet);
   box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.2);
 }

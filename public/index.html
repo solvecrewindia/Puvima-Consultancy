@@ -640,31 +640,34 @@
 
       <div id="reviewAlertBox" class="review-status-alert"></div>
 
-      <form id="submitReviewForm" novalidate>
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label" for="reviewAuthorName">Your Full Name *</label>
-          <input type="text" id="reviewAuthorName" class="form-control" placeholder="e.g. Dr. Helen Ross" required>
+            <form id="submitReviewForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="reviewAuthorName">Your Full Name <span style="color: #EF4444;">*</span></label>
+          <input type="text" id="reviewAuthorName" class="form-control form-input" placeholder="e.g. Dr. Helen Ross" required autocomplete="name">
         </div>
 
-        <div class="form-group" style="margin-bottom: 14px;">
+        <div class="form-group">
           <label class="form-label" for="reviewAuthorCompany">Organization / Project</label>
-          <input type="text" id="reviewAuthorCompany" class="form-control" placeholder="e.g. Precision Robotics Corp">
+          <input type="text" id="reviewAuthorCompany" class="form-control form-input" placeholder="e.g. Precision Robotics Corp" autocomplete="organization">
         </div>
 
-        <div class="form-group" style="margin-bottom: 14px;">
-          <label class="form-label">Rating *</label>
-          <div class="star-rating-picker" id="starRatingPicker" title="Click to rate 1 to 5 stars">
-            <svg data-value="1" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <svg data-value="2" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <svg data-value="3" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <svg data-value="4" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            <svg data-value="5" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        <div class="form-group">
+          <label class="form-label">Rating <span style="color: #EF4444;">*</span></label>
+          <div class="star-rating-box">
+            <div class="star-rating-picker" id="starRatingPicker" title="Click to rate 1 to 5 stars" role="radiogroup" aria-label="Rating from 1 to 5 stars">
+              <svg data-value="1" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg data-value="2" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg data-value="3" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg data-value="4" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg data-value="5" viewBox="0 0 20 20" class="active"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <span class="rating-score-label" id="ratingScoreLabel">5 / 5 • Excellent</span>
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-          <label class="form-label" for="reviewFeedbackText">Your Review Feedback *</label>
-          <textarea id="reviewFeedbackText" class="form-control" rows="4" placeholder="Detail your experience with PUVIMA's technical advisory, prototyping, or research delivery..." required></textarea>
+        <div class="form-group" style="margin-bottom: 22px;">
+          <label class="form-label" for="reviewFeedbackText">Your Review Feedback <span style="color: #EF4444;">*</span></label>
+          <textarea id="reviewFeedbackText" class="form-control form-textarea" rows="4" placeholder="Detail your experience with PUVIMA's technical advisory, prototyping, or research delivery..." required></textarea>
         </div>
 
         <button type="submit" id="submitReviewBtn" class="btn btn-primary" style="width: 100%; justify-content: center;">
