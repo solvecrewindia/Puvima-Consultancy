@@ -50,7 +50,7 @@ router.post('/reviews', async (req, res) => {
       rating: numericRating,
       review_text: review_text.trim(),
       platform: platform ? platform.trim().toLowerCase() : 'google',
-      avatar_url: avatar_url || 'assets/images/team/member-1.svg'
+      avatar_url: (avatar_url && typeof avatar_url === 'string' && avatar_url.trim()) ? avatar_url.trim() : null
     });
 
     return res.status(201).json({

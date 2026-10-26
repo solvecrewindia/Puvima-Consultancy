@@ -583,13 +583,17 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
       const reviewId = escapeHtml(r.reference_id || String(r.id));
 
+      const hasAvatar = Boolean(r.avatar_url && r.avatar_url.trim() && !r.avatar_url.includes('assets/images/team/'));
+      const avatarHtml = hasAvatar
+        ? `<img src="${escapeHtml(r.avatar_url)}" alt="${escapeHtml(r.name)}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.08);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <div style="display: none; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0072ce 0%, #0284c7 100%); color: #fff; font-weight: 700; font-size: 0.82rem; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);">${initials}</div>`
+        : `<div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0072ce 0%, #0284c7 100%); color: #fff; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);">${initials}</div>`;
+
       return `
         <tr>
           <td>
             <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0072ce 0%, #0284c7 100%); color: #fff; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);">
-                ${initials}
-              </div>
+              ${avatarHtml}
               <div>
                 <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(r.name)}</div>
                 ${r.company ? `<div style="font-size: 0.78rem; color: var(--accent-teal);">${escapeHtml(r.company)}</div>` : ''}

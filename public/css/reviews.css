@@ -515,3 +515,181 @@
   }
 }
 
+
+
+/* ==========================================================================
+   REVIEW MODAL PROFILE AVATAR UPLOAD
+   ========================================================================== */
+.review-avatar-uploader-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  background: #F8FAFC;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: 12px;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.review-avatar-uploader-row:hover,
+.review-avatar-uploader-row.dragover {
+  border-color: #0072CE;
+  background: #F0F7FF;
+}
+
+.review-avatar-preview-box {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0072CE 0%, #0284C7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 114, 206, 0.25);
+  border: 2px solid #FFFFFF;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.review-avatar-preview-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(0, 114, 206, 0.35);
+}
+
+.review-avatar-initials {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-family: var(--font-display, 'Manrope', sans-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  user-select: none;
+}
+
+.review-avatar-img-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.review-avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 50%;
+}
+
+.review-avatar-preview-box:hover .review-avatar-overlay {
+  opacity: 1;
+}
+
+.review-avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-grow: 1;
+}
+
+.review-avatar-btn-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-avatar-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  font-family: var(--font-display, 'Manrope', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1E293B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-avatar-upload:hover {
+  background: #F1F5F9;
+  border-color: #0072CE;
+  color: #0072CE;
+}
+
+.btn-avatar-remove {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  background: #FEE2E2;
+  border: 1.5px solid #FECACA;
+  border-radius: 8px;
+  font-family: var(--font-display, 'Manrope', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #DC2626;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-avatar-remove:hover {
+  background: #FCA5A5;
+  color: #991B1B;
+}
+
+.review-avatar-hint {
+  font-size: 0.74rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-avatar-url-toggle {
+  background: none;
+  border: none;
+  color: #0072CE;
+  padding: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.review-avatar-url-toggle:hover {
+  color: #00569c;
+}
+
+.review-avatar-url-row {
+  margin-top: 8px;
+}
+
+.reviewer-avatar-img {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0, 114, 206, 0.2);
+  border: 2px solid rgba(0, 114, 206, 0.25);
+  display: block;
+}

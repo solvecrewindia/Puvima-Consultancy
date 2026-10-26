@@ -94,8 +94,8 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: '100kb' }));
-app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 const frontendDir = fs.existsSync(path.resolve(__dirname, '../../public'))
   ? path.resolve(__dirname, '../../public')

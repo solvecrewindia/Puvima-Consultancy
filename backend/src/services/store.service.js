@@ -721,6 +721,16 @@ class StoreService {
   }
 
   async getReviews({ status, search } = {}) {
+    // Read local reviews to map avatars
+    const localList = this.readReviewsFile();
+    const localAvatarMap = new Map();
+    for (const lr of localList) {
+      if (lr.avatar_url && !lr.avatar_url.includes('assets/images/team/')) {
+        if (lr.reference_id) localAvatarMap.set(lr.reference_id, lr.avatar_url);
+        if (lr.id) localAvatarMap.set(String(lr.id), lr.avatar_url);
+      }
+    }
+
     // 1. Try Supabase cloud first
     const sb = supabase.getSupabaseClient();
     if (sb) {
@@ -731,20 +741,32 @@ class StoreService {
         }
         const { data, error } = await query;
         if (!error && Array.isArray(data) && data.length > 0) {
-          let list = data.map(r => ({
-            id: r.id,
-            reference_id: r.reference_id,
-            name: r.name,
-            company: r.company || r.role || '',
-            date_display: this.formatDisplayDate(r.created_at),
-            avatar_url: 'assets/images/team/member-1.svg',
-            platform: r.source || 'google',
-            rating: parseInt(r.rating, 10) || 5,
-            review_text: r.review_text,
-            status: r.status || 'pending',
-            created_at: r.created_at,
-            updated_at: r.updated_at
-          }));
+          // Check for cloud avatars in site_settings
+          let cloudAvatarMap = {};
+          try {
+            const { data: avRow } = await sb.from('site_settings').select('data').eq('id', 'review_avatars').single();
+            if (avRow && avRow.data) cloudAvatarMap = avRow.data;
+          } catch (e) {}
+
+          let list = data.map(r => {
+            const cloudAv = cloudAvatarMap[r.reference_id] || cloudAvatarMap[String(r.id)];
+            const localAv = localAvatarMap.get(r.reference_id) || localAvatarMap.get(String(r.id));
+            const avatar = cloudAv || localAv || null;
+            return {
+              id: r.id,
+              reference_id: r.reference_id,
+              name: r.name,
+              company: r.company || r.role || '',
+              date_display: this.formatDisplayDate(r.created_at),
+              avatar_url: avatar,
+              platform: r.source || 'google',
+              rating: parseInt(r.rating, 10) || 5,
+              review_text: r.review_text,
+              status: r.status || 'pending',
+              created_at: r.created_at,
+              updated_at: r.updated_at
+            };
+          });
           if (search) {
             const q = search.toLowerCase();
             list = list.filter(r =>
@@ -792,7 +814,7 @@ class StoreService {
       name: data.name,
       company: data.company || null,
       date_display: data.date_display || date_display,
-      avatar_url: data.avatar_url || 'assets/images/team/member-1.svg',
+      avatar_url: (data.avatar_url && !data.avatar_url.includes('assets/images/team/')) ? data.avatar_url : null,
       platform: data.platform || 'google',
       rating: parseInt(data.rating, 10) || 5,
       review_text: data.review_text,

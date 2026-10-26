@@ -1,6 +1,6 @@
 /**
  * PUVIMA Consultancy — Customer Reviews & Rotating Carousel Controller
- * Handles loading approved reviews, rendering the infinite left marquee, and review submission modal.
+ * Handles loading approved reviews, rendering the infinite marquee, and review submission modal with profile photo upload.
  */
 
 (function () {
@@ -10,6 +10,7 @@
   })();
 
   let selectedRating = 5;
+  let currentAvatarData = '';
 
   const starSvg = `
     <svg class="review-star" viewBox="0 0 20 20" fill="currentColor">
@@ -19,6 +20,7 @@
 
   async function initReviews() {
     setupModalEvents();
+    setupAvatarUploader();
     await loadAndRenderReviews();
   }
 
@@ -60,7 +62,7 @@
   ];
 
   function getInitials(name) {
-    if (!name) return 'CL';
+    if (!name || !name.trim()) return 'PU';
     const parts = name.trim().split(/\s+/);
     if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -82,13 +84,27 @@
     const initials = getInitials(review.name);
     const palette = getPalette(review.name);
 
+    const hasAvatar = Boolean(
+      review.avatar_url &&
+      typeof review.avatar_url === 'string' &&
+      review.avatar_url.trim().length > 0 &&
+      !review.avatar_url.includes('assets/images/team/')
+    );
+
+    const avatarMarkup = hasAvatar
+      ? `<img src="${escapeHtml(review.avatar_url)}" alt="${escapeHtml(review.name)}" class="reviewer-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+         <div class="reviewer-avatar-monogram" style="display: none; background: ${palette.bg}; box-shadow: 0 3px 10px ${palette.shadow};">
+           ${escapeHtml(initials)}
+         </div>`
+      : `<div class="reviewer-avatar-monogram" style="background: ${palette.bg}; box-shadow: 0 3px 10px ${palette.shadow};">
+           ${escapeHtml(initials)}
+         </div>`;
+
     return `
       <article class="customer-review-card">
         <div class="review-card-top">
           <div class="reviewer-profile">
-            <div class="reviewer-avatar-monogram" style="background: ${palette.bg}; box-shadow: 0 3px 10px ${palette.shadow};">
-              ${escapeHtml(initials)}
-            </div>
+            ${avatarMarkup}
             <div class="reviewer-info-wrap">
               <span class="reviewer-name">${escapeHtml(review.name)}</span>
               <span class="reviewer-meta">${escapeHtml(review.date_display || 'Verified Feedback')}</span>
@@ -109,12 +125,186 @@
     `;
   }
 
+  function setupAvatarUploader() {
+    const fileInput = document.getElementById('reviewAvatarInput');
+    const chooseBtn = document.getElementById('reviewChooseAvatarBtn');
+    const removeBtn = document.getElementById('reviewRemoveAvatarBtn');
+    const previewBox = document.getElementById('reviewAvatarPreviewBox');
+    const previewImg = document.getElementById('reviewAvatarImg');
+    const initialsEl = document.getElementById('reviewAvatarInitials');
+    const uploadBtnText = document.getElementById('reviewUploadBtnText');
+    const nameInput = document.getElementById('reviewAuthorName');
+    const dropZone = document.getElementById('reviewAvatarDropZone');
+    const toggleUrlBtn = document.getElementById('toggleAvatarUrlBtn');
+    const urlRow = document.getElementById('reviewAvatarUrlRow');
+    const urlInput = document.getElementById('reviewAvatarUrlInput');
+
+    // Sync initials in preview box as user types name
+    if (nameInput && initialsEl) {
+      nameInput.addEventListener('input', () => {
+        if (!currentAvatarData) {
+          initialsEl.textContent = getInitials(nameInput.value);
+        }
+      });
+    }
+
+    // Trigger file dialog
+    function openFileDialog() {
+      if (fileInput) fileInput.click();
+    }
+    if (chooseBtn) chooseBtn.addEventListener('click', openFileDialog);
+    if (previewBox) {
+      previewBox.addEventListener('click', openFileDialog);
+      previewBox.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openFileDialog();
+        }
+      });
+    }
+
+    // Handle file selection
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) handleImageFile(file);
+      });
+    }
+
+    // Drag and drop
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        });
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length > 0) {
+          handleImageFile(files[0]);
+        }
+      });
+    }
+
+    // Process selected image file with square crop and resize via Canvas
+    function handleImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showAlert('Please select a valid image file (JPG, PNG, or WebP).', 'error');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showAlert('Profile photo must be smaller than 5MB.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const img = new Image();
+        img.onload = function () {
+          // Crop and scale to high quality 180x180 square
+          const size = 180;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+
+          const minDim = Math.min(img.width, img.height);
+          const sx = (img.width - minDim) / 2;
+          const sy = (img.height - minDim) / 2;
+
+          ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+
+          setAvatarPreview(dataUrl);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setAvatarPreview(src) {
+      currentAvatarData = src;
+      if (previewImg) {
+        previewImg.src = src;
+        previewImg.style.display = 'block';
+      }
+      if (initialsEl) initialsEl.style.display = 'none';
+      if (removeBtn) removeBtn.style.display = 'inline-flex';
+      if (uploadBtnText) uploadBtnText.textContent = 'Change Photo';
+      if (urlInput) urlInput.value = '';
+    }
+
+    // Remove photo
+    if (removeBtn) {
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetAvatarState();
+      });
+    }
+
+    // Toggle Image URL input
+    if (toggleUrlBtn && urlRow) {
+      toggleUrlBtn.addEventListener('click', () => {
+        const isHidden = urlRow.style.display === 'none';
+        urlRow.style.display = isHidden ? 'block' : 'none';
+        if (isHidden && urlInput) urlInput.focus();
+      });
+    }
+
+    // URL input listener
+    if (urlInput) {
+      urlInput.addEventListener('change', () => {
+        const val = urlInput.value.trim();
+        if (val && /^https?://.+/i.test(val)) {
+          const testImg = new Image();
+          testImg.onload = () => setAvatarPreview(val);
+          testImg.onerror = () => showAlert('Could not load image from the provided URL.', 'error');
+          testImg.src = val;
+        }
+      });
+    }
+  }
+
+  function resetAvatarState() {
+    currentAvatarData = '';
+    const fileInput = document.getElementById('reviewAvatarInput');
+    const previewImg = document.getElementById('reviewAvatarImg');
+    const initialsEl = document.getElementById('reviewAvatarInitials');
+    const removeBtn = document.getElementById('reviewRemoveAvatarBtn');
+    const uploadBtnText = document.getElementById('reviewUploadBtnText');
+    const urlInput = document.getElementById('reviewAvatarUrlInput');
+    const nameInput = document.getElementById('reviewAuthorName');
+
+    if (fileInput) fileInput.value = '';
+    if (urlInput) urlInput.value = '';
+    if (previewImg) {
+      previewImg.src = '';
+      previewImg.style.display = 'none';
+    }
+    if (initialsEl) {
+      initialsEl.textContent = getInitials(nameInput ? nameInput.value : '');
+      initialsEl.style.display = 'block';
+    }
+    if (removeBtn) removeBtn.style.display = 'none';
+    if (uploadBtnText) uploadBtnText.textContent = 'Upload Photo';
+  }
+
   function setupModalEvents() {
     const openBtn = document.getElementById('openWriteReviewBtn');
     const modal = document.getElementById('writeReviewModal');
     const closeBtn = document.getElementById('closeReviewModalBtn');
     const form = document.getElementById('submitReviewForm');
-    const alertBox = document.getElementById('reviewAlertBox');
 
     if (openBtn && modal) {
       openBtn.addEventListener('click', () => {
@@ -164,11 +354,13 @@
         const companyInput = document.getElementById('reviewAuthorCompany');
         const textInput = document.getElementById('reviewFeedbackText');
         const submitBtn = document.getElementById('submitReviewBtn');
+        const urlInput = document.getElementById('reviewAvatarUrlInput');
 
-        const name = nameInput.value.trim();
+        const name = nameInput ? nameInput.value.trim() : '';
         const company = companyInput ? companyInput.value.trim() : '';
         const platform = 'website';
-        const review_text = textInput.value.trim();
+        const review_text = textInput ? textInput.value.trim() : '';
+        const avatar_url = currentAvatarData || (urlInput && urlInput.value.trim() ? urlInput.value.trim() : null);
 
         if (!name || review_text.length < 5) {
           showAlert('Please provide your name and a review of at least 5 characters.', 'error');
@@ -176,7 +368,7 @@
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Transmitting feedback...</span>';
+        submitBtn.innerHTML = '<span>Submitting feedback...</span>';
 
         try {
           const res = await fetch(`${API_BASE}/api/reviews`, {
@@ -187,7 +379,8 @@
               company,
               platform,
               rating: selectedRating,
-              review_text
+              review_text,
+              avatar_url
             })
           });
 
@@ -195,13 +388,17 @@
           if (res.ok && data.success) {
             showAlert(data.message, 'success');
             form.reset();
+            resetAvatarState();
             selectedRating = 5;
             const starPicker = document.getElementById('starRatingPicker');
             if (starPicker) updateStarDisplay(starPicker.querySelectorAll('svg'), 5);
 
+            // Reload reviews to reflect showcase updates if auto-approved
+            loadAndRenderReviews();
+
             setTimeout(() => {
               if (modal) modal.style.display = 'none';
-            }, 4000);
+            }, 3500);
           } else {
             showAlert(data.message || 'Unable to submit review at this time.', 'error');
           }
@@ -249,6 +446,7 @@
   function resetFormState() {
     const alertBox = document.getElementById('reviewAlertBox');
     if (alertBox) alertBox.style.display = 'none';
+    resetAvatarState();
   }
 
   function escapeHtml(str) {
