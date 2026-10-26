@@ -374,3 +374,35 @@ body {
     border: 1px solid var(--border-light, #E2E8F0);
   }
 }
+
+
+/* Mobile Drawer Hierarchical Groups */
+.mobile-nav-group {
+  margin-bottom: 8px;
+}
+
+.mobile-group-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted, #94A3B8);
+  margin-top: 10px;
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+.mobile-subnav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+}
+
+.mobile-subnav-list .mobile-nav-link {
+  font-size: 0.98rem;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border-subtle, #F1F5F9);
+}

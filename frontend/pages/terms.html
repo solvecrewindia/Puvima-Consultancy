@@ -74,7 +74,7 @@
   </div>
 
   
-  <header class="site-header" id="siteHeader">
+    <header class="site-header" id="siteHeader">
     <div class="container header-container">
       <a href="../index.html" class="brand-wordmark" aria-label="PUVIMA Home">
         <img src="../assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="brand-logo-img">
@@ -82,18 +82,91 @@
 
       <nav class="nav-wrapper" aria-label="Main Navigation">
         <ul class="nav-menu">
-          <li><a href="../index.html" class="nav-link">Home</a></li>
-          <li><a href="about.html" class="nav-link">About Us</a></li>
-          <li><a href="services.html" class="nav-link">Services</a></li>
-          <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
-          <li><a href="careers.html" class="nav-link">Careers</a></li>
-          <li><a href="team.html" class="nav-link">Our Team</a></li>
-          <li><a href="faq.html" class="nav-link">FAQ</a></li>
+          <!-- What we do -->
+          <li class="nav-item has-dropdown">
+            <a href="services.html" class="nav-link" data-nav="what-we-do">
+              <span>What we do</span>
+              <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M2.5 3.75L5 6.25L7.5 3.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <div class="dropdown-menu">
+              <a href="services.html" class="dropdown-item">
+                <span class="dropdown-item-title">All Services</span>
+                <span class="dropdown-item-desc">Comprehensive technology &amp; research catalog</span>
+              </a>
+              <a href="robotics.html" class="dropdown-item">
+                <span class="dropdown-item-title">Robotics &amp; Autonomous Systems</span>
+                <span class="dropdown-item-desc">SLAM navigation, embedded autonomy, and sensor loops</span>
+              </a>
+              <a href="fintech.html" class="dropdown-item">
+                <span class="dropdown-item-title">FinTech &amp; Market Analytics</span>
+                <span class="dropdown-item-desc">Algorithmic strategies, interactive charts, and risk models</span>
+              </a>
+              <a href="ai-ml-research.html" class="dropdown-item">
+                <span class="dropdown-item-title">AI/ML &amp; Research Solutions</span>
+                <span class="dropdown-item-desc">Predictive pipelines, deep learning &amp; empirical research</span>
+              </a>
+            </div>
+          </li>
+
+          <!-- Who we are -->
+          <li class="nav-item has-dropdown">
+            <a href="about.html" class="nav-link" data-nav="who-we-are">
+              <span>Who we are</span>
+              <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M2.5 3.75L5 6.25L7.5 3.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <div class="dropdown-menu">
+              <a href="about.html" class="dropdown-item">
+                <span class="dropdown-item-title">About PUVIMA</span>
+                <span class="dropdown-item-desc">Company identity, capabilities &amp; technical background</span>
+              </a>
+              <a href="about.html#values" class="dropdown-item">
+                <span class="dropdown-item-title">Our Brand Values</span>
+                <span class="dropdown-item-desc">Six guiding tenets directing every deliverable</span>
+              </a>
+              <a href="about.html#philosophy" class="dropdown-item">
+                <span class="dropdown-item-title">Consultancy Philosophy</span>
+                <span class="dropdown-item-desc">Evidence-based technical delivery &amp; scientific rigor</span>
+              </a>
+            </div>
+          </li>
+
+          <!-- Insights -->
+          <li class="nav-item has-dropdown">
+            <a href="faq.html" class="nav-link" data-nav="insights">
+              <span>Insights</span>
+              <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M2.5 3.75L5 6.25L7.5 3.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <div class="dropdown-menu">
+              <a href="faq.html" class="dropdown-item">
+                <span class="dropdown-item-title">Frequently Asked Questions</span>
+                <span class="dropdown-item-desc">Answers on engagement models, security, and timelines</span>
+              </a>
+              <a href="terms.html" class="dropdown-item">
+                <span class="dropdown-item-title">Terms &amp; Compliance</span>
+                <span class="dropdown-item-desc">Consultation terms, IP rights, and confidentiality</span>
+              </a>
+              <a href="privacy-policy.html" class="dropdown-item">
+                <span class="dropdown-item-title">Privacy Policy</span>
+                <span class="dropdown-item-desc">Data stewardship and client confidentiality standards</span>
+              </a>
+            </div>
+          </li>
+
+          <!-- Careers (Standalone Direct Link) -->
+          <li class="nav-item">
+            <a href="careers.html" class="nav-link" data-nav="careers">Careers</a>
+          </li>
         </ul>
       </nav>
 
       <div class="header-actions">
-        <a href="contact.html" class="btn btn-primary" style="padding: 9px 20px; font-size: 0.88rem;">Contact</a>
+        <a href="contact.html" class="btn btn-primary" style="padding: 9px 20px; font-size: 0.88rem;">Contact Us</a>
         <button class="mobile-nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -103,19 +176,45 @@
     </div>
   </header>
 
-  
   <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
     <ul class="mobile-nav-list">
-      <li><a href="../index.html" class="mobile-nav-link">Home</a></li>
-      <li><a href="about.html" class="mobile-nav-link">About Us</a></li>
-      <li><a href="services.html" class="mobile-nav-link">Services</a></li>
-      <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
-      <li><a href="careers.html" class="mobile-nav-link">Careers</a></li>
-      <li><a href="team.html" class="mobile-nav-link">Our Team</a></li>
-      <li><a href="faq.html" class="mobile-nav-link">FAQ</a></li>
-    </ul>
-    <a href="contact.html" class="btn btn-primary" style="text-align: center; width: 100%;">Contact</a>
+      <!-- What we do -->
+      <li class="mobile-nav-group">
+        <span class="mobile-group-title">What we do</span>
+        <ul class="mobile-subnav-list">
+          <li><a href="services.html" class="mobile-nav-link">All Services</a></li>
+          <li><a href="robotics.html" class="mobile-nav-link">&mdash; Robotics &amp; Autonomous Systems</a></li>
+          <li><a href="fintech.html" class="mobile-nav-link">&mdash; FinTech &amp; Stock Market Analytics</a></li>
+          <li><a href="ai-ml-research.html" class="mobile-nav-link">&mdash; AI/ML &amp; Research Solutions</a></li>
+        </ul>
+      </li>
 
+      <!-- Who we are -->
+      <li class="mobile-nav-group">
+        <span class="mobile-group-title">Who we are</span>
+        <ul class="mobile-subnav-list">
+          <li><a href="about.html" class="mobile-nav-link">About PUVIMA</a></li>
+          <li><a href="about.html#values" class="mobile-nav-link">&mdash; Brand Values</a></li>
+          <li><a href="about.html#philosophy" class="mobile-nav-link">&mdash; Consultancy Philosophy</a></li>
+        </ul>
+      </li>
+
+      <!-- Insights -->
+      <li class="mobile-nav-group">
+        <span class="mobile-group-title">Insights</span>
+        <ul class="mobile-subnav-list">
+          <li><a href="faq.html" class="mobile-nav-link">Frequently Asked Questions</a></li>
+          <li><a href="terms.html" class="mobile-nav-link">&mdash; Terms &amp; Compliance</a></li>
+          <li><a href="privacy-policy.html" class="mobile-nav-link">&mdash; Privacy Policy</a></li>
+        </ul>
+      </li>
+
+      <!-- Careers -->
+      <li style="margin-top: 6px;">
+        <a href="careers.html" class="mobile-nav-link" style="font-weight: 600;">Careers</a>
+      </li>
+    </ul>
+    <a href="contact.html" class="btn btn-primary" style="text-align: center; width: 100%; margin-top: 14px;">Contact Us</a>
   </div>
 
   <main id="mainContent">
@@ -239,9 +338,7 @@
           <h4 class="footer-col-title">Company</h4>
           <ul class="footer-nav-list">
             <li><a href="about.html" class="footer-nav-link">About PUVIMA</a></li>
-            <li><a href="portfolio.html" class="footer-nav-link">Portfolio &amp; Demos</a></li>
             <li><a href="careers.html" class="footer-nav-link">Careers</a></li>
-            <li><a href="team.html" class="footer-nav-link">Our Team</a></li>
             <li><a href="faq.html" class="footer-nav-link">Frequently Asked Questions</a></li>
           </ul>
         </div>
@@ -249,7 +346,7 @@
         <div>
           <h4 class="footer-col-title">Engagement</h4>
           <ul class="footer-nav-list">
-            <li><a href="contact.html" class="footer-nav-link">Contact</a></li>
+            <li><a href="contact.html" class="footer-nav-link">Contact Us</a></li>
             <li><a href="mailto:puvimaconsultancy@gmail.com" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-teal);" data-contact-email>puvimaconsultancy@gmail.com</a></li>
             <li><a href="tel:+919384787701" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-teal);" data-contact-phone>+91 93847 87701</a></li>
           </ul>

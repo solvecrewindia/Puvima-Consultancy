@@ -110,10 +110,13 @@ app.get(['/admin', '/admin/'], (req, res, next) => {
   next();
 });
 
+// Redirect /team to /about
+app.get(['/team', '/pages/team.html', '/portfolio', '/pages/portfolio.html'], (req, res) => res.redirect(301, '/about'));
+
 // Clean friendly page routes
 const pageRoutes = [
-  'careers', 'contact', 'booking', 'services', 'about', 'portfolio',
-  'testimonials', 'team', 'faq', 'privacy-policy', 'terms'
+  'careers', 'contact', 'booking', 'services', 'about',
+  'testimonials', 'faq', 'privacy-policy', 'terms'
 ];
 
 pageRoutes.forEach(route => {

@@ -611,13 +611,18 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
           <td>
             <div class="action-btn-group" style="justify-content: flex-end; gap: 8px;">
               ${!isApproved ? `
-                <button class="btn-primary" style="padding: 7px 14px; font-size: 0.78rem; font-weight: 700; background: linear-gradient(135deg, #10b981 0%, #059669 100%); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); border-radius: 6px;" title="Push Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${reviewId}', this)">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <button class="btn-table-publish" title="Publish Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${reviewId}', this)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
                   <span>Push to Main Page</span>
                 </button>
               ` : `
-                <button class="btn-ghost" style="padding: 7px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #CBD5E1; border-radius: 6px;" title="Take Down from Main Page Carousel" onclick="window.PUVIMA_ADMIN.unpublishReview('${reviewId}', this)">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+                <button class="btn-table-takedown" title="Take Down from Main Page Carousel" onclick="window.PUVIMA_ADMIN.unpublishReview('${reviewId}', this)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
                   <span>Take Down</span>
                 </button>
               `}

@@ -1,8 +1,8 @@
 
-
 export function initNavigation() {
   initHeaderScroll();
   initMobileDrawer();
+  initDropdowns();
   initActiveNavHighlight();
   initSmoothScrollLinks();
 }
@@ -21,6 +21,14 @@ function initHeaderScroll() {
 
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
+}
+
+function initDropdowns() {
+  const dropdownItems = document.querySelectorAll('.nav-item.has-dropdown');
+  dropdownItems.forEach(item => {
+    item.addEventListener('mouseenter', () => item.classList.add('dropdown-open'));
+    item.addEventListener('mouseleave', () => item.classList.remove('dropdown-open'));
+  });
 }
 
 function initMobileDrawer() {
@@ -65,14 +73,30 @@ function initMobileDrawer() {
 
 function initActiveNavHighlight() {
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+  
+  // Highlight grouped parent links based on current page
+  const servicePages = ['services.html', 'robotics.html', 'fintech.html', 'ai-ml-research.html'];
+  const aboutPages = ['about.html'];
+  const insightPages = ['faq.html', 'terms.html', 'privacy-policy.html'];
+  const careerPages = ['careers.html'];
 
-  navLinks.forEach(link => {
+  if (servicePages.includes(currentPath)) {
+    document.querySelectorAll('[data-nav="what-we-do"]').forEach(el => el.classList.add('active'));
+  } else if (aboutPages.includes(currentPath)) {
+    document.querySelectorAll('[data-nav="who-we-are"]').forEach(el => el.classList.add('active'));
+  } else if (insightPages.includes(currentPath)) {
+    document.querySelectorAll('[data-nav="insights"]').forEach(el => el.classList.add('active'));
+  } else if (careerPages.includes(currentPath)) {
+    document.querySelectorAll('[data-nav="careers"]').forEach(el => el.classList.add('active'));
+  }
+
+  // Also highlight matching mobile links
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+  mobileLinks.forEach(link => {
     const href = link.getAttribute('href');
     if (!href) return;
     const linkPath = href.split('/').pop().split('#')[0];
-
-    if (linkPath === currentPath || (currentPath === '' && linkPath === 'index.html')) {
+    if (linkPath === currentPath) {
       link.classList.add('active');
     }
   });
@@ -99,7 +123,6 @@ function initSmoothScrollLinks() {
     });
   });
 }
-
 
 if (typeof window !== 'undefined') {
   window.PUVIMA_NAV = { initNavigation };

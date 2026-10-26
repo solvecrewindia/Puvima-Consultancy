@@ -1169,3 +1169,90 @@ input:checked + .toggle-slider:before {
     max-width: 100%;
   }
 }
+
+
+/* ==========================================================================
+   REVIEW TABLE SHOWCASE ACTIONS (MATCHED TO UI DESIGN SYSTEM)
+   ========================================================================== */
+.btn-table-publish {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--primary-glow);
+  transition: var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-table-publish:hover {
+  background: linear-gradient(135deg, #005FA8 0%, #062B59 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 114, 206, 0.32);
+}
+
+.btn-table-publish:active {
+  transform: translateY(0);
+}
+
+.btn-table-publish:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-table-takedown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  background: #FFFFFF;
+  color: var(--text-secondary);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-table-takedown:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: var(--text-main);
+  transform: translateY(-1px);
+}
+
+.btn-table-takedown:active {
+  transform: translateY(0);
+}
+
+.btn-table-takedown:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-icon {
+  animation: spin 0.8s linear infinite;
+}

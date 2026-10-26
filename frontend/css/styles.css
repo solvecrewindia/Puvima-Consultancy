@@ -1642,3 +1642,100 @@ main {
   color: var(--accent-teal);
 }
 
+
+
+/* ==========================================================================
+   HEADER DROPDOWN NAVIGATION (What we do, Who we are, Insights, Careers)
+   ========================================================================== */
+.nav-item.has-dropdown {
+  position: relative;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.nav-item.has-dropdown:hover .dropdown-chevron,
+.nav-item.has-dropdown:focus-within .dropdown-chevron,
+.nav-item.has-dropdown.dropdown-open .dropdown-chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  min-width: 290px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light, #E2E8F0);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.2s;
+  z-index: 100;
+}
+
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.nav-item.has-dropdown:hover .dropdown-menu,
+.nav-item.has-dropdown:focus-within .dropdown-menu,
+.nav-item.has-dropdown.dropdown-open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  flex-direction: column;
+  padding: 9px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary, #0F172A);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 114, 206, 0.06);
+  color: var(--electric-violet, #0072CE);
+}
+
+.dropdown-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: inherit;
+  margin-bottom: 2px;
+}
+
+.dropdown-item-desc {
+  font-size: 0.76rem;
+  color: var(--text-secondary, #64748B);
+  line-height: 1.35;
+}
+
+.dropdown-item:hover .dropdown-item-desc {
+  color: var(--text-primary, #0F172A);
+}

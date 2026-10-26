@@ -827,11 +827,18 @@
           <td>
             <div class="action-btn-group" style="justify-content: flex-end;">
               ${!isApproved ? `
-                <button class="btn-primary" style="padding: 6px 12px; font-size: 0.78rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); cursor: pointer;" title="Push Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${r.reference_id || r.id}', this)">
-                  <span>🚀 Push to Main Page</span>
+                <button class="btn-table-publish" title="Publish Review to Main Page Carousel" onclick="window.PUVIMA_ADMIN.pushReviewToMainPage('${r.reference_id || r.id}', this)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Push to Main Page</span>
                 </button>
               ` : `
-                <button class="btn-ghost" style="padding: 6px 10px; font-size: 0.78rem; cursor: pointer;" title="Take Down from Main Page" onclick="window.PUVIMA_ADMIN.unpublishReview('${r.reference_id || r.id}', this)">
+                <button class="btn-table-takedown" title="Take Down from Main Page Carousel" onclick="window.PUVIMA_ADMIN.unpublishReview('${r.reference_id || r.id}', this)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
                   <span>Take Down</span>
                 </button>
               `}
@@ -851,7 +858,7 @@
   async function pushReviewToMainPage(id, btn) {
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<span>⏳ Publishing...</span>';
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-icon"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg><span>Publishing...</span>';
     }
     // Optimistically update memory so UI updates immediately
     const rev = reviewsList.find(x => x.reference_id === id || String(x.id) === String(id));
