@@ -1873,3 +1873,40 @@ main {
   border-color: #0072CE;
   box-shadow: 0 3px 12px rgba(0, 114, 206, 0.30);
 }
+
+/* Careers Core Disciplines Grid - Straight 4-card row layout */
+.careers-disciplines-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.discipline-card {
+  background: var(--bg-surface, #F8FAFC);
+  border: 1px solid var(--border-subtle, #E2E8F0);
+  border-radius: var(--radius-md, 12px);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.discipline-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 114, 206, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 114, 206, 0.08);
+}
+
+@media (max-width: 960px) {
+  .careers-disciplines-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .careers-disciplines-grid {
+    grid-template-columns: 1fr;
+  }
+}
