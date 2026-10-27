@@ -826,7 +826,7 @@ class StoreService {
     const sb = supabase.getSupabaseClient();
     if (sb) {
       try {
-        await sb.from('customer_reviews').insert([{
+        const { data: inserted } = await sb.from('customer_reviews').insert([{
           reference_id: newReview.reference_id,
           name: newReview.name,
           role: newReview.company || 'Client',
@@ -836,8 +836,30 @@ class StoreService {
           source: newReview.platform,
           status: newReview.status,
           featured: newReview.status === 'approved'
-        }]);
-      } catch (e) {}
+        }]).select();
+
+        const createdId = (inserted && inserted[0] && inserted[0].id) || newReview.id;
+        newReview.id = createdId;
+
+        // Persist avatar in cloud site_settings if provided
+        if (newReview.avatar_url) {
+          try {
+            const { data: avRow } = await sb.from('site_settings').select('data').eq('id', 'review_avatars').single();
+            const currentAvatars = (avRow && avRow.data) || {};
+            currentAvatars[newReview.reference_id] = newReview.avatar_url;
+            currentAvatars[String(createdId)] = newReview.avatar_url;
+            await sb.from('site_settings').upsert({
+              id: 'review_avatars',
+              data: currentAvatars,
+              updated_at: new Date().toISOString()
+            });
+          } catch (avErr) {
+            console.error('[StoreService] Error saving avatar to site_settings:', avErr.message);
+          }
+        }
+      } catch (e) {
+        console.error('[StoreService] Supabase insert review error:', e.message);
+      }
     }
 
     // 2. Always persist locally

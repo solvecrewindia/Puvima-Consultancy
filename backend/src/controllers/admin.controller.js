@@ -255,8 +255,8 @@ class AdminController {
   async updateReview(req, res) {
     try {
       const { id } = req.params;
-      const { status } = req.body;
-      const updated = await storeService.updateReviewStatus(id, { status });
+      const { status, avatar_url } = req.body;
+      const updated = await storeService.updateReviewStatus(id, { status, avatar_url });
       if (!updated) {
         return res.status(404).json({
           success: false,
