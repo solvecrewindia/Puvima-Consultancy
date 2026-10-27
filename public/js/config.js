@@ -22,7 +22,20 @@
   var currentConfig = window.PUVIMA_CONFIG || {};
   var configuredUrl = currentConfig.API_BASE_URL || '';
 
+  var defaultUrl = '';
+  if (typeof window !== 'undefined' && window.location) {
+    if (window.location.protocol === 'file:') {
+      defaultUrl = 'http://localhost:5000';
+    } else if (
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
+      window.location.port &&
+      window.location.port !== '5000'
+    ) {
+      defaultUrl = 'http://localhost:5000';
+    }
+  }
+
   window.PUVIMA_CONFIG = {
-    API_BASE_URL: (storedUrl || configuredUrl || '').replace(/\/+$/, '')
+    API_BASE_URL: (storedUrl || configuredUrl || defaultUrl).replace(/\/+$/, '')
   };
 })();
