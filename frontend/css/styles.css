@@ -482,8 +482,8 @@ main {
 }
 
 .section {
-  padding-top: clamp(64px, 8vw, 100px);
-  padding-bottom: clamp(64px, 8vw, 100px);
+  padding-top: clamp(32px, 4vw, 50px);
+  padding-bottom: clamp(32px, 4vw, 50px);
   position: relative;
 }
 
@@ -561,8 +561,8 @@ main {
 
 
 .page-hero {
-  padding-top: clamp(120px, 15vh, 160px);
-  padding-bottom: clamp(50px, 7vh, 80px);
+  padding-top: clamp(90px, 12vh, 120px);
+  padding-bottom: clamp(28px, 4vh, 44px);
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 114, 206, 0.06), transparent 70%), #F8FAFC;

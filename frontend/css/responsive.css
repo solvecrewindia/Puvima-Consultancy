@@ -193,8 +193,8 @@ body {
 
   /* Section Spacing & Hierarchy */
   .section {
-    padding-top: clamp(44px, 7vw, 64px);
-    padding-bottom: clamp(44px, 7vw, 64px);
+    padding-top: clamp(24px, 4vw, 36px);
+    padding-bottom: clamp(24px, 4vw, 36px);
   }
 
   .section-hero {
