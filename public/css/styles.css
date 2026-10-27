@@ -1673,6 +1673,7 @@ main {
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   min-width: 290px;
+  max-width: 360px;
   background: #FFFFFF;
   border: 1px solid var(--border-light, #E2E8F0);
   border-radius: var(--radius-md, 12px);
