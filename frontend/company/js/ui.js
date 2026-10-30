@@ -58,11 +58,11 @@ const UI = (function () {
     const r = String(role || '').toLowerCase();
     switch (r) {
       case 'superadmin':
-        return '<span class="badge badge-violet">Super Administrator</span>';
+        return '<span class="badge badge-violet">SuperAdmin</span>';
       case 'admin':
-        return '<span class="badge badge-blue">Administrator</span>';
+        return '<span class="badge badge-blue">Admin</span>';
       case 'hr':
-        return '<span class="badge badge-amber">Human Resources</span>';
+        return '<span class="badge badge-amber">HR</span>';
       case 'employee':
         return '<span class="badge badge-emerald">Employee</span>';
       case 'intern':

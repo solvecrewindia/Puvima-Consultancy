@@ -117,8 +117,8 @@
         <!-- Hero Section -->
         <div class="page-hero">
           <div>
-            <h1 class="page-title">Workforce & Project Operations</h1>
-            <p class="page-description">Oversee project assignments, establish research leads, and publish milestones.</p>
+            <h1 class="page-title">HR Operations</h1>
+            <p class="page-description">Workforce allocations and project management.</p>
           </div>
         </div>
 
@@ -128,36 +128,44 @@
             <div class="stat-info">
               <span class="stat-label">Active Projects</span>
               <span class="stat-value" id="statHrActiveProjects">0</span>
-              <span class="stat-desc">In development or live trial</span>
+              <span class="stat-desc">In progress</span>
             </div>
-            <div class="stat-icon emerald">📁</div>
+            <div class="stat-icon emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            </div>
           </div>
 
           <div class="stat-card" data-hr-tab="people">
             <div class="stat-info">
-              <span class="stat-label">Total Workforce</span>
+              <span class="stat-label">Workforce</span>
               <span class="stat-value" id="statHrWorkforce">0</span>
-              <span class="stat-desc">Engineers, analysts & fellows</span>
+              <span class="stat-desc">Active staff</span>
             </div>
-            <div class="stat-icon blue">👥</div>
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
           </div>
 
           <div class="stat-card" data-hr-tab="interns">
             <div class="stat-info">
-              <span class="stat-label">Research Interns</span>
+              <span class="stat-label">Interns</span>
               <span class="stat-value" id="statHrInterns">0</span>
-              <span class="stat-desc">Enrolled student fellows</span>
+              <span class="stat-desc">Active fellows</span>
             </div>
-            <div class="stat-icon amber">🎓</div>
+            <div class="stat-icon amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+            </div>
           </div>
 
           <div class="stat-card" data-hr-tab="reviews">
             <div class="stat-info">
-              <span class="stat-label">Draft Reviews</span>
+              <span class="stat-label">Drafts</span>
               <span class="stat-value" id="statHrDrafts">0</span>
-              <span class="stat-desc">Awaiting publishing authorization</span>
+              <span class="stat-desc">Pending launch</span>
             </div>
-            <div class="stat-icon violet">📝</div>
+            <div class="stat-icon violet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
           </div>
         </div>
 
@@ -174,15 +182,15 @@
   <div class="modal-backdrop" id="createProjectModal">
     <div class="modal-card modal-lg">
       <div class="modal-header">
-        <h3 class="modal-title">Launch Project Initiative</h3>
+        <h3 class="modal-title">New Project</h3>
         <button class="modal-close" data-close-modal="createProjectModal">&times;</button>
       </div>
       
       <!-- Wizard Step Indicator -->
-      <div style="display: flex; justify-content: space-around; padding: 14px 24px; background: var(--bg-surface-subtle); border-bottom: 1px solid var(--border-main); font-size: 13px;">
-        <span id="stepIndicator1">1. Project Details</span>
-        <span id="stepIndicator2">2. Team Assignment</span>
-        <span id="stepIndicator3">3. Review & Launch</span>
+      <div style="display: flex; justify-content: space-around; padding: 12px 24px; background: var(--bg-surface-subtle); border-bottom: 1px solid var(--border-main); font-size: 13px;">
+        <span id="stepIndicator1">1. Details</span>
+        <span id="stepIndicator2">2. Team</span>
+        <span id="stepIndicator3">3. Review</span>
       </div>
 
       <div class="modal-body">
@@ -191,34 +199,34 @@
         <div class="wizard-step-pane" id="wizardStep1">
           <div class="form-group">
             <label class="form-label" for="projectNameInput">Project Title</label>
-            <input type="text" id="projectNameInput" class="form-control" placeholder="e.g. Autonomous Solar Navigation Platform" required>
+            <input type="text" id="projectNameInput" class="form-control" placeholder="Project name" required>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="projectCategorySelect">Category</label>
             <select id="projectCategorySelect" class="form-select">
-              <option value="Main Project">Main Project (Client / Core Commercial)</option>
-              <option value="Intern-Based">Intern-Based (Research Trainee Fellowship)</option>
+              <option value="Main Project">Main Project</option>
+              <option value="Intern-Based">Intern-Based</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="projectDescInput">Executive Description & Deliverables</label>
-            <textarea id="projectDescInput" class="form-textarea" placeholder="Detail the objectives, technical specifications, and expected research impact..."></textarea>
+            <label class="form-label" for="projectDescInput">Description</label>
+            <textarea id="projectDescInput" class="form-textarea" placeholder="Project summary and scope..."></textarea>
           </div>
         </div>
 
         <!-- Step 2: Team Setup -->
         <div class="wizard-step-pane" id="wizardStep2" style="display: none;">
           <div class="form-group">
-            <label class="form-label" for="projectLeadSelect">Designate Project Team Lead</label>
+            <label class="form-label" for="projectLeadSelect">Project Lead</label>
             <select id="projectLeadSelect" class="form-select">
               <!-- Populated dynamically -->
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Assign Project Contributors & Interns</label>
+            <label class="form-label">Team Members</label>
             <div id="projectMembersContainer" style="max-height: 220px; overflow-y: auto; padding-right: 6px;">
               <!-- Populated dynamically -->
             </div>
@@ -237,7 +245,7 @@
               <input type="date" id="projectStartDateInput" class="form-control">
             </div>
             <div class="form-group">
-              <label class="form-label" for="projectDueDateInput">Target Due Date</label>
+              <label class="form-label" for="projectDueDateInput">Due Date</label>
               <input type="date" id="projectDueDateInput" class="form-control">
             </div>
           </div>
@@ -247,9 +255,9 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="window.prevWizardStep()">Previous</button>
-        <button type="button" class="btn btn-primary" id="wizardNextBtn" onclick="window.nextWizardStep()">Continue &rarr;</button>
+        <button type="button" class="btn btn-primary" id="wizardNextBtn" onclick="window.nextWizardStep()">Next</button>
         <button type="button" class="btn btn-secondary" id="saveDraftBtn" style="display: none;" onclick="window.submitProjectDraft(false)">Save Draft</button>
-        <button type="button" class="btn btn-primary" id="publishProjectBtn" style="display: none;" onclick="window.submitProjectDraft(true)">Publish Immediately</button>
+        <button type="button" class="btn btn-primary" id="publishProjectBtn" style="display: none;" onclick="window.submitProjectDraft(true)">Publish</button>
       </div>
     </div>
   </div>
@@ -282,7 +290,7 @@
   <div class="modal-backdrop" id="notificationsModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title">Notification Center</h3>
+        <h3 class="modal-title">Notifications</h3>
         <button class="modal-close" data-close-modal="notificationsModal">&times;</button>
       </div>
       <div class="modal-body" style="padding: 0;" id="notificationsList">

@@ -79,9 +79,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!activeProject) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">📂</div>
-          <div class="empty-state-title">No Active Project Assigned</div>
-          <div class="empty-state-desc">You are not currently assigned to an active project. Contact HR for assignment.</div>
+          <div class="empty-state-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="empty-state-title">No Active Project</div>
+          <div class="empty-state-desc">Project allocation pending from HR.</div>
         </div>
       `;
       return;
@@ -149,18 +151,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${
               isStaff
                 ? `<button class="timeline-nav-btn ${currentTimelineType === 'Staff' ? 'active' : ''}" onclick="window.switchTimeline('Staff')">
-                    Staff-Only Notes
+                    Staff Notes
                   </button>`
                 : ''
             }
           </div>
 
           <div class="timeline-visibility-banner ${currentTimelineType === 'Staff' ? 'staff' : 'team'}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
             <span>${
               currentTimelineType === 'Staff'
-                ? 'Visible strictly to HR, Admins, and Executive Leads.'
-                : 'Visible to all project contributors and assigned interns.'
+                ? 'Internal notes (Management only).'
+                : 'Project timeline (Team visible).'
             }</span>
           </div>
         </div>
@@ -168,9 +170,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         <!-- Composer -->
         <div class="timeline-composer">
           <div class="composer-header">
-            <span>Share Progress Update & Milestones</span>
+            <span>New Update</span>
           </div>
-          <textarea id="timelineContentInput" class="composer-textarea" placeholder="Describe progress, blockers, or test results..."></textarea>
+          <textarea id="timelineContentInput" class="composer-textarea" placeholder="Write an update, blocker, or milestone..."></textarea>
           
           <div class="composer-toolbar">
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -182,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <span id="attachedFileName" style="font-size: 12px; color: var(--text-dim);"></span>
             </div>
 
-            <button class="btn btn-primary" onclick="window.submitTimelineUpdate()">Post Update</button>
+            <button class="btn btn-primary btn-sm" onclick="window.submitTimelineUpdate()">Post</button>
           </div>
         </div>
 
@@ -202,9 +204,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (past.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">🏛️</div>
+          <div class="empty-state-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
           <div class="empty-state-title">No Completed Projects</div>
-          <div class="empty-state-desc">Your completed milestones and archived research projects will appear here.</div>
+          <div class="empty-state-desc">Archived project records will appear here.</div>
         </div>
       `;
       return;

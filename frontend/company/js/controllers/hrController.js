@@ -85,10 +85,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (allProjects.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">📁</div>
-          <div class="empty-state-title">No Projects Created</div>
-          <div class="empty-state-desc">Start by launching a new research or client project.</div>
-          <button class="btn btn-primary" onclick="window.openCreateProjectModal()">Create Project</button>
+          <div class="empty-state-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="empty-state-title">No Projects</div>
+          <div class="empty-state-desc">Create a new project to get started.</div>
+          <button class="btn btn-primary btn-sm" onclick="window.openCreateProjectModal()">New Project</button>
         </div>
       `;
       return;
@@ -107,24 +109,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <span class="badge badge-slate">${window.UI.escapeHtml(p.category)}</span>
                   ${window.UI.getStatusBadge(p.status)}
                 </div>
-                <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
                   ${window.UI.escapeHtml(p.name)}
                 </h3>
-                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                   ${window.UI.escapeHtml(p.description)}
                 </p>
                 
                 <div style="font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
-                  <div><strong>Team Lead:</strong> ${lead ? window.UI.escapeHtml(lead.name) : 'Unassigned'}</div>
+                  <div><strong>Lead:</strong> ${lead ? window.UI.escapeHtml(lead.name) : 'Unassigned'}</div>
                   <div><strong>Members:</strong> ${memberCount} assigned</div>
-                  <div><strong>Timeline:</strong> ${window.UI.formatDate(p.start_date)} &rarr; ${window.UI.formatDate(p.due_date)}</div>
+                  <div><strong>Period:</strong> ${window.UI.formatDate(p.start_date)} &rarr; ${window.UI.formatDate(p.due_date)}</div>
                 </div>
               </div>
               <div class="card-header" style="background: var(--bg-surface-subtle); padding: 12px 20px; border-top: 1px solid var(--border-main);">
                 ${
                   p.status === 'Draft'
-                    ? `<button class="btn btn-sm btn-primary" onclick="window.publishProject('${p.id}')">Publish Project</button>`
-                    : `<button class="btn btn-sm btn-outline" onclick="window.openProjectTimeline('${p.id}')">Inspect Timeline</button>`
+                    ? `<button class="btn btn-sm btn-primary" onclick="window.publishProject('${p.id}')">Publish</button>`
+                    : `<button class="btn btn-sm btn-outline" onclick="window.openProjectTimeline('${p.id}')">Timeline</button>`
                 }
                 <button class="btn btn-sm btn-secondary" onclick="window.viewProjectDetails('${p.id}')">Details</button>
               </div>
@@ -254,9 +256,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (drafts.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">✅</div>
-          <div class="empty-state-title">No Drafts Awaiting Review</div>
-          <div class="empty-state-desc">All projects have been finalized and published.</div>
+          <div class="empty-state-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <div class="empty-state-title">No Pending Drafts</div>
+          <div class="empty-state-desc">All project initiatives are active.</div>
         </div>
       `;
       return;
