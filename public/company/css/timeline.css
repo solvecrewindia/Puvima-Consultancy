@@ -1,0 +1,323 @@
+/* ==========================================================================
+   PUVIMA Consultancy — Project Timeline & Collaboration Stylesheet
+   Threaded updates, staff-only notes, and attachment handling
+   ========================================================================== */
+
+.timeline-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Timeline Type Switcher */
+.timeline-type-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-subtle);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-main);
+  width: fit-content;
+}
+
+.timeline-nav-btn {
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-nav-btn.active {
+  background: #FFFFFF;
+  color: var(--puvima-blue);
+  box-shadow: var(--shadow-subtle);
+}
+
+.timeline-visibility-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeline-visibility-banner.team {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  color: var(--color-sky);
+}
+
+.timeline-visibility-banner.staff {
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  color: var(--color-amber);
+}
+
+/* Composer Card */
+.timeline-composer {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.composer-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.composer-textarea {
+  width: 100%;
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-main);
+  min-height: 90px;
+  resize: vertical;
+  outline: none;
+  transition: var(--transition);
+  background: #FFFFFF;
+}
+
+.composer-textarea:focus {
+  border-color: var(--puvima-blue);
+  box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.12);
+}
+
+.composer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.composer-attachments-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.file-preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.file-preview-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-rose);
+  padding: 0 2px;
+  font-weight: 700;
+}
+
+/* Feed & Thread Entries */
+.timeline-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+}
+
+.timeline-feed::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 24px;
+  width: 2px;
+  background: var(--border-main);
+  z-index: 1;
+}
+
+.timeline-entry {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-subtle);
+  margin-left: 48px;
+  position: relative;
+  z-index: 2;
+  transition: var(--transition);
+}
+
+.timeline-entry:hover {
+  border-color: var(--border-violet);
+  box-shadow: var(--shadow-card);
+}
+
+.entry-node-icon {
+  position: absolute;
+  left: -48px;
+  top: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--puvima-gradient);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 0 0 4px var(--bg-body);
+  z-index: 3;
+}
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entry-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.entry-author-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.entry-time {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.entry-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Attachments */
+.entry-attachments {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attachment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.attachment-badge:hover {
+  background: #FFFFFF;
+  border-color: var(--puvima-blue);
+  color: var(--puvima-blue);
+}
+
+/* Replies / Comments */
+.entry-actions {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.replies-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 20px;
+  border-left: 2px solid var(--border-main);
+}
+
+.reply-item {
+  background: var(--bg-surface-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.reply-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.reply-author {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.reply-time {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.reply-content {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.reply-composer-inline {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.reply-input-inline {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-main);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  outline: none;
+}
+
+.reply-input-inline:focus {
+  border-color: var(--puvima-blue);
+}

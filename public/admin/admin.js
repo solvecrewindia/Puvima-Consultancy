@@ -120,8 +120,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
   }
 
   function showLogin() {
-    loginView.style.display = 'flex';
-    adminShell.style.display = 'none';
+    window.location.replace('/login');
   }
 
   function showDashboard() {
@@ -296,6 +295,18 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
       if (res.ok && data.success) {
         setStoredToken(data.token);
         currentAdmin = data.user;
+        try {
+          localStorage.setItem('puvima_portal_auth_user', JSON.stringify({
+            id: 'usr-admin-1',
+            userId: 'ADM0001',
+            user_code: 'ADM0001',
+            name: (data.user && data.user.name) || 'Administrator',
+            email: email,
+            role: 'SuperAdmin',
+            department: 'Executive Board',
+            isActive: true
+          }));
+        } catch (e) {}
         showDashboard();
         showToast('Administrative session established.', 'success');
       } else {
@@ -323,8 +334,10 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     if (confirm('Are you sure you want to end your administrative session?')) {
       clearStoredToken();
       currentAdmin = null;
-      showLogin();
-      showToast('Signed out successfully.', 'info');
+      try {
+        localStorage.removeItem('puvima_portal_auth_user');
+      } catch (e) {}
+      window.location.replace('/login');
     }
   }
 

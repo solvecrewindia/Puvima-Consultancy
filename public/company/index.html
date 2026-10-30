@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUVIMA Consultancy — Company Management Portal</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/assets/images/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/company/css/styles.css">
+  <link rel="stylesheet" href="/company/css/components.css">
+  <link rel="stylesheet" href="/company/css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/company/js/config.js"></script>
+  <script src="/company/js/supabaseClient.js"></script>
+  <script src="/company/js/auth.js"></script>
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);">
+  
+  <div style="text-align: center; max-width: 440px; padding: 32px;">
+    <div class="brand-monogram" style="width: 54px; height: 54px; font-size: 24px; margin: 0 auto 20px;">PV</div>
+    <h1 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">
+      PUVIMA Consultancy
+    </h1>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 28px;">
+      Company Management & Workforce Operations Portal
+    </p>
+
+    <div class="spinner" style="margin: 0 auto 16px;"></div>
+    <p style="font-size: 13px; color: var(--text-dim);" id="redirectStatus">Authenticating session...</p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = window.Auth ? window.Auth.getCurrentUser() : null;
+      const statusEl = document.getElementById('redirectStatus');
+
+      setTimeout(() => {
+        if (user && user.role) {
+          if (statusEl) statusEl.textContent = `Routing to ${user.role} workspace...`;
+          window.location.replace(window.Auth.getDashboardUrl(user.role));
+        } else {
+          if (statusEl) statusEl.textContent = 'Redirecting to sign in...';
+          window.location.replace('/login');
+        }
+      }, 350);
+    });
+  </script>
+</body>
+</html>

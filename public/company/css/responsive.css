@@ -1,0 +1,117 @@
+/* ==========================================================================
+   PUVIMA Consultancy — Company Management Portal Responsive Stylesheet
+   Breakpoints for tablet, mobile, and print media
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+
+  .portal-content {
+    padding: 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Devices (max-width: 768px) */
+@media (max-width: 768px) {
+  .portal-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-modal);
+  }
+
+  .portal-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .portal-main {
+    margin-left: 0;
+  }
+
+  .mobile-nav-toggle {
+    display: flex;
+  }
+
+  .portal-header {
+    padding: 0 16px;
+  }
+
+  .portal-content {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group .form-control,
+  .filter-group .form-select {
+    width: 100%;
+  }
+
+  .page-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timeline-feed::before {
+    left: 12px;
+  }
+
+  .timeline-entry {
+    margin-left: 28px;
+    padding: 16px;
+  }
+
+  .entry-node-icon {
+    left: -28px;
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .card-header {
+    padding: 16px;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 24px 20px;
+  }
+
+  .demo-chips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Backdrop for mobile drawer */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 99;
+  display: none;
+}
+
+.sidebar-backdrop.show {
+  display: block;
+}

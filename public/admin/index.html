@@ -10,13 +10,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/admin.css">
+  <script>
+    // If not authenticated, immediately redirect to unified login portal
+    if (!localStorage.getItem('puvima_admin_token') && !sessionStorage.getItem('puvima_admin_token')) {
+      window.location.replace('/login');
+    }
+  </script>
 </head>
 <body>
 
   <!-- ========================================================================
-       1. AUTHENTICATION VIEW (LOGIN SCREEN)
+       1. AUTHENTICATION VIEW (LOGIN SCREEN - FALLBACK AUTO-REDIRECT)
        ======================================================================== -->
-  <div id="loginView" class="login-wrapper">
+  <div id="loginView" class="login-wrapper" style="display: none;">
     <div class="login-card">
       <div class="login-brand">
         <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="login-brand-logo">
@@ -85,6 +91,14 @@
             <line x1="10" y1="14" x2="21" y2="3"></line>
           </svg>
           <span>View Live Site</span>
+        </a>
+
+        <a href="/company/admin" class="btn-ghost" style="color: var(--primary); font-weight: 600;" title="Open Company Operations Portal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <span>Company Portal &rarr;</span>
         </a>
 
         <div class="user-profile-badge">

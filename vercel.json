@@ -23,6 +23,38 @@
       "destination": "/admin/index.html"
     },
     {
+      "source": "/login",
+      "destination": "/pages/login.html"
+    },
+    {
+      "source": "/company",
+      "destination": "/company/index.html"
+    },
+    {
+      "source": "/company/login",
+      "destination": "/pages/login.html"
+    },
+    {
+      "source": "/company/admin",
+      "destination": "/company/admin.html"
+    },
+    {
+      "source": "/company/hr",
+      "destination": "/company/hr.html"
+    },
+    {
+      "source": "/company/employee",
+      "destination": "/company/employee.html"
+    },
+    {
+      "source": "/company/intern",
+      "destination": "/company/intern.html"
+    },
+    {
+      "source": "/company/about",
+      "destination": "/company/about.html"
+    },
+    {
       "source": "/careers",
       "destination": "/pages/careers.html"
     },

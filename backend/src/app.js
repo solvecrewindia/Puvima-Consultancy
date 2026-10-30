@@ -37,7 +37,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         imgSrc: ["'self'", "data:", "https:"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
         connectSrc: ["'self'", "https://*.supabase.co", "https://*.vercel.app"],
         frameAncestors: ["'none'"],
         formAction: ["'self'"],
@@ -97,11 +97,24 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-const frontendDir = fs.existsSync(path.resolve(__dirname, '../../public'))
-  ? path.resolve(__dirname, '../../public')
-  : path.resolve(__dirname, '../../frontend');
+const frontendDir = fs.existsSync(path.resolve(__dirname, '../../frontend'))
+  ? path.resolve(__dirname, '../../frontend')
+  : path.resolve(__dirname, '../../public');
 
-// Admin portal route
+// Central Unified Login route
+app.get(['/login', '/login/'], (req, res, next) => {
+  const loginHtml = path.join(frontendDir, 'pages', 'login.html');
+  if (fs.existsSync(loginHtml)) {
+    return res.sendFile(loginHtml);
+  }
+  const fallbackLogin = path.join(frontendDir, 'login.html');
+  if (fs.existsSync(fallbackLogin)) {
+    return res.sendFile(fallbackLogin);
+  }
+  next();
+});
+
+// Admin portal route (PUVIMA Website Administration)
 app.get(['/admin', '/admin/'], (req, res, next) => {
   const adminHtml = path.join(frontendDir, 'admin', 'index.html');
   if (fs.existsSync(adminHtml)) {
@@ -110,8 +123,35 @@ app.get(['/admin', '/admin/'], (req, res, next) => {
   next();
 });
 
+// Company Management Portal routes
+const companyDir = fs.existsSync(path.join(frontendDir, 'company'))
+  ? path.join(frontendDir, 'company')
+  : path.resolve(__dirname, '../../frontend/company');
+
+// Redirect any /company/login or /company/login.html directly to unified /login
+app.get(['/company/login', '/company/login/', '/company/login.html'], (req, res) => {
+  return res.redirect(301, '/login');
+});
+
+const companyPages = ['admin', 'hr', 'employee', 'intern', 'about'];
+companyPages.forEach(p => {
+  app.get([`/company/${p}`, `/company/${p}/`, `/company/${p}.html`], (req, res, next) => {
+    const pagePath = path.join(companyDir, `${p}.html`);
+    if (fs.existsSync(pagePath)) return res.sendFile(pagePath);
+    next();
+  });
+});
+
+app.get(['/company', '/company/'], (req, res, next) => {
+  const compIndex = path.join(companyDir, 'index.html');
+  if (fs.existsSync(compIndex)) return res.sendFile(compIndex);
+  next();
+});
+
+app.use('/company', express.static(companyDir));
+
 // Redirect /team to /about
-app.get(['/team', '/pages/team.html', '/portfolio', '/pages/portfolio.html'], (req, res) => res.redirect(301, '/about'));
+app.get(['/team', '/team/', '/pages/team.html', '/portfolio', '/portfolio/', '/pages/portfolio.html'], (req, res) => res.redirect(301, '/about'));
 
 // Clean friendly page routes
 const pageRoutes = [
@@ -120,7 +160,7 @@ const pageRoutes = [
 ];
 
 pageRoutes.forEach(route => {
-  app.get(`/${route}`, (req, res, next) => {
+  app.get([`/${route}`, `/${route}/`, `/${route}.html`], (req, res, next) => {
     const pageHtml = path.join(frontendDir, 'pages', `${route}.html`);
     if (fs.existsSync(pageHtml)) return res.sendFile(pageHtml);
     next();

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUVIMA Consultancy — Central Operations & Executive Sign In</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/company/css/styles.css">
+  <link rel="stylesheet" href="/company/css/components.css">
+  <link rel="stylesheet" href="/company/css/responsive.css">
+</head>
+<body class="login-page-body">
+
+  <div class="login-container" style="max-width: 520px;">
+    <div class="login-card" style="padding: 36px 32px;">
+      
+      <!-- Brand Header -->
+      <div class="login-brand-header">
+        <a href="/" style="display: inline-block; margin-bottom: 12px;">
+          <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" style="height: 44px; max-width: 100%; object-fit: contain;">
+        </a>
+        <h1 class="login-title" style="font-size: 22px;">Central Operations Sign In</h1>
+        <p class="login-subtitle">Sign in to access PUVIMA Website Administration or the Company Workforce Management Portal.</p>
+      </div>
+
+      <!-- Quick Fill Credentials helper -->
+      <div class="demo-accounts-box">
+        <div class="demo-box-header">
+          <span class="demo-box-title">1-Click Test Credentials</span>
+          <span style="font-size: 11px; color: var(--puvima-blue); font-weight: 700;">Click Any Account</span>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- PUVIMA Website Admin Demo -->
+          <div class="demo-chip" data-account-type="website-admin" data-demo-user="admin@puvima.com" data-demo-pass="admin123" style="border-left: 3px solid var(--puvima-blue);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="demo-chip-role" style="color: var(--puvima-navy);">PUVIMA Website Admin</span>
+              <span class="badge badge-blue" style="font-size: 10px;">Routes to /admin</span>
+            </div>
+            <span class="demo-chip-code">admin@puvima.com &bull; admin123</span>
+          </div>
+
+          <!-- Company Management Grid -->
+          <div class="demo-chips-grid">
+            <div class="demo-chip" data-account-type="company" data-demo-user="ADM0001" data-demo-pass="Password123!">
+              <span class="demo-chip-role">Company SuperAdmin</span>
+              <span class="demo-chip-code">ADM0001 &bull; /company/admin</span>
+            </div>
+            
+            <div class="demo-chip" data-account-type="company" data-demo-user="HR0001" data-demo-pass="Password123!">
+              <span class="demo-chip-role">HR Operations</span>
+              <span class="demo-chip-code">HR0001 &bull; /company/hr</span>
+            </div>
+            
+            <div class="demo-chip" data-account-type="company" data-demo-user="EMP0001" data-demo-pass="Password123!">
+              <span class="demo-chip-role">Employee (Engineer)</span>
+              <span class="demo-chip-code">EMP0001 &bull; /company/employee</span>
+            </div>
+            
+            <div class="demo-chip" data-account-type="company" data-demo-user="INT0001" data-demo-pass="Password123!">
+              <span class="demo-chip-role">Research Intern</span>
+              <span class="demo-chip-code">INT0001 &bull; /company/intern</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert -->
+      <div id="loginAlertBox" class="form-error" style="display: none; background: var(--color-rose-bg); border: 1px solid rgba(220, 38, 38, 0.2); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px;"></div>
+
+      <!-- Form -->
+      <form id="centralLoginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="centralUserEmail">Corporate Email or Company User ID</label>
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <input type="text" id="centralUserEmail" class="form-control" placeholder="e.g. admin@puvima.com or HR0001" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="centralPassword">
+            <span>Password</span>
+            <span style="font-size: 11px; color: var(--text-dim); font-weight: 500;">admin123 / Password123!</span>
+          </label>
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input type="password" id="centralPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" id="togglePassBtn" style="position: absolute; right: 12px; background: transparent; border: none; cursor: pointer; color: var(--text-dim);" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="centralSubmitBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
+          <span>Sign In</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </form>
+
+      <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 16px; font-size: 13px;">
+        <a href="/" style="color: var(--text-muted);">&larr; Return to PUVIMA Website</a>
+        <a href="/company/about" style="color: var(--puvima-blue); font-weight: 600;">About Operations</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/company/js/config.js"></script>
+  <script src="/company/js/supabaseClient.js"></script>
+  <script src="/company/js/auth.js"></script>
+  <script src="/company/js/ui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const userField = document.getElementById('centralUserEmail');
+      const passField = document.getElementById('centralPassword');
+      const alertBox = document.getElementById('loginAlertBox');
+      const submitBtn = document.getElementById('centralSubmitBtn');
+      const form = document.getElementById('centralLoginForm');
+      const togglePass = document.getElementById('togglePassBtn');
+
+      let selectedType = 'auto';
+
+      // 1-Click Demo chips
+      document.querySelectorAll('[data-demo-user]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          userField.value = chip.getAttribute('data-demo-user');
+          passField.value = chip.getAttribute('data-demo-pass');
+          selectedType = chip.getAttribute('data-account-type') || 'auto';
+          alertBox.style.display = 'none';
+          if (window.UI) {
+            window.UI.showToast('Credentials Selected', `Loaded demo account: ${userField.value}`, 'info');
+          }
+        });
+      });
+
+      // Toggle password
+      if (togglePass && passField) {
+        togglePass.addEventListener('click', () => {
+          const isPass = passField.type === 'password';
+          passField.type = isPass ? 'text' : 'password';
+        });
+      }
+
+      // Submit
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userVal = userField.value.trim();
+        const passVal = passField.value.trim();
+
+        if (!userVal || !passVal) {
+          showError('Please enter your corporate email or user ID, and password.');
+          return;
+        }
+
+        setLoading(true);
+
+        // Case 1: Check PUVIMA Website Admin API first if user entered admin email
+        if (userVal.toLowerCase() === 'admin@puvima.com' && passVal === 'admin123' || selectedType === 'website-admin') {
+          try {
+            const res = await fetch('/api/admin/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: userVal, password: passVal })
+            });
+            const data = await res.json();
+            if (res.ok && data.token) {
+              localStorage.setItem('puvima_admin_token', data.token);
+              
+              // Also sync with Company SuperAdmin session so they have access to /company/admin too
+              window.Auth.setCurrentUser({
+                id: 'usr-admin-1',
+                userId: 'ADM0001',
+                user_code: 'ADM0001',
+                name: 'Administrator',
+                email: 'admin@puvima.com',
+                role: 'SuperAdmin',
+                department: 'Executive Board',
+                isActive: true
+              });
+
+              if (window.UI) {
+                window.UI.showToast('Sign In Successful', 'Welcome to PUVIMA Administration!', 'success');
+              }
+              setTimeout(() => {
+                window.location.href = '/admin';
+              }, 400);
+              return;
+            }
+          } catch (err) {
+            console.warn('Direct admin login error, checking company portal auth:', err);
+          }
+        }
+
+        // Case 2: Authenticate via Company Management Portal (Supabase / local profiles)
+        try {
+          const result = await window.Auth.login({ userId: userVal, password: passVal });
+          if (result && result.success && result.user) {
+            if (window.UI) {
+              window.UI.showToast('Sign In Successful', `Welcome, ${result.user.name}!`, 'success');
+            }
+
+            const target = window.Auth.getDashboardUrl(result.user.role);
+            setTimeout(() => {
+              window.location.href = target;
+            }, 400);
+            return;
+          }
+
+          showError(result.error || 'Invalid credentials. Please verify your company ID or email.');
+        } catch (err) {
+          showError(err.message || 'Unable to sign in. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      function showError(msg) {
+        alertBox.textContent = msg;
+        alertBox.style.display = 'block';
+        if (window.UI) window.UI.showToast('Authentication Error', msg, 'error');
+        setLoading(false);
+      }
+
+      function setLoading(loading) {
+        submitBtn.disabled = loading;
+        submitBtn.innerHTML = loading
+          ? '<span>Authenticating...</span>'
+          : '<span>Sign In</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+      }
+    });
+  </script>
+</body>
+</html>
