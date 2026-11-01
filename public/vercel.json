@@ -3,8 +3,32 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin.css",
+      "destination": "/admin/admin.css"
+    },
+    {
+      "source": "/admin.js",
+      "destination": "/admin/admin.js"
+    },
+    {
       "source": "/admin",
       "destination": "/admin/index.html"
+    },
+    {
+      "source": "/mail",
+      "destination": "/mail/index.html"
+    },
+    {
+      "source": "/mail/(.*)",
+      "destination": "/mail/$1"
     },
     {
       "source": "/login",
@@ -82,5 +106,10 @@
       "source": "/terms",
       "destination": "/pages/terms.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "{backend/data/**,data/**}"
+    }
+  }
 }

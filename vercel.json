@@ -23,6 +23,14 @@
       "destination": "/admin/index.html"
     },
     {
+      "source": "/mail",
+      "destination": "/mail/index.html"
+    },
+    {
+      "source": "/mail/(.*)",
+      "destination": "/mail/$1"
+    },
+    {
       "source": "/login",
       "destination": "/pages/login.html"
     },
@@ -101,9 +109,6 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "{backend/data/**,data/**}"
-    },
-    "index.js": {
       "includeFiles": "{backend/data/**,data/**}"
     }
   }

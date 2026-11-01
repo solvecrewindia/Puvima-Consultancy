@@ -14,7 +14,6 @@ const adminRoutes = require('./routes/admin.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const reviewRoutes = require('./routes/review.routes');
 const careersRoutes = require('./routes/careers.routes');
-const mailRoutes = require('./routes/mail.routes');
 
 const app = express();
 
@@ -209,7 +208,22 @@ app.use('/api', adminRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
-app.use('/api/mail', mailRoutes);
+let mailRoutes = null;
+app.use('/api/mail', (req, res, next) => {
+  if (!mailRoutes) {
+    try {
+      mailRoutes = require('./routes/mail.routes');
+    } catch (err) {
+      console.warn('[Mail Routes] Lazy load error:', err.message);
+      return res.status(503).json({
+        success: false,
+        error: 'Mail service unavailable in this environment',
+        details: err.message
+      });
+    }
+  }
+  return mailRoutes(req, res, next);
+});
 
 // Serverless fallback mounts (for environments where /api prefix is stripped by host)
 app.use(healthRoutes);

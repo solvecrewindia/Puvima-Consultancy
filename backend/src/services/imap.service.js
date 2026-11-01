@@ -5,9 +5,36 @@
  * with connection pooling, message parsing, search, and flags.
  */
 
-const { ImapFlow } = require('imapflow');
-const { simpleParser } = require('mailparser');
-const sanitizeHtml = require('sanitize-html');
+let ImapFlow = null;
+let simpleParser = null;
+let sanitizeHtml = null;
+
+function loadDependencies() {
+  if (!ImapFlow) {
+    try {
+      const imapflowMod = require('imapflow');
+      ImapFlow = imapflowMod.ImapFlow || imapflowMod;
+    } catch (e) {
+      console.warn('[IMAP Service] imapflow load warning:', e.message);
+    }
+  }
+  if (!simpleParser) {
+    try {
+      const mailparserMod = require('mailparser');
+      simpleParser = mailparserMod.simpleParser || mailparserMod;
+    } catch (e) {
+      console.warn('[IMAP Service] mailparser load warning:', e.message);
+    }
+  }
+  if (!sanitizeHtml) {
+    try {
+      sanitizeHtml = require('sanitize-html');
+    } catch (e) {
+      sanitizeHtml = (html) => html;
+    }
+  }
+}
+
 const { resolveHostSafely } = require('../utils/dnsResolver');
 
 class ImapService {
@@ -66,6 +93,11 @@ class ImapService {
     // Resolve host safely to prevent Windows getaddrinfo EAI_AGAIN lookup issues
     const resolvedHost = await resolveHostSafely(cfg.host);
 
+    loadDependencies();
+    if (!ImapFlow) {
+      throw new Error('IMAP client engine is unavailable in this runtime environment');
+    }
+
     // Connect new client
     const client = new ImapFlow({
       host: resolvedHost,
@@ -112,6 +144,14 @@ class ImapService {
 
     let testClient = null;
     try {
+      loadDependencies();
+      if (!ImapFlow) {
+        return {
+          configured: true,
+          connected: false,
+          message: 'IMAP client engine is unavailable in this runtime environment'
+        };
+      }
       const resolvedHost = await resolveHostSafely(cfg.host);
       testClient = new ImapFlow({
         host: resolvedHost,
@@ -421,7 +461,13 @@ class ImapService {
         throw new Error(`Email message with UID ${uid} could not be downloaded.`);
       }
 
-      const parsed = await simpleParser(downloadResult.content);
+      loadDependencies();
+      let parsed = null;
+      if (simpleParser) {
+        parsed = await simpleParser(downloadResult.content);
+      } else {
+        parsed = { text: downloadResult.content.toString('utf8'), attachments: [] };
+      }
 
       if (markAsRead) {
         await client.messageFlagsAdd(numUid, ['\\Seen'], { uid: true }).catch(() => {});
@@ -429,19 +475,23 @@ class ImapService {
 
       let safeHtml = '';
       if (parsed.html) {
-        safeHtml = sanitizeHtml(parsed.html, {
-          allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'style', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'hr', 'font']),
-          allowedAttributes: {
-            ...sanitizeHtml.defaults.allowedAttributes,
-            '*': ['style', 'class', 'align', 'color', 'dir', 'valign', 'width', 'height'],
-            a: ['href', 'name', 'target', 'rel'],
-            img: ['src', 'alt', 'title', 'width', 'height', 'style']
-          },
-          allowedSchemes: ['http', 'https', 'mailto', 'data', 'cid'],
-          transformTags: {
-            a: sanitizeHtml.simpleTransform('a', { target: '_blank', rel: 'noopener noreferrer' })
-          }
-        });
+        if (typeof sanitizeHtml === 'function' && sanitizeHtml.defaults) {
+          safeHtml = sanitizeHtml(parsed.html, {
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'style', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'hr', 'font']),
+            allowedAttributes: {
+              ...sanitizeHtml.defaults.allowedAttributes,
+              '*': ['style', 'class', 'align', 'color', 'dir', 'valign', 'width', 'height'],
+              a: ['href', 'name', 'target', 'rel'],
+              img: ['src', 'alt', 'title', 'width', 'height', 'style']
+            },
+            allowedSchemes: ['http', 'https', 'mailto', 'data', 'cid'],
+            transformTags: sanitizeHtml.simpleTransform ? {
+              a: sanitizeHtml.simpleTransform('a', { target: '_blank', rel: 'noopener noreferrer' })
+            } : {}
+          });
+        } else {
+          safeHtml = parsed.html;
+        }
       } else if (parsed.textAsHtml) {
         safeHtml = parsed.textAsHtml;
       } else if (parsed.text) {
