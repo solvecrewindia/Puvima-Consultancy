@@ -108,6 +108,7 @@ input, textarea {
   opacity: 0.9;
 }
 
+.mail-logo-icon,
 .pmail-logo-icon {
   width: 28px;
   height: 28px;
@@ -121,6 +122,7 @@ input, textarea {
   height: 24px;
 }
 
+.mail-title-text,
 .pmail-title-text,
 .gmail-title-text {
   font-family: var(--font-display), 'Google Sans', 'Inter', system-ui, sans-serif;
