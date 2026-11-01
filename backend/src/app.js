@@ -14,6 +14,7 @@ const adminRoutes = require('./routes/admin.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const reviewRoutes = require('./routes/review.routes');
 const careersRoutes = require('./routes/careers.routes');
+const mailRoutes = require('./routes/mail.routes');
 
 const app = express();
 
@@ -37,7 +38,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         imgSrc: ["'self'", "data:", "https:"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://unpkg.com", "https://cdnjs.cloudflare.com"],
         connectSrc: ["'self'", "https://*.supabase.co", "https://*.vercel.app"],
         frameAncestors: ["'none'"],
         formAction: ["'self'"],
@@ -123,6 +124,15 @@ app.get(['/admin', '/admin/'], (req, res, next) => {
   next();
 });
 
+// PUVIMA Mail Dedicated Application route
+app.get(['/mail', '/mail/'], (req, res, next) => {
+  const mailHtml = path.join(frontendDir, 'mail', 'index.html');
+  if (fs.existsSync(mailHtml)) {
+    return res.sendFile(mailHtml);
+  }
+  next();
+});
+
 // Company Management Portal routes
 const companyDir = fs.existsSync(path.join(frontendDir, 'company'))
   ? path.join(frontendDir, 'company')
@@ -185,7 +195,8 @@ app.get('/api', (req, res) => {
       careers: '/api/careers',
       reviews: '/api/reviews',
       settings: '/api/site-settings',
-      admin: '/api/admin/login'
+      admin: '/api/admin/login',
+      mail: '/api/mail/account'
     }
   });
 });
@@ -198,6 +209,7 @@ app.use('/api', adminRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
+app.use('/api/mail', mailRoutes);
 
 // Serverless fallback mounts (for environments where /api prefix is stripped by host)
 app.use(healthRoutes);

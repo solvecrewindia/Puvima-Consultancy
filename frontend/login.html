@@ -191,8 +191,10 @@
               if (window.UI) {
                 window.UI.showToast('Sign In Successful', 'Welcome to PUVIMA Administration!', 'success');
               }
+              const urlParams = new URLSearchParams(window.location.search);
+              const redirectUrl = urlParams.get('redirect') || '/admin';
               setTimeout(() => {
-                window.location.href = '/admin';
+                window.location.href = redirectUrl;
               }, 400);
               return;
             }
