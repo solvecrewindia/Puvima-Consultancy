@@ -41,7 +41,7 @@ const DEFAULT_SETTINGS = {
     subhead: 'PUVIMA Consultancy transforms innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration.'
   },
   contact: {
-    email: 'puvimaconsultancy@gmail.com',
+    email: 'contact@puvima.com',
     phone: '+91 93847 87701',
     hours: 'Mon – Fri: 09:00 – 18:00 IST',
     location: 'Chennai & Bangalore, India'

@@ -953,7 +953,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
     // Contact
     const contact = s.contact || {};
-    document.getElementById('contactEmailSetting').value = contact.email || 'puvimaconsultancy@gmail.com';
+    document.getElementById('contactEmailSetting').value = contact.email || 'contact@puvima.com';
     document.getElementById('contactPhoneSetting').value = contact.phone || '+91 93847 87701';
     document.getElementById('contactHoursSetting').value = contact.hours || 'Mon – Fri: 09:00 – 18:00 IST';
     document.getElementById('contactLocationSetting').value = contact.location || 'Chennai & Bangalore, India';

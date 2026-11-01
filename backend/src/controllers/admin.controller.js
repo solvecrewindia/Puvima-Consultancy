@@ -25,7 +25,7 @@ class AdminController {
     const cleanEmail = String(email).trim().toLowerCase();
     const cleanPass = String(password).trim();
 
-    const allowedEmails = [DEFAULT_ADMIN_EMAIL.toLowerCase(), 'puvimaconsultancy@gmail.com', 'admin@puvima.com'];
+    const allowedEmails = [DEFAULT_ADMIN_EMAIL.toLowerCase(), 'contact@puvima.com', 'puvimaconsultancy@gmail.com', 'admin@puvima.com'];
     if (!allowedEmails.includes(cleanEmail) || cleanPass !== DEFAULT_ADMIN_PASSWORD) {
       return res.status(401).json({
         success: false,
