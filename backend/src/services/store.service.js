@@ -269,7 +269,7 @@ class StoreService {
       const dbStatus = await db.testConnection();
       if (dbStatus.isConnected) {
         let sql = `SELECT * FROM contact_enquiries ORDER BY created_at DESC`;
-        const [rows] = await db.query(sql);
+        const rows = await db.query(sql);
         if (rows && rows.length > 0) {
           let list = rows;
           if (status && status !== 'all') {
@@ -503,7 +503,7 @@ class StoreService {
       const dbStatus = await db.testConnection();
       if (dbStatus.isConnected) {
         let sql = `SELECT * FROM consultation_bookings ORDER BY created_at DESC`;
-        const [rows] = await db.query(sql);
+        const rows = await db.query(sql);
         if (rows && rows.length > 0) {
           let list = rows;
           if (status && status !== 'all') {

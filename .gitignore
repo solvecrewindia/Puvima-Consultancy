@@ -10,6 +10,27 @@ node_modules/
 *.pem
 *.key
 
+# Sensitive uploads and documents
+uploads/
+backend/uploads/
+uploads/resumes/
+backend/uploads/resumes/
+!uploads/.gitkeep
+!backend/uploads/.gitkeep
+!backend/uploads/resumes/.gitkeep
+
+# Sensitive local stores, audit logs, and MFA secrets
+data/security-audit-log*.json
+backend/data/security-audit-log*.json
+data/mfa-credentials.json
+backend/data/mfa-credentials.json
+
+# Database backups & dumps
+backups/
+*.sql.bak
+*.sql.gz
+*.dump
+
 _backup_original/
 scratch/
 *.tmp

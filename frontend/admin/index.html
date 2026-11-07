@@ -139,6 +139,16 @@
         <span class="tab-pill" id="unreadContactsBadge">0</span>
       </button>
 
+      <button class="tab-btn" data-tab="internships" id="tabBtnInternships" onclick="window.PUVIMA_ADMIN.switchTab('internships')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          <line x1="12" y1="11" x2="12" y2="17"></line>
+          <line x1="9" y1="14" x2="15" y2="14"></line>
+        </svg>
+        <span>Internships</span>
+        <span class="tab-pill" id="newInternshipsBadge">0</span>
+      </button>
+
 
       <button class="tab-btn" data-tab="reviews" id="tabBtnReviews" onclick="window.PUVIMA_ADMIN.switchTab('reviews')">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -179,7 +189,7 @@
           </button>
         </div>
 
-        <!-- 3 Primary Action Priority KPI Cards -->
+        <!-- 4 Primary Action Priority KPI Cards -->
         <div class="kpi-grid">
           <!-- 1. New Inquiries -->
           <div class="kpi-card action-priority">
@@ -195,7 +205,21 @@
             </div>
           </div>
 
-          <!-- 2. Pending Review Approvals -->
+          <!-- 2. Candidate Internship Applications -->
+          <div class="kpi-card action-priority" style="border-left-color: var(--primary);">
+            <div>
+              <div class="kpi-title">Internship Applications</div>
+              <div class="kpi-value" id="kpiNewInternships" style="color: var(--primary);">0</div>
+            </div>
+            <div class="kpi-footer-row">
+              <span class="kpi-badge badge-info">Drive Resumes</span>
+              <button type="button" class="kpi-action-link" onclick="window.PUVIMA_ADMIN.switchTab('internships')">
+                <span>Review Applications &rarr;</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Pending Review Approvals -->
           <div class="kpi-card action-priority" style="border-left-color: var(--accent-emerald);">
             <div>
               <div class="kpi-title">Reviews Pending Approval</div>
@@ -209,7 +233,7 @@
             </div>
           </div>
 
-          <!-- 3. Website & Application Controls -->
+          <!-- 4. Website & Application Controls -->
           <div class="kpi-card action-priority" style="border-left-color: var(--accent-indigo);">
             <div>
               <div class="kpi-title">Website Configuration</div>
@@ -331,6 +355,96 @@
               <!-- Rendered via JavaScript -->
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: INTERNSHIP APPLICATIONS (GOOGLE DRIVE RESUMES)
+           ==================================================================== -->
+      <section id="tab-internships" class="tab-view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Candidate Internship Applications</h2>
+            <p class="view-desc">Review applicant questionnaires, open resumes directly in Google Drive, update recruitment status, and manage coordinator notes.</p>
+          </div>
+          <button class="btn-ghost" id="reloadInternshipsBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Refresh Applications</span>
+          </button>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <button class="filter-pill-btn active" data-filter-intern-status="all">All</button>
+            <button class="filter-pill-btn" data-filter-intern-status="received">Received</button>
+            <button class="filter-pill-btn" data-filter-intern-status="under_review">Under Review</button>
+            <button class="filter-pill-btn" data-filter-intern-status="shortlisted">Shortlisted</button>
+            <button class="filter-pill-btn" data-filter-intern-status="interview">Interview</button>
+            <button class="filter-pill-btn" data-filter-intern-status="selected">Selected</button>
+            <button class="filter-pill-btn" data-filter-intern-status="rejected">Rejected</button>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end; flex-wrap: wrap;">
+            <!-- Role Filter Select -->
+            <select id="internRoleFilter" class="form-control" style="max-width: 200px; padding: 7px 12px; font-size: 0.84rem;">
+              <option value="all">All Roles</option>
+              <option value="Software Development">Software Development</option>
+              <option value="Artificial Intelligence / Machine Learning">AI / Machine Learning</option>
+              <option value="Data Analytics / Data Science">Data Analytics</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Mobile App Development">Mobile App Dev</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Robotics">Robotics</option>
+              <option value="Blockchain">Blockchain</option>
+              <option value="Marketing / Content">Marketing</option>
+              <option value="Sales / Business Development">Sales / BD</option>
+              <option value="Operations / Business">Operations</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <div class="search-input-wrap">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="internshipSearchInput" class="form-control" placeholder="Search applicant, email, college, or ref ID...">
+            </div>
+          </div>
+        </div>
+
+        <!-- Internship Applications Table -->
+        <div class="data-table-container">
+          <table class="data-table" id="internshipsTable">
+            <thead>
+              <tr>
+                <th>Ref ID</th>
+                <th>Applicant</th>
+                <th>College / Degree</th>
+                <th>Target Role</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+                <th style="text-align: right;">Resume &amp; Actions</th>
+              </tr>
+            </thead>
+            <tbody id="internshipsTableBody">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 4px; font-size: 0.85rem; color: var(--text-muted);">
+          <div id="internshipCountDisplay">Showing 0 applications</div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-ghost" id="internshipPrevPageBtn" disabled>&larr; Previous</button>
+            <button type="button" class="btn-ghost" id="internshipNextPageBtn" disabled>Next &rarr;</button>
+          </div>
         </div>
       </section>
 
@@ -643,6 +757,200 @@
 
           <button type="button" id="modalSaveActionBtn" class="btn-primary">
             <span>Update Record</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. DETAIL INSPECTION MODAL (FOR INTERNSHIP APPLICATIONS)
+       ======================================================================== -->
+  <div id="internModalOverlay" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card" style="max-width: 760px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <span class="status-pill status-received" id="internModalStatusBadge">RECEIVED</span>
+          <h3 class="modal-title" id="internModalApplicantName" style="margin-top: 8px;">Candidate Application</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="internModalCloseBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Reference ID & Applied Date -->
+      <div class="modal-meta-row" style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px;">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Reference ID</div>
+          <div class="modal-meta-value" id="internModalRefId" style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Applied On</div>
+          <div class="modal-meta-value" id="internModalCreatedAt">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Target Role</div>
+          <div class="modal-meta-value" id="internModalRole" style="font-weight: 700; color: var(--primary);">--</div>
+        </div>
+      </div>
+
+      <!-- Google Drive Resume Callout Card -->
+      <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div>
+          <div style="font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: #1E40AF; letter-spacing: 0.04em;">Google Drive Resume File</div>
+          <div id="internModalResumeFilename" style="font-weight: 700; color: #0F172A; font-size: 0.95rem; margin-top: 2px;">resume.pdf</div>
+          <div id="internModalResumeSize" style="font-size: 0.78rem; color: #64748B;">0 KB</div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="#" id="internModalDriveBtn" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 8px 16px; font-size: 0.84rem; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Open in Google Drive ↗</span>
+          </a>
+
+          <a href="#" id="internModalDownloadBtn" class="btn-ghost" style="padding: 8px 14px; font-size: 0.84rem; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Preview File</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Candidate Contact Details -->
+      <div class="modal-meta-row" style="margin-bottom: 16px;">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Email Address</div>
+          <div class="modal-meta-value"><a href="#" id="internModalEmail" style="color: var(--primary); text-decoration: underline;">--</a></div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Mobile Number</div>
+          <div class="modal-meta-value" id="internModalPhone">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Location (City, State)</div>
+          <div class="modal-meta-value" id="internModalCityState">--</div>
+        </div>
+        <div class="modal-meta-item" id="internModalLinkedinWrap">
+          <div class="modal-meta-label">LinkedIn Profile</div>
+          <div class="modal-meta-value"><a href="#" id="internModalLinkedin" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">View Profile ↗</a></div>
+        </div>
+      </div>
+
+      <!-- Academic Background -->
+      <div class="modal-meta-row" style="margin-bottom: 16px;">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">College / University</div>
+          <div class="modal-meta-value" id="internModalCollege" style="font-weight: 600;">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Degree &amp; Specialization</div>
+          <div class="modal-meta-value" id="internModalDegree">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Study Year</div>
+          <div class="modal-meta-value" id="internModalStudyYear">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Graduation Year</div>
+          <div class="modal-meta-value" id="internModalGradYear">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">CGPA / Percentage</div>
+          <div class="modal-meta-value" id="internModalCgpa">--</div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div style="margin-bottom: 16px;">
+        <div class="modal-meta-label" style="margin-bottom: 6px;">Skills &amp; Technologies</div>
+        <div id="internModalSkillsChips" style="display: flex; flex-wrap: wrap; gap: 6px;">--</div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <div class="modal-meta-label" style="margin-bottom: 4px;">Strongest Skills Description</div>
+        <div class="modal-message-box" id="internModalStrongestSkills">--</div>
+      </div>
+
+      <div style="margin-bottom: 16px;" id="internModalProjectsWrap">
+        <div class="modal-meta-label" style="margin-bottom: 4px;">Projects &amp; Portfolio Experience</div>
+        <div class="modal-message-box" id="internModalProjects">--</div>
+      </div>
+
+      <div style="margin-bottom: 16px;" id="internModalPortfolioUrlWrap">
+        <div class="modal-meta-label" style="margin-bottom: 4px;">Portfolio / GitHub URL</div>
+        <div style="font-size: 0.88rem;"><a href="#" id="internModalPortfolioUrl" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">--</a></div>
+      </div>
+
+      <!-- Motivation & Contribution -->
+      <div class="modal-meta-row" style="margin-bottom: 16px;">
+        <div style="flex: 1; min-width: 280px;">
+          <div class="modal-meta-label" style="margin-bottom: 4px;">Why Join PUVIMA</div>
+          <div class="modal-message-box" id="internModalMotivation">--</div>
+        </div>
+        <div style="flex: 1; min-width: 280px;">
+          <div class="modal-meta-label" style="margin-bottom: 4px;">What They Bring to Team</div>
+          <div class="modal-message-box" id="internModalContribution">--</div>
+        </div>
+      </div>
+
+      <!-- Availability Details -->
+      <div class="modal-meta-row" style="margin-bottom: 16px;">
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Mode</div>
+          <div class="modal-meta-value" id="internModalMode">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Duration</div>
+          <div class="modal-meta-value" id="internModalDuration">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Availability / Date</div>
+          <div class="modal-meta-value" id="internModalJoining">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Weekly Hours</div>
+          <div class="modal-meta-value" id="internModalHours">--</div>
+        </div>
+        <div class="modal-meta-item">
+          <div class="modal-meta-label">Referral Source</div>
+          <div class="modal-meta-value" id="internModalReferral">--</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;" id="internModalAddlInfoWrap">
+        <div class="modal-meta-label" style="margin-bottom: 4px;">Additional Information</div>
+        <div class="modal-message-box" id="internModalAddlInfo">--</div>
+      </div>
+
+      <!-- Recruitment Workflow Action & Status Update controls -->
+      <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 18px; margin-top: 14px;">
+        <div style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; letter-spacing: 0.04em;">Update Recruitment Status &amp; Coordinator Notes</div>
+        
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="internModalStatusSelect">Recruitment Workflow Status</label>
+          <select id="internModalStatusSelect" class="form-control">
+            <option value="received">Received</option>
+            <option value="under_review">Under Review</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="interview">Interview</option>
+            <option value="selected">Selected</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="internModalNotesInput">Internal Evaluation &amp; Interview Notes</label>
+          <textarea id="internModalNotesInput" class="form-control" rows="3" placeholder="Record interview feedback, technical ratings, evaluation notes, or coordinator decisions..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <a href="#" id="internModalMailtoBtn" class="btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Email Candidate</span>
+          </a>
+
+          <button type="button" id="internModalSaveBtn" class="btn-primary">
+            <span>Save Status &amp; Notes</span>
           </button>
         </div>
       </div>

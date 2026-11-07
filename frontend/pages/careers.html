@@ -295,24 +295,684 @@
             </div>
           </div>
 
-          <!-- The CTA Action Button -->
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-            <a href="#" id="careersApplyBtn" class="btn btn-primary" target="_blank" rel="noopener noreferrer" style="font-size: 1.05rem; padding: 15px 36px; border-radius: var(--radius-pill); box-shadow: 0 4px 18px rgba(0, 114, 206, 0.35); display: inline-flex; align-items: center; gap: 10px;">
-              <span>Submit Application Form</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </a>
+          <!-- Interactive 5-Step Internship Application Form -->
+          <div class="internship-app-section" id="internshipFormWrapper">
+            <div class="internship-app-card">
 
-            <div id="careersFormNotice" style="display: none; max-width: 520px; padding: 12px 18px; background: rgba(0, 114, 206, 0.08); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.86rem; color: var(--text-secondary);">
-              The official application form link is being set up in the administration panel. In the meantime, you may submit your resume directly to <a href="mailto:contact@puvima.com" style="color: var(--primary); font-weight: 600;">contact@puvima.com</a>.
+              <!-- Stepper Progress Header -->
+              <nav class="internship-stepper" aria-label="Internship Application Steps">
+                <button type="button" class="stepper-item active" data-step-nav="1" id="stepNav1">
+                  <span class="step-indicator">1</span>
+                  <div class="step-label-group">
+                    <span class="step-number-text">Step 01</span>
+                    <span class="step-name-text">Personal Info</span>
+                  </div>
+                </button>
+
+                <button type="button" class="stepper-item" data-step-nav="2" id="stepNav2">
+                  <span class="step-indicator">2</span>
+                  <div class="step-label-group">
+                    <span class="step-number-text">Step 02</span>
+                    <span class="step-name-text">Skills &amp; Resume</span>
+                  </div>
+                </button>
+
+                <button type="button" class="stepper-item" data-step-nav="3" id="stepNav3">
+                  <span class="step-indicator">3</span>
+                  <div class="step-label-group">
+                    <span class="step-number-text">Step 03</span>
+                    <span class="step-name-text">Availability</span>
+                  </div>
+                </button>
+
+                <button type="button" class="stepper-item" data-step-nav="4" id="stepNav4">
+                  <span class="step-indicator">4</span>
+                  <div class="step-label-group">
+                    <span class="step-number-text">Step 04</span>
+                    <span class="step-name-text">Final Details</span>
+                  </div>
+                </button>
+
+                <button type="button" class="stepper-item" data-step-nav="5" id="stepNav5">
+                  <span class="step-indicator">5</span>
+                  <div class="step-label-group">
+                    <span class="step-number-text">Step 05</span>
+                    <span class="step-name-text">Review &amp; Submit</span>
+                  </div>
+                </button>
+              </nav>
+
+              <form id="internshipApplicationForm" novalidate enctype="multipart/form-data">
+
+                <!-- ==============================================================
+                     STEP 1: PERSONAL & ACADEMIC INFORMATION
+                     ============================================================== -->
+                <div class="wizard-step active-step" data-step="1" id="stepPanel1">
+                  <div class="step-header">
+                    <h3 class="step-title">
+                      <span>Section 01 &mdash; Personal &amp; Academic Details</span>
+                    </h3>
+                    <p class="step-desc">Please introduce yourself and provide your current educational background.</p>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <!-- 1. Full Name -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appFullName">Full Legal Name <span class="required-star">*</span></label>
+                      <input type="text" id="appFullName" name="full_name" class="app-form-control" placeholder="e.g. Ramesh Kumar" required autocomplete="name">
+                      <div class="field-error-hint" id="err_full_name">Full legal name is required (minimum 2 characters).</div>
+                    </div>
+
+                    <!-- 2. Email Address -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appEmail">Email Address <span class="required-star">*</span></label>
+                      <input type="email" id="appEmail" name="email" class="app-form-control" placeholder="e.g. ramesh.kumar@example.com" required autocomplete="email">
+                      <div class="field-error-hint" id="err_email">A valid email address is required.</div>
+                    </div>
+
+                    <!-- 3. Mobile Number with Country Code -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appPhone">Mobile Number (with Country Code) <span class="required-star">*</span></label>
+                      <input type="tel" id="appPhone" name="phone" class="app-form-control" placeholder="+91 98765 43210" required autocomplete="tel">
+                      <div class="field-error-hint" id="err_phone">Mobile number with country code is required (e.g. +91 98765 43210).</div>
+                    </div>
+
+                    <!-- 4. City and State -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appCityState">City and State <span class="required-star">*</span></label>
+                      <input type="text" id="appCityState" name="city_state" class="app-form-control" placeholder="e.g. Chennai, Tamil Nadu" required>
+                      <div class="field-error-hint" id="err_city_state">City and State are required.</div>
+                    </div>
+
+                    <!-- 5. LinkedIn Profile URL (Optional) -->
+                    <div class="app-form-group col-span-full">
+                      <label class="app-form-label" for="appLinkedin">LinkedIn Profile URL <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Optional)</span></label>
+                      <input type="url" id="appLinkedin" name="linkedin_url" class="app-form-control" placeholder="https://www.linkedin.com/in/yourprofile">
+                      <div class="field-error-hint" id="err_linkedin_url">LinkedIn URL must start with http:// or https://</div>
+                    </div>
+
+                    <!-- 6. College / University Name -->
+                    <div class="app-form-group col-span-full">
+                      <label class="app-form-label" for="appCollege">College / University Name <span class="required-star">*</span></label>
+                      <input type="text" id="appCollege" name="college" class="app-form-control" placeholder="e.g. Anna University, IIT Madras, SRM Institute" required>
+                      <div class="field-error-hint" id="err_college">College / University name is required.</div>
+                    </div>
+
+                    <!-- 7. Degree and Specialization -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appDegree">Degree and Specialization <span class="required-star">*</span></label>
+                      <input type="text" id="appDegree" name="degree" class="app-form-control" placeholder="e.g. B.Tech Computer Science / Robotics" required>
+                      <div class="field-error-hint" id="err_degree">Degree and Specialization are required.</div>
+                    </div>
+
+                    <!-- 8. Current Year of Study -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appStudyYear">Current Year of Study <span class="required-star">*</span></label>
+                      <select id="appStudyYear" name="study_year" class="app-form-control" required>
+                        <option value="">Select current year of study...</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                        <option value="Postgraduate">Postgraduate</option>
+                        <option value="Recent Graduate">Recent Graduate</option>
+                      </select>
+                      <div class="field-error-hint" id="err_study_year">Please select your current year of study.</div>
+                    </div>
+
+                    <!-- 9. Expected Graduation Year -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appGraduationYear">Expected Graduation Year <span class="required-star">*</span></label>
+                      <select id="appGraduationYear" name="graduation_year" class="app-form-control" required>
+                        <option value="">Select graduation year...</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                      </select>
+                      <div class="field-error-hint" id="err_graduation_year">Expected graduation year is required.</div>
+                    </div>
+
+                    <!-- 10. Current CGPA / Percentage Range -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appCgpaRange">Current CGPA / Percentage Range <span class="required-star">*</span></label>
+                      <select id="appCgpaRange" name="cgpa_range" class="app-form-control" required>
+                        <option value="">Select academic grade range...</option>
+                        <option value="Below 6.0 CGPA / Below 60%">Below 6.0 CGPA / Below 60%</option>
+                        <option value="6.0–6.9 CGPA / 60–69%">6.0–6.9 CGPA / 60–69%</option>
+                        <option value="7.0–7.9 CGPA / 70–79%">7.0–7.9 CGPA / 70–79%</option>
+                        <option value="8.0–8.9 CGPA / 80–89%">8.0–8.9 CGPA / 80–89%</option>
+                        <option value="9.0–10 CGPA / 90% or above">9.0–10 CGPA / 90% or above</option>
+                        <option value="Not applicable / Prefer not to disclose">Not applicable / Prefer not to disclose</option>
+                      </select>
+                      <div class="field-error-hint" id="err_cgpa_range">Please select your CGPA or percentage range.</div>
+                    </div>
+                  </div>
+
+                  <div class="wizard-footer" style="justify-content: flex-end;">
+                    <button type="button" class="btn-wizard-next" data-next-to="2">
+                      <span>Continue to Skills &amp; Resume</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ==============================================================
+                     STEP 2: INTERNSHIP ROLE, SKILLS & RESUME UPLOAD
+                     ============================================================== -->
+                <div class="wizard-step" data-step="2" id="stepPanel2">
+                  <div class="step-header">
+                    <h3 class="step-title">
+                      <span>Section 02 &mdash; Internship Role &amp; Technical Skills</span>
+                    </h3>
+                    <p class="step-desc">Select your desired role, highlight your core technologies, and upload your resume file.</p>
+                  </div>
+
+                  <!-- 11. Internship Role / Department of Interest -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appRole">Internship Role / Department of Interest <span class="required-star">*</span></label>
+                    <select id="appRole" name="internship_role" class="app-form-control" required>
+                      <option value="">Select department or role of interest...</option>
+                      <option value="Software Development">Software Development</option>
+                      <option value="Artificial Intelligence / Machine Learning">Artificial Intelligence / Machine Learning</option>
+                      <option value="Data Analytics / Data Science">Data Analytics / Data Science</option>
+                      <option value="Web Development">Web Development</option>
+                      <option value="Mobile App Development">Mobile App Development</option>
+                      <option value="UI/UX Design">UI/UX Design</option>
+                      <option value="Cybersecurity">Cybersecurity</option>
+                      <option value="Marketing / Content">Marketing / Content</option>
+                      <option value="Sales / Business Development">Sales / Business Development</option>
+                      <option value="Operations / Business">Operations / Business</option>
+                      <option value="Robotics">Robotics</option>
+                      <option value="Blockchain">Blockchain</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div class="field-error-hint" id="err_internship_role">Please select an internship role of interest.</div>
+                  </div>
+
+                  <!-- 12. Skills and Technologies (Multiple Selections) -->
+                  <div class="app-form-group">
+                    <label class="app-form-label">Skills and Technologies <span class="required-star">*</span> <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Select all that apply)</span></label>
+                    
+                    <div class="skills-selector-grid" id="skillsGrid">
+                      <!-- 18 Spec-defined Skills -->
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_python" name="skills" value="Python" class="skill-chip-checkbox">
+                        <label for="skill_python" class="skill-chip-label">Python</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_java" name="skills" value="Java" class="skill-chip-checkbox">
+                        <label for="skill_java" class="skill-chip-label">Java</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_c_cpp" name="skills" value="C / C++" class="skill-chip-checkbox">
+                        <label for="skill_c_cpp" class="skill-chip-label">C / C++</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_js_ts" name="skills" value="JavaScript / TypeScript" class="skill-chip-checkbox">
+                        <label for="skill_js_ts" class="skill-chip-label">JavaScript / TypeScript</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_html_css" name="skills" value="HTML / CSS" class="skill-chip-checkbox">
+                        <label for="skill_html_css" class="skill-chip-label">HTML / CSS</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_react" name="skills" value="React / Frontend Development" class="skill-chip-checkbox">
+                        <label for="skill_react" class="skill-chip-label">React / Frontend Development</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_node" name="skills" value="Node.js / Backend Development" class="skill-chip-checkbox">
+                        <label for="skill_node" class="skill-chip-label">Node.js / Backend Development</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_sql" name="skills" value="SQL / Databases" class="skill-chip-checkbox">
+                        <label for="skill_sql" class="skill-chip-label">SQL / Databases</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_ml_ai" name="skills" value="Machine Learning / AI" class="skill-chip-checkbox">
+                        <label for="skill_ml_ai" class="skill-chip-label">Machine Learning / AI</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_data_analytics" name="skills" value="Data Analysis / Visualization" class="skill-chip-checkbox">
+                        <label for="skill_data_analytics" class="skill-chip-label">Data Analysis / Visualization</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_cloud_devops" name="skills" value="Cloud / DevOps" class="skill-chip-checkbox">
+                        <label for="skill_cloud_devops" class="skill-chip-label">Cloud / DevOps</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_cybersecurity" name="skills" value="Cybersecurity" class="skill-chip-checkbox">
+                        <label for="skill_cybersecurity" class="skill-chip-label">Cybersecurity</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_ui_ux" name="skills" value="UI/UX Design" class="skill-chip-checkbox">
+                        <label for="skill_ui_ux" class="skill-chip-label">UI/UX Design</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_communication" name="skills" value="Communication / Presentation" class="skill-chip-checkbox">
+                        <label for="skill_communication" class="skill-chip-label">Communication / Presentation</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_marketing" name="skills" value="Marketing / Content Creation" class="skill-chip-checkbox">
+                        <label for="skill_marketing" class="skill-chip-label">Marketing / Content Creation</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_research" name="skills" value="Research / Problem Solving" class="skill-chip-checkbox">
+                        <label for="skill_research" class="skill-chip-label">Research / Problem Solving</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_sales" name="skills" value="Business Development / Sales" class="skill-chip-checkbox">
+                        <label for="skill_sales" class="skill-chip-label">Business Development / Sales</label>
+                      </div>
+                      <div class="skill-chip-wrap">
+                        <input type="checkbox" id="skill_other" name="skills" value="Other" class="skill-chip-checkbox">
+                        <label for="skill_other" class="skill-chip-label">Other</label>
+                      </div>
+                    </div>
+                    <div class="field-error-hint" id="err_skills">Please select at least one skill or technology.</div>
+                  </div>
+
+                  <!-- 13. Describe your strongest skills -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appStrongestSkills">Describe Your Strongest Skills <span class="required-star">*</span></label>
+                    <textarea id="appStrongestSkills" name="strongest_skills" rows="3" class="app-form-control" placeholder="Detail your primary proficiencies, programming languages, algorithms, or tools you are most comfortable with..." required></textarea>
+                    <div class="field-error-hint" id="err_strongest_skills">Please describe your strongest skills (minimum 10 characters).</div>
+                  </div>
+
+                  <!-- 14. Projects, Portfolio or Relevant Experience (Optional) -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appProjects">Projects, Portfolio or Relevant Experience <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Optional)</span></label>
+                    <textarea id="appProjects" name="projects_experience" rows="3" class="app-form-control" placeholder="Highlight academic projects, open source contributions, research papers, competitions, or freelance work..."></textarea>
+                  </div>
+
+                  <!-- 15. GitHub / Portfolio / Project URL (Optional) -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appPortfolioUrl">GitHub / Portfolio / Project URL <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Optional)</span></label>
+                    <input type="url" id="appPortfolioUrl" name="github_portfolio_url" class="app-form-control" placeholder="https://github.com/yourhandle or https://yourportfolio.dev">
+                    <div class="field-error-hint" id="err_github_portfolio_url">Portfolio URL must start with http:// or https://</div>
+                  </div>
+
+                  <!-- 16. Resume / CV — Required FILE UPLOAD -->
+                  <div class="app-form-group">
+                    <label class="app-form-label">Resume / CV Document <span class="required-star">*</span> <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Actual File Upload &bull; Uploads to PUVIMA Google Drive)</span></label>
+                    
+                    <div class="resume-dropzone" id="resumeDropzone">
+                      <svg class="resume-dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <div class="resume-dropzone-text">
+                        <span>Drag &amp; drop your resume here, or </span>
+                        <span style="color: var(--puvima-blue, #0072ce); text-decoration: underline; font-weight: 700;">Browse Files</span>
+                      </div>
+                      <p class="resume-dropzone-sub">Accepted formats: PDF (.pdf), Word (.doc, .docx) &bull; Maximum file size: 5 MB</p>
+                      <input type="file" id="resumeFileInput" name="resume" class="resume-file-input" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    </div>
+
+                    <!-- Selected File Preview Card -->
+                    <div class="resume-preview-card" id="resumePreviewCard">
+                      <div class="resume-preview-info">
+                        <span class="resume-format-badge" id="resumeFormatBadge">PDF</span>
+                        <div>
+                          <div class="resume-preview-name" id="resumePreviewName">candidate_resume.pdf</div>
+                          <div class="resume-preview-size" id="resumePreviewSize">0 KB</div>
+                        </div>
+                      </div>
+                      <button type="button" class="resume-remove-btn" id="resumeRemoveBtn" title="Remove or replace resume">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>Remove / Replace</span>
+                      </button>
+                    </div>
+
+                    <div class="field-error-hint" id="err_resume">A valid resume file (PDF, DOC, or DOCX up to 5MB) is required.</div>
+                  </div>
+
+                  <div class="wizard-footer">
+                    <button type="button" class="btn-wizard-prev" data-prev-to="1">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      <span>Previous: Personal Info</span>
+                    </button>
+                    <button type="button" class="btn-wizard-next" data-next-to="3">
+                      <span>Continue to Availability</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ==============================================================
+                     STEP 3: MOTIVATION & AVAILABILITY
+                     ============================================================== -->
+                <div class="wizard-step" data-step="3" id="stepPanel3">
+                  <div class="step-header">
+                    <h3 class="step-title">
+                      <span>Section 03 &mdash; Motivation &amp; Availability</span>
+                    </h3>
+                    <p class="step-desc">Tell us what drives you and configure your preferred internship engagement parameters.</p>
+                  </div>
+
+                  <!-- 17. Why would you like to join our company as an intern? -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appMotivation">Why would you like to join our company as an intern? <span class="required-star">*</span></label>
+                    <textarea id="appMotivation" name="motivation" rows="3" class="app-form-control" placeholder="Explain your interest in PUVIMA Consultancy, our research focus areas, or engineering culture..." required></textarea>
+                    <div class="field-error-hint" id="err_motivation">Please share why you would like to join our company (minimum 10 characters).</div>
+                  </div>
+
+                  <!-- 18. What would you bring to our team? -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appContribution">What would you bring to our team? <span class="required-star">*</span></label>
+                    <textarea id="appContribution" name="expected_contribution" rows="3" class="app-form-control" placeholder="Describe your work ethic, problem-solving mindset, technical perspective, or collaborative attitude..." required></textarea>
+                    <div class="field-error-hint" id="err_expected_contribution">Please explain what you would bring to our team (minimum 10 characters).</div>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <!-- 19. Preferred Internship Mode -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appMode">Preferred Internship Mode <span class="required-star">*</span></label>
+                      <select id="appMode" name="internship_mode" class="app-form-control" required>
+                        <option value="">Select work mode...</option>
+                        <option value="Remote">Remote</option>
+                        <option value="On-site">On-site</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Flexible">Flexible</option>
+                      </select>
+                      <div class="field-error-hint" id="err_internship_mode">Please select your preferred work mode.</div>
+                    </div>
+
+                    <!-- 20. Preferred Internship Duration -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appDuration">Preferred Internship Duration <span class="required-star">*</span></label>
+                      <select id="appDuration" name="duration" class="app-form-control" required>
+                        <option value="">Select duration...</option>
+                        <option value="1 month">1 month</option>
+                        <option value="2–3 months">2–3 months</option>
+                        <option value="3–6 months">3–6 months</option>
+                        <option value="6 months or more">6 months or more</option>
+                        <option value="Flexible">Flexible</option>
+                      </select>
+                      <div class="field-error-hint" id="err_duration">Please select your preferred duration.</div>
+                    </div>
+
+                    <!-- 21. When can you start? -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appJoining">When can you start? <span class="required-star">*</span></label>
+                      <select id="appJoining" name="joining_availability" class="app-form-control" required>
+                        <option value="">Select start availability...</option>
+                        <option value="Immediately">Immediately</option>
+                        <option value="Within 2 weeks">Within 2 weeks</option>
+                        <option value="Within 1 month">Within 1 month</option>
+                        <option value="On a specific future date">On a specific future date</option>
+                      </select>
+                      <div class="field-error-hint" id="err_joining_availability">Please indicate when you can start.</div>
+                    </div>
+
+                    <!-- 21. Conditional Date Picker -->
+                    <div class="app-form-group" id="specificDateGroup" style="display: none;">
+                      <label class="app-form-label" for="appSpecificDate">Specific Future Joining Date <span class="required-star">*</span></label>
+                      <input type="date" id="appSpecificDate" name="specific_joining_date" class="app-form-control">
+                      <div class="field-error-hint" id="err_specific_joining_date">Please select your specific future joining date.</div>
+                    </div>
+
+                    <!-- 22. Hours Available Per Week -->
+                    <div class="app-form-group">
+                      <label class="app-form-label" for="appHours">Hours Available Per Week <span class="required-star">*</span></label>
+                      <select id="appHours" name="weekly_hours" class="app-form-control" required>
+                        <option value="">Select weekly commitment...</option>
+                        <option value="Under 10 hours">Under 10 hours</option>
+                        <option value="10–20 hours">10–20 hours</option>
+                        <option value="20–30 hours">20–30 hours</option>
+                        <option value="30–40 hours">30–40 hours</option>
+                        <option value="Full-time / Flexible">Full-time / Flexible</option>
+                      </select>
+                      <div class="field-error-hint" id="err_weekly_hours">Please specify your available hours per week.</div>
+                    </div>
+                  </div>
+
+                  <div class="wizard-footer">
+                    <button type="button" class="btn-wizard-prev" data-prev-to="2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      <span>Previous: Skills &amp; Resume</span>
+                    </button>
+                    <button type="button" class="btn-wizard-next" data-next-to="4">
+                      <span>Continue to Final Details</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ==============================================================
+                     STEP 4: FINAL DETAILS & REFERRAL
+                     ============================================================== -->
+                <div class="wizard-step" data-step="4" id="stepPanel4">
+                  <div class="step-header">
+                    <h3 class="step-title">
+                      <span>Section 04 &mdash; Final Details &amp; Referral</span>
+                    </h3>
+                    <p class="step-desc">Share how you connected with PUVIMA Consultancy and any additional notes.</p>
+                  </div>
+
+                  <!-- 23. How did you hear about us? -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appReferral">How did you hear about us? <span class="required-star">*</span></label>
+                    <select id="appReferral" name="referral_source" class="app-form-control" required>
+                      <option value="">Select referral channel...</option>
+                      <option value="LinkedIn">LinkedIn</option>
+                      <option value="Instagram / Other Social Media">Instagram / Other Social Media</option>
+                      <option value="College Placement Cell">College Placement Cell</option>
+                      <option value="College / Campus Event">College / Campus Event</option>
+                      <option value="Friend / Referral">Friend / Referral</option>
+                      <option value="Company Website">Company Website</option>
+                      <option value="Job Portal">Job Portal</option>
+                      <option value="Faculty Member">Faculty Member</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <div class="field-error-hint" id="err_referral_source">Please tell us how you heard about us.</div>
+                  </div>
+
+                  <!-- 23. Conditional Other text field -->
+                  <div class="app-form-group" id="otherReferralGroup" style="display: none;">
+                    <label class="app-form-label" for="appOtherReferral">Please Specify Other Source <span class="required-star">*</span></label>
+                    <input type="text" id="appOtherReferral" name="other_referral_details" class="app-form-control" placeholder="Specify platform, campus program, or event...">
+                    <div class="field-error-hint" id="err_other_referral_details">Please specify how you heard about us.</div>
+                  </div>
+
+                  <!-- 24. Anything else you'd like us to know? (Optional) -->
+                  <div class="app-form-group">
+                    <label class="app-form-label" for="appAdditionalInfo">Anything else you'd like us to know? <span style="font-weight: 400; color: #64748b; font-size: 0.8rem;">(Optional)</span></label>
+                    <textarea id="appAdditionalInfo" name="additional_information" rows="3" class="app-form-control" placeholder="Special achievements, technical interests, scheduling considerations, or questions for our recruitment team..."></textarea>
+                  </div>
+
+                  <div class="wizard-footer">
+                    <button type="button" class="btn-wizard-prev" data-prev-to="3">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      <span>Previous: Availability</span>
+                    </button>
+                    <button type="button" class="btn-wizard-next" data-next-to="5">
+                      <span>Review Application Summary</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ==============================================================
+                     STEP 5: REVIEW & SUBMIT
+                     ============================================================== -->
+                <div class="wizard-step" data-step="5" id="stepPanel5">
+                  <div class="step-header">
+                    <h3 class="step-title">
+                      <span>Section 05 &mdash; Review &amp; Submit Application</span>
+                    </h3>
+                    <p class="step-desc">Please verify your application details before final submission. Click "Edit" next to any section to make corrections.</p>
+                  </div>
+
+                  <div class="review-grid">
+                    <!-- Review Section 1 -->
+                    <div class="review-card">
+                      <div class="review-card-header">
+                        <span class="review-card-title">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--puvima-blue, #0072ce)" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                          <span>Personal &amp; Academic Profile</span>
+                        </span>
+                        <button type="button" class="review-edit-btn" data-jump-to="1">Edit Section 01 &rarr;</button>
+                      </div>
+                      <div class="review-data-list">
+                        <div class="review-data-item">
+                          <span class="review-item-label">Full Name</span>
+                          <span class="review-item-value" id="rev_full_name">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Email Address</span>
+                          <span class="review-item-value" id="rev_email">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Mobile Number</span>
+                          <span class="review-item-value" id="rev_phone">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">City &amp; State</span>
+                          <span class="review-item-value" id="rev_city_state">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">College / University</span>
+                          <span class="review-item-value" id="rev_college">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Degree &amp; Specialization</span>
+                          <span class="review-item-value" id="rev_degree">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Study Year &amp; Graduation</span>
+                          <span class="review-item-value" id="rev_study_grad">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">CGPA / Percentage</span>
+                          <span class="review-item-value" id="rev_cgpa">--</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Review Section 2 -->
+                    <div class="review-card">
+                      <div class="review-card-header">
+                        <span class="review-card-title">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--puvima-blue, #0072ce)" stroke-width="2.2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                          <span>Role, Skills &amp; Resume Document</span>
+                        </span>
+                        <button type="button" class="review-edit-btn" data-jump-to="2">Edit Section 02 &rarr;</button>
+                      </div>
+                      <div class="review-data-list">
+                        <div class="review-data-item">
+                          <span class="review-item-label">Target Role</span>
+                          <span class="review-item-value" id="rev_role" style="font-weight: 700; color: var(--puvima-blue, #0072ce);">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Uploaded Resume File</span>
+                          <span class="review-item-value" id="rev_resume_file" style="font-weight: 600;">--</span>
+                        </div>
+                        <div class="review-data-item col-span-full">
+                          <span class="review-item-label">Selected Skills</span>
+                          <span class="review-item-value" id="rev_skills">--</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Review Section 3 & 4 -->
+                    <div class="review-card">
+                      <div class="review-card-header">
+                        <span class="review-card-title">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--puvima-blue, #0072ce)" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                          <span>Availability &amp; Preferences</span>
+                        </span>
+                        <button type="button" class="review-edit-btn" data-jump-to="3">Edit Section 03 &rarr;</button>
+                      </div>
+                      <div class="review-data-list">
+                        <div class="review-data-item">
+                          <span class="review-item-label">Internship Mode</span>
+                          <span class="review-item-value" id="rev_mode">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Duration</span>
+                          <span class="review-item-value" id="rev_duration">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Start Timing</span>
+                          <span class="review-item-value" id="rev_joining">--</span>
+                        </div>
+                        <div class="review-data-item">
+                          <span class="review-item-label">Weekly Hours</span>
+                          <span class="review-item-value" id="rev_hours">--</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Consent and Privacy Checkbox -->
+                  <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;">
+                    <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none;">
+                      <input type="checkbox" id="appConsent" name="consent" value="true" required style="width: 18px; height: 18px; margin-top: 2px; accent-color: var(--puvima-blue, #0072ce);">
+                      <span style="font-size: 0.86rem; color: #1e3a8a; line-height: 1.5;">
+                        <strong>Declaration &amp; Privacy Consent:</strong> I confirm that the information provided in this application is accurate and complete. I consent to PUVIMA Consultancy securely processing my personal details and uploading my resume document to PUVIMA's private Google Drive recruitment repository for talent evaluation purposes in accordance with the <a href="privacy-policy.html" target="_blank" style="color: var(--puvima-blue, #0072ce); text-decoration: underline;">Privacy Policy</a>.
+                      </span>
+                    </label>
+                    <div class="field-error-hint" id="err_consent" style="margin-left: 30px;">You must consent to application processing to submit.</div>
+                  </div>
+
+                  <!-- Submission Global Error Banner -->
+                  <div id="submitErrorBanner" style="display: none; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 18px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 20px;"></div>
+
+                  <div class="wizard-footer">
+                    <button type="button" class="btn-wizard-prev" data-prev-to="4">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      <span>Previous: Final Details</span>
+                    </button>
+                    <button type="submit" id="btnSubmitApplication" class="btn-wizard-submit">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                      <span id="submitBtnText">Submit Application Now</span>
+                    </button>
+                  </div>
+                </div>
+
+              </form>
+
+              <!-- ==============================================================
+                   SUBMISSION SUCCESS SCREEN
+                   ============================================================== -->
+              <div class="submission-success-banner" id="submissionSuccessBanner">
+                <div class="success-check-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+
+                <h3 class="success-headline">Application Successfully Received!</h3>
+                <p class="success-subline">
+                  Thank you for applying to PUVIMA Consultancy. Your resume document has been securely uploaded to our private Google Drive recruitment repository and registered with our talent acquisition desk.
+                </p>
+
+                <div class="ref-pill-card">
+                  <span class="ref-pill-label">Application Tracking Reference:</span>
+                  <span class="ref-pill-val" id="successRefIdDisplay">PUV-INT-20261105-XXXX</span>
+                  <button type="button" class="btn-copy-ref" id="copyRefBtn">Copy Ref ID</button>
+                </div>
+
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 24px; max-width: 600px; margin: 0 auto 28px; text-align: left; font-size: 0.88rem; color: #475569; line-height: 1.6;">
+                  <strong style="color: #0f172a; display: block; margin-bottom: 6px;">What Happens Next?</strong>
+                  <ul style="margin: 0; padding-left: 20px;">
+                    <li>Our technical coordinators and research leads will review your portfolio and questionnaire answers.</li>
+                    <li>If shortlisted for a technical interview, you will receive an email confirmation from <strong style="color: #0f172a;">contact@puvima.com</strong>.</li>
+                    <li>Please quote your reference ID in any recruitment inquiries.</li>
+                  </ul>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="resetApplicationBtn" style="border-radius: var(--radius-pill, 9999px); padding: 10px 28px;">
+                  Submit Another Application
+                </button>
+              </div>
+
             </div>
-
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
-              Direct resume inquiries may also be emailed to <a href="mailto:contact@puvima.com" style="color: var(--accent-teal); font-family: var(--font-mono); font-weight: 600;">contact@puvima.com</a>.
-            </p>
           </div>
 
         </div>

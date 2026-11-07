@@ -11,12 +11,13 @@ const healthRoutes = require('./routes/health.routes');
 const contactRoutes = require('./routes/contact.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const adminRoutes = require('./routes/admin.routes');
+const authRoutes = require('./routes/auth.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const reviewRoutes = require('./routes/review.routes');
 const careersRoutes = require('./routes/careers.routes');
+const internshipRoutes = require('./routes/internship.routes');
 
 const app = express();
-
 
 app.set('trust proxy', 1);
 
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Enterprise HTTP Security Headers via Helmet
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -58,6 +60,12 @@ app.use(
     } : false
   })
 );
+
+// Explicit Permissions-Policy (Feature Policy) Header
+app.use((req, res, next) => {
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  next();
+});
 
 const fs = require('fs');
 
@@ -89,7 +97,7 @@ app.use(
       return callback(null, false);
     },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token', 'x-mail-token', 'x-portal-user-role', 'x-portal-user-id', 'x-portal-user-name'],
     credentials: true
   })
 );
@@ -195,6 +203,7 @@ app.get('/api', (req, res) => {
       reviews: '/api/reviews',
       settings: '/api/site-settings',
       admin: '/api/admin/login',
+      auth: '/api/auth/mfa/status',
       mail: '/api/mail/account'
     }
   });
@@ -205,9 +214,12 @@ app.use('/api', healthRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', bookingRoutes);
 app.use('/api', adminRoutes);
+app.use('/api', authRoutes);
 app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
+app.use('/api', internshipRoutes);
+
 let mailRoutes = null;
 app.use('/api/mail', (req, res, next) => {
   if (!mailRoutes) {
@@ -230,9 +242,11 @@ app.use(healthRoutes);
 app.use(contactRoutes);
 app.use(bookingRoutes);
 app.use(adminRoutes);
+app.use(authRoutes);
 app.use(settingsRoutes);
 app.use(reviewRoutes);
 app.use(careersRoutes);
+app.use(internshipRoutes);
 
 app.get('/', (req, res, next) => {
   const indexHtml = path.join(frontendDir, 'index.html');
@@ -252,7 +266,6 @@ app.get('/', (req, res, next) => {
     }
   });
 });
-
 
 app.use(notFound);
 app.use(errorHandler);

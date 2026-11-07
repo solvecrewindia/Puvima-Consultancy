@@ -63,9 +63,7 @@ CREATE TABLE IF NOT EXISTS `consultation_bookings` (
   KEY `idx_booking_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================================================
--- 3. `job_positions` — Configured careers and open opportunities
--- ============================================================================
+
 CREATE TABLE IF NOT EXISTS `job_positions` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `reference_id` VARCHAR(64) NOT NULL,
@@ -90,9 +88,7 @@ CREATE TABLE IF NOT EXISTS `job_positions` (
   KEY `idx_job_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================================================
--- 4. `job_applications` — Candidate submissions and resumes
--- ============================================================================
+
 CREATE TABLE IF NOT EXISTS `job_applications` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `reference_id` VARCHAR(64) NOT NULL,
@@ -128,3 +124,80 @@ CREATE TABLE IF NOT EXISTS `job_applications` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+
+-- ============================================================================
+-- 5. `internship_applications` — Direct candidate internship applications
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS `internship_applications` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reference_id` VARCHAR(64) NOT NULL,
+  `full_name` VARCHAR(128) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(64) NOT NULL,
+  `city_state` VARCHAR(128) NOT NULL,
+  `linkedin_url` VARCHAR(255) DEFAULT NULL,
+  `college` VARCHAR(255) NOT NULL,
+  `degree` VARCHAR(255) NOT NULL,
+  `study_year` VARCHAR(64) NOT NULL,
+  `graduation_year` VARCHAR(16) NOT NULL,
+  `cgpa_range` VARCHAR(64) NOT NULL,
+  `internship_role` VARCHAR(128) NOT NULL,
+  `skills` JSON DEFAULT NULL,
+  `strongest_skills` TEXT NOT NULL,
+  `projects_experience` TEXT DEFAULT NULL,
+  `github_portfolio_url` VARCHAR(255) DEFAULT NULL,
+  `resume_filename` VARCHAR(255) NOT NULL,
+  `resume_drive_file_id` VARCHAR(255) DEFAULT NULL,
+  `resume_drive_url` VARCHAR(512) DEFAULT NULL,
+  `resume_storage_key` VARCHAR(255) DEFAULT NULL,
+  `resume_mime_type` VARCHAR(128) NOT NULL,
+  `resume_size_bytes` INT UNSIGNED NOT NULL,
+  `motivation` TEXT NOT NULL,
+  `expected_contribution` TEXT NOT NULL,
+  `internship_mode` VARCHAR(64) NOT NULL,
+  `duration` VARCHAR(64) NOT NULL,
+  `joining_availability` VARCHAR(64) NOT NULL,
+  `specific_joining_date` DATE DEFAULT NULL,
+  `weekly_hours` VARCHAR(64) NOT NULL,
+  `referral_source` VARCHAR(128) NOT NULL,
+  `other_referral_details` VARCHAR(255) DEFAULT NULL,
+  `additional_information` TEXT DEFAULT NULL,
+  `consent_given` TINYINT(1) NOT NULL DEFAULT 1,
+  `consent_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_reviewed_by_hr` TINYINT(1) NOT NULL DEFAULT 0,
+  `hr_reviewed_at` TIMESTAMP NULL DEFAULT NULL,
+  `hr_reviewed_by` VARCHAR(128) DEFAULT NULL,
+  `recruitment_status` VARCHAR(64) NOT NULL DEFAULT 'New',
+  `admin_notes` TEXT DEFAULT NULL,
+  `email_notification_status` VARCHAR(64) DEFAULT 'pending',
+  `ip_hash` VARCHAR(64) DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_ia_ref_id` (`reference_id`),
+  KEY `idx_ia_email` (`email`),
+  KEY `idx_ia_role` (`internship_role`),
+  KEY `idx_ia_status` (`recruitment_status`),
+  KEY `idx_ia_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================================
+-- 6. `internship_application_history` — Status Audit Trail
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS `internship_application_history` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `application_id` BIGINT UNSIGNED NOT NULL,
+  `reference_id` VARCHAR(64) NOT NULL,
+  `previous_status` VARCHAR(64) NOT NULL,
+  `new_status` VARCHAR(64) NOT NULL,
+  `changed_by_id` VARCHAR(64) DEFAULT NULL,
+  `changed_by_name` VARCHAR(128) DEFAULT NULL,
+  `changed_by_role` VARCHAR(64) DEFAULT NULL,
+  `notes` TEXT DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_iah_app_id` (`application_id`),
+  KEY `idx_iah_ref_id` (`reference_id`),
+  KEY `idx_iah_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

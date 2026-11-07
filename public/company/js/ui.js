@@ -191,6 +191,15 @@ const UI = (function () {
         closeModal(modalId);
       });
     });
+
+    // Delegated click handler to guarantee all modal-close buttons work dynamically
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-close-modal]');
+      if (btn) {
+        const modalId = btn.getAttribute('data-close-modal');
+        if (modalId) closeModal(modalId);
+      }
+    });
   });
 
   return {

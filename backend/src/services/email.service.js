@@ -47,6 +47,21 @@ class EmailService {
   }
 
   /**
+   * Send recruitment notification for a newly submitted candidate internship application.
+   * Invoked ONLY AFTER the application record has been durably saved to the database.
+   * @param {Object} params
+   * @param {Object} params.application - Durably persisted internship application record
+   * @returns {Promise<{ delivered: boolean, note: string, error?: string }>}
+   */
+  async notifyInternshipApplication({ application }) {
+    return {
+      delivered: false,
+      note: 'Recruitment notifications via email are disabled. Accessible directly via HR and Super Admin portals.'
+    };
+  }
+
+  /**
+
    * Send recruitment notification for a newly submitted candidate application.
    * Invoked ONLY AFTER the application record has been durably saved to the database.
    * @param {Object} params

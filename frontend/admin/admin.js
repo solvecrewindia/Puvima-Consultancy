@@ -26,11 +26,18 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
   // State
   let currentAdmin = null;
   let contactsList = [];
+  let internshipsList = [];
   let reviewsList = [];
   let siteSettings = {};
   let currentFilterContact = 'all';
+  let currentFilterInternStatus = 'all';
+  let currentFilterInternRole = 'all';
   let currentFilterReview = 'all';
   let activeModalItem = null;
+  let activeInternModalItem = null;
+  let internshipOffset = 0;
+  let internshipLimit = 25;
+  let internshipTotal = 0;
 
   // DOM Elements
   const loginView = document.getElementById('loginView');
@@ -140,6 +147,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     const unreadContacts = contactsList.filter(c => c.status === 'new').length;
     const pendingReviews = reviewsList.filter(r => r.status === 'pending').length;
     const approvedReviews = reviewsList.filter(r => r.status === 'approved').length;
+    const newInternships = internshipsList.filter(i => i.recruitment_status === 'received').length;
 
     // Top Navigation Badges
     const unreadBadge = document.getElementById('unreadContactsBadge');
@@ -147,6 +155,9 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
     const pendingBadge = document.getElementById('pendingReviewsBadge');
     if (pendingBadge) pendingBadge.textContent = pendingReviews;
+
+    const internBadge = document.getElementById('newInternshipsBadge');
+    if (internBadge) internBadge.textContent = newInternships;
 
     // Overview KPIs
     const kpiNew = document.getElementById('kpiNewContacts');
@@ -160,6 +171,9 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
     const kpiApproved = document.getElementById('kpiApprovedReviews');
     if (kpiApproved) kpiApproved.textContent = approvedReviews;
+
+    const kpiIntern = document.getElementById('kpiNewInternships');
+    if (kpiIntern) kpiIntern.textContent = newInternships;
   }
 
   // ==========================================================================
@@ -223,6 +237,76 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     const contactSearchInput = document.getElementById('contactSearchInput');
     if (contactSearchInput) {
       contactSearchInput.addEventListener('input', () => renderContactsTable());
+    }
+
+    // Internship Refresh & Filters
+    const reloadInternshipsBtn = document.getElementById('reloadInternshipsBtn');
+    if (reloadInternshipsBtn) {
+      reloadInternshipsBtn.addEventListener('click', async () => {
+        await Promise.all([loadInternships(), loadStats()]);
+        showToast('Internship applications refreshed.', 'info');
+      });
+    }
+
+    document.querySelectorAll('[data-filter-intern-status]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter-intern-status]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilterInternStatus = btn.getAttribute('data-filter-intern-status');
+        renderInternshipsTable();
+      });
+    });
+
+    const internRoleFilter = document.getElementById('internRoleFilter');
+    if (internRoleFilter) {
+      internRoleFilter.addEventListener('change', () => {
+        currentFilterInternRole = internRoleFilter.value;
+        renderInternshipsTable();
+      });
+    }
+
+    const internshipSearchInput = document.getElementById('internshipSearchInput');
+    if (internshipSearchInput) {
+      internshipSearchInput.addEventListener('input', () => renderInternshipsTable());
+    }
+
+    // Internship Pagination
+    const internPrevBtn = document.getElementById('internshipPrevPageBtn');
+    if (internPrevBtn) {
+      internPrevBtn.addEventListener('click', () => {
+        if (internshipOffset >= internshipLimit) {
+          internshipOffset -= internshipLimit;
+          loadInternships();
+        }
+      });
+    }
+
+    const internNextBtn = document.getElementById('internshipNextPageBtn');
+    if (internNextBtn) {
+      internNextBtn.addEventListener('click', () => {
+        if (internshipOffset + internshipLimit < internshipTotal) {
+          internshipOffset += internshipLimit;
+          loadInternships();
+        }
+      });
+    }
+
+    // Internship Modal Actions
+    const internModalCloseBtn = document.getElementById('internModalCloseBtn');
+    if (internModalCloseBtn) {
+      internModalCloseBtn.addEventListener('click', closeInternshipModal);
+    }
+
+    const internModalOverlay = document.getElementById('internModalOverlay');
+    if (internModalOverlay) {
+      internModalOverlay.addEventListener('click', (e) => {
+        if (e.target === internModalOverlay) closeInternshipModal();
+      });
+    }
+
+    const internModalSaveBtn = document.getElementById('internModalSaveBtn');
+    if (internModalSaveBtn) {
+      internModalSaveBtn.addEventListener('click', saveInternshipModal);
     }
 
     // Review Refresh & Filters
@@ -359,11 +443,15 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     if (tabId === 'contacts') {
       loadContacts();
       loadStats();
+    } else if (tabId === 'internships') {
+      loadInternships();
+      loadStats();
     } else if (tabId === 'reviews') {
       loadReviews();
       loadStats();
     } else if (tabId === 'overview') {
       loadStats();
+      loadInternships();
     } else if (tabId === 'settings') {
       loadSettings();
     }
@@ -376,6 +464,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     await Promise.all([
       loadStats(),
       loadContacts(),
+      loadInternships(),
       loadReviews(),
       loadSettings()
     ]);
@@ -528,6 +617,357 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
         </tr>
       `;
     }).join('');
+  }
+
+  // ==========================================================================
+  // 6b. CANDIDATE INTERNSHIP APPLICATIONS MANAGEMENT (GOOGLE DRIVE RESUMES)
+  // ==========================================================================
+  async function loadInternships() {
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/internship-applications?limit=${internshipLimit}&offset=${internshipOffset}`, {
+        headers: authHeaders()
+      });
+      if (res.ok) {
+        const data = await res.json();
+        internshipsList = data.applications || [];
+        internshipTotal = data.total || internshipsList.length;
+        updateBadgesAndKpis();
+        renderInternshipsTable();
+      }
+    } catch (e) {
+      console.warn('[Admin] Error loading internship applications:', e.message);
+      showToast('Error loading internship applications.', 'error');
+    }
+  }
+
+  function renderInternshipsTable() {
+    const tbody = document.getElementById('internshipsTableBody');
+    if (!tbody) return;
+
+    updateBadgesAndKpis();
+
+    const search = (document.getElementById('internshipSearchInput')?.value || '').toLowerCase().trim();
+
+    let filtered = internshipsList.filter(item => {
+      if (currentFilterInternStatus !== 'all' && item.recruitment_status !== currentFilterInternStatus) {
+        return false;
+      }
+      if (currentFilterInternRole !== 'all' && item.internship_role !== currentFilterInternRole) {
+        return false;
+      }
+      if (search) {
+        const str = `${item.reference_id} ${item.full_name} ${item.email} ${item.phone} ${item.college} ${item.degree} ${item.internship_role}`.toLowerCase();
+        return str.includes(search);
+      }
+      return true;
+    });
+
+    // Update count display
+    const countDisplay = document.getElementById('internshipCountDisplay');
+    if (countDisplay) {
+      countDisplay.textContent = `Showing ${filtered.length} of ${internshipTotal} applications`;
+    }
+
+    // Update pagination buttons
+    const prevBtn = document.getElementById('internshipPrevPageBtn');
+    const nextBtn = document.getElementById('internshipNextPageBtn');
+    if (prevBtn) prevBtn.disabled = internshipOffset === 0;
+    if (nextBtn) nextBtn.disabled = (internshipOffset + internshipLimit) >= internshipTotal;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty-table-state" style="text-align: center; padding: 40px 20px;">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">🎓</div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 4px;">No internship applications found</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">No candidate applications match the current filter selection.</p>
+            ${currentFilterInternStatus !== 'all' || currentFilterInternRole !== 'all' || search ? `
+              <button type="button" class="btn-ghost" style="font-size: 0.8rem; padding: 6px 14px;" onclick="window.PUVIMA_ADMIN.resetInternFilters()">Reset All Filters</button>
+            ` : ''}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(app => {
+      const dateFormatted = new Date(app.created_at || Date.now()).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+
+      const statusClass = `status-${app.recruitment_status || 'received'}`;
+      const statusLabel = (app.recruitment_status || 'received').replace('_', ' ');
+      const driveUrl = app.resume_drive_url || (app.resume_drive_file_id ? `https://drive.google.com/file/d/${app.resume_drive_file_id}/view` : '#');
+
+      return `
+        <tr>
+          <td>
+            <code style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-teal);">${escapeHtml(app.reference_id)}</code>
+          </td>
+          <td>
+            <div style="font-weight: 600; color: var(--text-main);">${escapeHtml(app.full_name)}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(app.email)}</div>
+            <div style="font-size: 0.76rem; color: var(--text-subtle);">${escapeHtml(app.phone)}</div>
+          </td>
+          <td>
+            <div style="font-weight: 500; font-size: 0.86rem; color: var(--text-main);">${escapeHtml(app.college)}</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(app.degree)} &bull; ${escapeHtml(app.study_year)}</div>
+          </td>
+          <td>
+            <span style="display: inline-block; background: #EFF6FF; color: var(--primary); font-weight: 600; font-size: 0.82rem; padding: 2px 8px; border-radius: 4px; border: 1px solid #BFDBFE;">
+              ${escapeHtml(app.internship_role)}
+            </span>
+          </td>
+          <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">
+            ${dateFormatted}
+          </td>
+          <td>
+            <span class="status-pill ${statusClass}">${statusLabel}</span>
+          </td>
+          <td>
+            <div class="action-btn-group" style="justify-content: flex-end; gap: 8px;">
+              ${app.resume_drive_url || app.resume_drive_file_id ? `
+                <a href="${driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="padding: 4px 10px; font-size: 0.78rem; color: var(--primary); font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #BFDBFE; background: #F0F7FF;" title="Open candidate resume in Google Drive">
+                  <span>Drive ↗</span>
+                </a>
+              ` : ''}
+              <button class="btn-icon" title="View Full Questionnaire &amp; Evaluate" onclick="window.PUVIMA_ADMIN.openInternshipModal('${escapeHtml(app.reference_id)}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openInternshipModal(refId) {
+    const app = internshipsList.find(i => i.reference_id === refId || String(i.id) === String(refId));
+    if (!app) {
+      showToast('Application details not found.', 'error');
+      return;
+    }
+
+    activeInternModalItem = app;
+    const modal = document.getElementById('internModalOverlay');
+    if (!modal) return;
+
+    // Header & Meta
+    const badge = document.getElementById('internModalStatusBadge');
+    if (badge) {
+      badge.className = `status-pill status-${app.recruitment_status || 'received'}`;
+      badge.textContent = (app.recruitment_status || 'received').replace('_', ' ').toUpperCase();
+    }
+    const nameEl = document.getElementById('internModalApplicantName');
+    if (nameEl) nameEl.textContent = app.full_name || 'Candidate Application';
+    const refEl = document.getElementById('internModalRefId');
+    if (refEl) refEl.textContent = app.reference_id || '--';
+    const createdEl = document.getElementById('internModalCreatedAt');
+    if (createdEl) createdEl.textContent = new Date(app.created_at || Date.now()).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    const roleEl = document.getElementById('internModalRole');
+    if (roleEl) roleEl.textContent = app.internship_role || '--';
+
+    // Google Drive Resume Card
+    const driveBtn = document.getElementById('internModalDriveBtn');
+    const driveUrl = app.resume_drive_url || (app.resume_drive_file_id ? `https://drive.google.com/file/d/${app.resume_drive_file_id}/view` : '#');
+    if (driveBtn) {
+      driveBtn.href = driveUrl;
+    }
+    const downloadBtn = document.getElementById('internModalDownloadBtn');
+    if (downloadBtn) {
+      downloadBtn.href = `${API_BASE}/api/admin/internship-applications/${app.id || app.reference_id}/resume`;
+      downloadBtn.target = '_blank';
+    }
+    const filenameEl = document.getElementById('internModalResumeFilename');
+    if (filenameEl) filenameEl.textContent = app.resume_filename || 'Candidate_Resume.pdf';
+    const sizeKb = Math.round((app.resume_size_bytes || 0) / 1024);
+    const sizeEl = document.getElementById('internModalResumeSize');
+    if (sizeEl) sizeEl.textContent = sizeKb > 1024 ? `${(sizeKb / 1024).toFixed(2)} MB` : `${sizeKb} KB`;
+
+    // Contact details
+    const emailEl = document.getElementById('internModalEmail');
+    if (emailEl) {
+      emailEl.textContent = app.email;
+      emailEl.href = `mailto:${app.email}`;
+    }
+    const phoneEl = document.getElementById('internModalPhone');
+    if (phoneEl) phoneEl.textContent = app.phone || '--';
+    const locEl = document.getElementById('internModalCityState');
+    if (locEl) locEl.textContent = app.city_state || '--';
+    
+    const linkedinWrap = document.getElementById('internModalLinkedinWrap');
+    const linkedinEl = document.getElementById('internModalLinkedin');
+    if (app.linkedin_url) {
+      if (linkedinWrap) linkedinWrap.style.display = 'block';
+      if (linkedinEl) linkedinEl.href = app.linkedin_url;
+    } else {
+      if (linkedinWrap) linkedinWrap.style.display = 'none';
+    }
+
+    // Academic Background
+    const collEl = document.getElementById('internModalCollege');
+    if (collEl) collEl.textContent = app.college || '--';
+    const degEl = document.getElementById('internModalDegree');
+    if (degEl) degEl.textContent = app.degree || '--';
+    const yrEl = document.getElementById('internModalStudyYear');
+    if (yrEl) yrEl.textContent = app.study_year || '--';
+    const gradEl = document.getElementById('internModalGradYear');
+    if (gradEl) gradEl.textContent = app.graduation_year || '--';
+    const cgpaEl = document.getElementById('internModalCgpa');
+    if (cgpaEl) cgpaEl.textContent = app.cgpa_range || '--';
+
+    // Skills
+    const skillsContainer = document.getElementById('internModalSkillsChips');
+    if (skillsContainer) {
+      const skillsArray = Array.isArray(app.skills) ? app.skills : (typeof app.skills === 'string' ? JSON.parse(app.skills || '[]') : []);
+      if (skillsArray.length > 0) {
+        skillsContainer.innerHTML = skillsArray.map(s => `
+          <span style="display: inline-block; background: #EFF6FF; color: var(--primary); font-size: 0.82rem; padding: 4px 10px; border-radius: 4px; border: 1px solid #BFDBFE; font-weight: 500;">
+            ${escapeHtml(s)}
+          </span>
+        `).join('');
+      } else {
+        skillsContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">None specified</span>';
+      }
+    }
+
+    const strongEl = document.getElementById('internModalStrongestSkills');
+    if (strongEl) strongEl.textContent = app.strongest_skills || 'None provided.';
+
+    // Projects / Portfolio
+    const projectsWrap = document.getElementById('internModalProjectsWrap');
+    const projEl = document.getElementById('internModalProjects');
+    if (app.projects_experience) {
+      if (projectsWrap) projectsWrap.style.display = 'block';
+      if (projEl) projEl.textContent = app.projects_experience;
+    } else {
+      if (projectsWrap) projectsWrap.style.display = 'none';
+    }
+
+    const portfolioWrap = document.getElementById('internModalPortfolioUrlWrap');
+    const portfolioEl = document.getElementById('internModalPortfolioUrl');
+    if (app.github_portfolio_url) {
+      if (portfolioWrap) portfolioWrap.style.display = 'block';
+      if (portfolioEl) {
+        portfolioEl.textContent = app.github_portfolio_url;
+        portfolioEl.href = app.github_portfolio_url;
+      }
+    } else {
+      if (portfolioWrap) portfolioWrap.style.display = 'none';
+    }
+
+    // Motivation & Contribution
+    const motEl = document.getElementById('internModalMotivation');
+    if (motEl) motEl.textContent = app.motivation || '--';
+    const contEl = document.getElementById('internModalContribution');
+    if (contEl) contEl.textContent = app.expected_contribution || '--';
+
+    // Availability
+    const modeEl = document.getElementById('internModalMode');
+    if (modeEl) modeEl.textContent = app.internship_mode || '--';
+    const durEl = document.getElementById('internModalDuration');
+    if (durEl) durEl.textContent = app.duration || '--';
+    const joinEl = document.getElementById('internModalJoining');
+    if (joinEl) joinEl.textContent = app.joining_availability === 'On a specific future date' && app.specific_joining_date
+      ? `Specific Date: ${app.specific_joining_date}`
+      : (app.joining_availability || '--');
+    const hrsEl = document.getElementById('internModalHours');
+    if (hrsEl) hrsEl.textContent = app.weekly_hours || '--';
+    const refSrcEl = document.getElementById('internModalReferral');
+    if (refSrcEl) refSrcEl.textContent = app.referral_source === 'Other' && app.other_referral_details
+      ? `Other (${app.other_referral_details})`
+      : (app.referral_source || '--');
+
+    // Additional info
+    const addlWrap = document.getElementById('internModalAddlInfoWrap');
+    const addlEl = document.getElementById('internModalAddlInfo');
+    if (app.additional_information) {
+      if (addlWrap) addlWrap.style.display = 'block';
+      if (addlEl) addlEl.textContent = app.additional_information;
+    } else {
+      if (addlWrap) addlWrap.style.display = 'none';
+    }
+
+    // Email Candidate mailto link
+    const mailtoBtn = document.getElementById('internModalMailtoBtn');
+    if (mailtoBtn) {
+      mailtoBtn.href = `mailto:${app.email}?subject=PUVIMA%20Consultancy%20Internship%20Application%20%5B${encodeURIComponent(app.reference_id)}%5D`;
+    }
+
+    // Workflow controls
+    const statusSelect = document.getElementById('internModalStatusSelect');
+    if (statusSelect) statusSelect.value = app.recruitment_status || 'received';
+    const notesInput = document.getElementById('internModalNotesInput');
+    if (notesInput) notesInput.value = app.admin_notes || '';
+
+    modal.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeInternshipModal() {
+    const modal = document.getElementById('internModalOverlay');
+    if (modal) modal.classList.remove('visible');
+    document.body.style.overflow = '';
+    activeInternModalItem = null;
+  }
+
+  async function saveInternshipModal() {
+    if (!activeInternModalItem) return;
+
+    const status = document.getElementById('internModalStatusSelect')?.value;
+    const admin_notes = (document.getElementById('internModalNotesInput')?.value || '').trim();
+    const saveBtn = document.getElementById('internModalSaveBtn');
+
+    if (saveBtn) saveBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/internship-applications/${activeInternModalItem.reference_id}/status`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ status, admin_notes })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(`Application status updated to '${status}'.`, 'success');
+        // Update local state
+        activeInternModalItem.recruitment_status = status;
+        activeInternModalItem.admin_notes = admin_notes;
+        const idx = internshipsList.findIndex(i => i.reference_id === activeInternModalItem.reference_id);
+        if (idx !== -1) {
+          internshipsList[idx].recruitment_status = status;
+          internshipsList[idx].admin_notes = admin_notes;
+        }
+        updateBadgesAndKpis();
+        renderInternshipsTable();
+        closeInternshipModal();
+      } else {
+        showToast(data.message || 'Failed to update status.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while updating status.', 'error');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
+    }
+  }
+
+  function resetInternFilters() {
+    currentFilterInternStatus = 'all';
+    currentFilterInternRole = 'all';
+    document.querySelectorAll('[data-filter-intern-status]').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-filter-intern-status') === 'all');
+    });
+    const roleSelect = document.getElementById('internRoleFilter');
+    if (roleSelect) roleSelect.value = 'all';
+    const searchInput = document.getElementById('internshipSearchInput');
+    if (searchInput) searchInput.value = '';
+    renderInternshipsTable();
+  }
   }
 
   // ==========================================================================
@@ -1069,6 +1509,10 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
   window.PUVIMA_ADMIN.openContactModal = openContactModal;
   window.PUVIMA_ADMIN.quickStatusContact = quickStatusContact;
   window.PUVIMA_ADMIN.deleteContact = deleteContact;
+  window.PUVIMA_ADMIN.openInternshipModal = openInternshipModal;
+  window.PUVIMA_ADMIN.closeInternshipModal = closeInternshipModal;
+  window.PUVIMA_ADMIN.resetInternFilters = resetInternFilters;
+  window.PUVIMA_ADMIN.loadInternships = loadInternships;
   window.PUVIMA_ADMIN.pushReviewToMainPage = pushReviewToMainPage;
   window.PUVIMA_ADMIN.unpublishReview = unpublishReview;
   window.PUVIMA_ADMIN.deleteReview = deleteReview;

@@ -20,18 +20,7 @@ function mailAuth(req, res, next) {
     token = req.query.token;
   }
 
-  // Also allow requests authenticated via x-mailbox-auth
-  if (!token && req.headers['x-mailbox-auth']) {
-    try {
-      const decoded = Buffer.from(req.headers['x-mailbox-auth'], 'base64').toString('utf8');
-      const creds = JSON.parse(decoded);
-      if (creds && creds.user && creds.pass) {
-        req.user = { email: creds.user, role: 'mail_user' };
-        return next();
-      }
-    } catch (e) {}
-  }
-
+  // Reject unauthenticated requests without a valid session token
   if (!token) {
     return res.status(401).json({
       success: false,
@@ -47,9 +36,9 @@ function mailAuth(req, res, next) {
     });
   }
 
+  req.token = token;
   req.user = payload;
   next();
 }
 
 module.exports = mailAuth;
-

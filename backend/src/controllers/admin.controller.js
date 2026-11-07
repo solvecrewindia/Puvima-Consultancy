@@ -3,8 +3,10 @@
  * Handles authentication, inquiries review, bookings management, and main-page settings.
  */
 
-const { signToken } = require('../utils/token');
+const { signToken, revokeToken } = require('../utils/token');
+const { verifyPassword } = require('../utils/password');
 const storeService = require('../services/store.service');
+const auditService = require('../services/audit.service');
 
 const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@puvima.com';
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
@@ -26,7 +28,11 @@ class AdminController {
     const cleanPass = String(password).trim();
 
     const allowedEmails = [DEFAULT_ADMIN_EMAIL.toLowerCase(), 'contact@puvima.com', 'puvimaconsultancy@gmail.com', 'admin@puvima.com'];
-    if (!allowedEmails.includes(cleanEmail) || cleanPass !== DEFAULT_ADMIN_PASSWORD) {
+    const emailAllowed = allowedEmails.includes(cleanEmail);
+    const passValid = await verifyPassword(cleanPass, DEFAULT_ADMIN_PASSWORD);
+
+    if (!emailAllowed || !passValid) {
+      await auditService.logAuthFailure(req, cleanEmail, 'Invalid administrative credentials');
       return res.status(401).json({
         success: false,
         message: 'Invalid administrative credentials. Please verify and re-try.'
@@ -39,16 +45,67 @@ class AdminController {
       name: 'PUVIMA Administrator'
     });
 
+    const userObj = {
+      email: cleanEmail,
+      role: 'admin',
+      name: 'PUVIMA Administrator'
+    };
+
+    await auditService.logAuthSuccess(req, userObj);
+
     return res.status(200).json({
       success: true,
       message: 'Admin authentication successful.',
       token,
-      user: {
-        email: cleanEmail,
-        role: 'admin',
-        name: 'PUVIMA Administrator'
-      }
+      user: userObj
     });
+  }
+
+  // POST /api/admin/logout
+  async logout(req, res) {
+    try {
+      let token = req.token;
+      if (!token && req.headers['authorization']?.startsWith('Bearer ')) {
+        token = req.headers['authorization'].substring(7).trim();
+      }
+      if (token) {
+        revokeToken(token);
+      }
+      if (req.admin) {
+        await auditService.logLogout(req, req.admin);
+      }
+      return res.status(200).json({
+        success: true,
+        message: 'Admin session terminated successfully.'
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error during logout: ' + err.message
+      });
+    }
+  }
+
+  // GET /api/admin/audit-logs
+  async getAuditLogs(req, res) {
+    try {
+      const { limit, category, search } = req.query;
+      const logs = await auditService.getRecentLogs({
+        limit: parseInt(limit, 10) || 50,
+        category,
+        search
+      });
+      return res.status(200).json({
+        success: true,
+        count: logs.length,
+        logs
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve audit logs: ' + err.message
+      });
+    }
   }
 
   // GET /api/admin/me

@@ -6,13 +6,16 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
 const adminAuth = require('../middleware/adminAuth');
+const { authRateLimiter } = require('../middleware/rateLimiter');
 
-// Public admin authentication endpoint
-router.post('/admin/login', (req, res) => adminController.login(req, res));
+// Public admin authentication endpoint (rate limited against brute force)
+router.post('/admin/login', authRateLimiter, (req, res) => adminController.login(req, res));
+router.post('/admin/logout', adminAuth, (req, res) => adminController.logout(req, res));
 
 // Protected admin endpoints
 router.get('/admin/me', adminAuth, (req, res) => adminController.getMe(req, res));
 router.get('/admin/stats', adminAuth, (req, res) => adminController.getStats(req, res));
+router.get('/admin/audit-logs', adminAuth, (req, res) => adminController.getAuditLogs(req, res));
 
 // Contacts review & management
 router.get('/admin/contacts', adminAuth, (req, res) => adminController.getContacts(req, res));
@@ -49,4 +52,3 @@ router.patch('/admin/applications/:id/status', adminAuth, (req, res) => careersC
 router.get('/admin/applications/:id/resume', adminAuth, (req, res) => careersController.getApplicationResumeAdmin(req, res));
 
 module.exports = router;
-

@@ -29,6 +29,7 @@ function adminAuth(req, res, next) {
     });
   }
 
+  req.token = token;
   req.admin = payload;
   next();
 }

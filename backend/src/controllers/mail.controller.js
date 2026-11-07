@@ -7,6 +7,7 @@
 const imapService = require('../services/imap.service');
 const smtpService = require('../services/smtp.service');
 const { signToken } = require('../utils/token');
+const { validateOutboundHost } = require('../utils/ssrfGuard');
 
 // In-memory session store: sessionToken -> mailboxCredentials
 const connectedMailboxes = new Map();
@@ -101,6 +102,16 @@ class MailController {
         name: displayName,
         from: `"${displayName}" <${cleanEmail}>`
       };
+
+      // SSRF validation: Disallow loopback, private, or cloud metadata hosts
+      const imapVal = await validateOutboundHost(imapCfg.host);
+      if (!imapVal.valid) {
+        return res.status(400).json({ success: false, message: 'Prohibited IMAP host: ' + imapVal.reason });
+      }
+      const smtpVal = await validateOutboundHost(smtpCfg.host);
+      if (!smtpVal.valid) {
+        return res.status(400).json({ success: false, message: 'Prohibited SMTP host: ' + smtpVal.reason });
+      }
 
       // Test IMAP connectivity
       const imapTest = await imapService.testConnection(imapCfg);

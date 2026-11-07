@@ -506,3 +506,634 @@
     max-height: 96vh;
   }
 }
+
+
+/* ==========================================================================
+   PUVIMA Internship Application System — 5-Step Interactive Form
+   Matches PUVIMA Blue & White Enterprise Theme & Clean Typography
+   ========================================================================== */
+
+.internship-app-section {
+  margin-top: 48px;
+  text-align: left;
+}
+
+.internship-app-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: 0 10px 30px rgba(0, 114, 206, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  padding: clamp(24px, 4vw, 44px);
+  max-width: 960px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Stepper Progress Bar */
+.internship-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill, 9999px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.stepper-item:focus-visible {
+  outline: 2px solid var(--puvima-blue, #0072ce);
+}
+
+.step-indicator {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+}
+
+.stepper-item.active .step-indicator {
+  background: var(--puvima-blue, #0072ce);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 114, 206, 0.2);
+}
+
+.stepper-item.completed .step-indicator {
+  background: #059669;
+  color: #ffffff;
+}
+
+.step-label-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.step-number-text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.step-name-text {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+.stepper-item.active .step-name-text {
+  color: var(--puvima-blue, #0072ce);
+}
+
+.stepper-item.completed .step-name-text {
+  color: #0f172a;
+}
+
+/* Form Steps */
+.wizard-step {
+  display: none;
+  animation: fadeInStep 0.25s ease forwards;
+}
+
+.wizard-step.active-step {
+  display: block;
+}
+
+@keyframes fadeInStep {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.step-header {
+  margin-bottom: 24px;
+}
+
+.step-title {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 800;
+  color: var(--text-primary, #0f172a);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary, #475569);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Grid Layouts */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 20px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px 20px;
+}
+
+.col-span-full {
+  grid-column: 1 / -1;
+}
+
+.app-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.app-form-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.app-form-label .required-star {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.app-form-control {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.app-form-control:focus {
+  outline: none;
+  border-color: var(--puvima-blue, #0072ce);
+  box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.15);
+}
+
+.app-form-control.field-has-error {
+  border-color: #ef4444;
+  background: #fffafa;
+}
+
+.field-error-hint {
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-top: 4px;
+  display: none;
+}
+
+.field-error-hint.visible {
+  display: block;
+}
+
+/* Skills Selector Chips */
+.skills-selector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.skill-chip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.skill-chip-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.skill-chip-label:hover {
+  background: #eff6ff;
+  border-color: var(--puvima-blue, #0072ce);
+  color: var(--puvima-blue, #0072ce);
+}
+
+.skill-chip-checkbox:checked + .skill-chip-label {
+  background: var(--puvima-blue, #0072ce);
+  border-color: var(--puvima-blue, #0072ce);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 114, 206, 0.25);
+}
+
+.skill-chip-checkbox:focus-visible + .skill-chip-label {
+  outline: 2px solid var(--puvima-blue, #0072ce);
+}
+
+/* Drag-and-Drop Resume Upload Box */
+.resume-dropzone {
+  border: 2px dashed #93c5fd;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.resume-dropzone.dragover {
+  background: #eff6ff;
+  border-color: var(--puvima-blue, #0072ce);
+  transform: scale(1.008);
+}
+
+.resume-dropzone-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--puvima-blue, #0072ce);
+  margin: 0 auto 10px;
+  display: block;
+}
+
+.resume-dropzone-text {
+  font-size: 0.94rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.resume-dropzone-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.resume-file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Uploaded Resume Preview Card */
+.resume-preview-card {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-top: 12px;
+}
+
+.resume-preview-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.resume-format-badge {
+  background: var(--puvima-blue, #0072ce);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.resume-preview-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.resume-preview-size {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.resume-remove-btn {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.resume-remove-btn:hover {
+  background: #fee2e2;
+}
+
+/* Review Section Summary Cards (Step 5) */
+.review-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.review-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.review-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-edit-btn {
+  background: transparent;
+  border: none;
+  color: var(--puvima-blue, #0072ce);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.review-edit-btn:hover {
+  text-decoration: underline;
+  background: #eff6ff;
+}
+
+.review-data-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 16px;
+  font-size: 0.86rem;
+}
+
+.review-data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-item-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.review-item-value {
+  color: #0f172a;
+  font-weight: 500;
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+/* Wizard Action Footer */
+.wizard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.btn-wizard-prev {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-pill, 9999px);
+  padding: 10px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-wizard-prev:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-wizard-next {
+  background: var(--puvima-blue, #0072ce);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill, 9999px);
+  padding: 11px 28px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 114, 206, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-wizard-next:hover {
+  background: #005bb5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 114, 206, 0.4);
+}
+
+.btn-wizard-submit {
+  background: #059669;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill, 9999px);
+  padding: 12px 32px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-wizard-submit:hover:not(:disabled) {
+  background: #047857;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45);
+}
+
+.btn-wizard-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Submission Success Banner */
+.submission-success-banner {
+  display: none;
+  text-align: center;
+  padding: 44px 24px;
+}
+
+.success-check-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.success-headline {
+  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.success-subline {
+  font-size: 0.96rem;
+  color: #475569;
+  max-width: 580px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.ref-pill-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+}
+
+.ref-pill-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1e40af;
+}
+
+.ref-pill-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--puvima-blue, #0072ce);
+}
+
+.btn-copy-ref {
+  background: #ffffff;
+  border: 1px solid #93c5fd;
+  color: var(--puvima-blue, #0072ce);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-copy-ref:hover {
+  background: var(--puvima-blue, #0072ce);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .form-grid-2,
+  .form-grid-3,
+  .review-data-list {
+    grid-template-columns: 1fr;
+  }
+  .internship-stepper {
+    gap: 6px;
+  }
+  .step-label-group {
+    display: none;
+  }
+  .stepper-item {
+    padding: 4px;
+  }
+}
