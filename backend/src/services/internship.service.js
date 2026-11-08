@@ -963,22 +963,30 @@ class InternshipService {
       console.warn('[InternshipService] MySQL getApplicationStats warning:', err.message);
     }
 
-    // 2. Fallback to Local JSON & Supabase
-    let apps = this.readLocalApplications();
-    if (apps.length === 0) {
-      try {
-        const { getSupabaseClient } = require('../config/supabase');
-        const supabase = getSupabaseClient();
-        if (supabase) {
-          const { data: sbApps, error: sbErr } = await supabase
-            .from('internship_applications')
-            .select('*');
-          if (!sbErr && sbApps && sbApps.length > 0) {
-            apps = sbApps;
-          }
+    // 2. Fetch from Supabase FIRST and merge with local JSON
+    let apps = [];
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { data: sbApps, error: sbErr } = await supabase
+          .from('internship_applications')
+          .select('*');
+        if (!sbErr && sbApps && Array.isArray(sbApps) && sbApps.length > 0) {
+          apps = sbApps;
         }
-      } catch (sbErr) {
-        console.warn('[InternshipService] Supabase getApplicationStats notice:', sbErr.message);
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Supabase getApplicationStats notice:', sbErr.message);
+    }
+
+    const localApps = this.readLocalApplications();
+    const seenRefs = new Set(apps.map((a) => a.reference_id || String(a.id)));
+    for (const localApp of localApps) {
+      const key = localApp.reference_id || String(localApp.id);
+      if (!seenRefs.has(key)) {
+        apps.push(localApp);
+        seenRefs.add(key);
       }
     }
     stats.total = apps.length;
@@ -1079,25 +1087,47 @@ class InternshipService {
       console.warn('[InternshipService] Admin query from MySQL failed, falling back to local storage:', dbErr.message);
     }
 
-    // 2. Fallback to Local JSON & Supabase
-    let apps = this.readLocalApplications();
-    if (apps.length === 0) {
-      try {
-        const { getSupabaseClient } = require('../config/supabase');
-        const supabase = getSupabaseClient();
-        if (supabase) {
-          const { data: sbApps, error: sbErr } = await supabase
-            .from('internship_applications')
-            .select('*')
-            .order('created_at', { ascending: false });
-          if (!sbErr && sbApps && sbApps.length > 0) {
-            apps = sbApps;
-          }
+    // 2. Fetch from Supabase FIRST and merge with local JSON
+    let apps = [];
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const { data: sbApps, error: sbErr } = await supabase
+          .from('internship_applications')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!sbErr && sbApps && Array.isArray(sbApps) && sbApps.length > 0) {
+          apps = sbApps;
         }
-      } catch (sbErr) {
-        console.warn('[InternshipService] Supabase getApplicationsAdmin notice:', sbErr.message);
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Supabase getApplicationsAdmin notice:', sbErr.message);
+    }
+
+    const localApps = this.readLocalApplications();
+    const seenRefs = new Set(apps.map((a) => a.reference_id || String(a.id)));
+    for (const localApp of localApps) {
+      const key = localApp.reference_id || String(localApp.id);
+      if (!seenRefs.has(key)) {
+        apps.push(localApp);
+        seenRefs.add(key);
       }
     }
+
+    // Normalize applications from either store
+    apps = apps.map((a) => {
+      let skills = a.skills;
+      if (typeof skills === 'string') {
+        try { skills = JSON.parse(skills); } catch (e) { skills = [skills]; }
+      }
+      return {
+        ...a,
+        skills: Array.isArray(skills) ? skills : [],
+        recruitment_status: normalizeStatus(a.recruitment_status) || 'New',
+        is_reviewed_by_hr: a.is_reviewed_by_hr ? 1 : 0
+      };
+    });
 
     if (status && status !== 'all') {
       apps = apps.filter((a) => normalizeStatus(a.recruitment_status) === normalizedFilterStatus);
@@ -1170,20 +1200,7 @@ class InternshipService {
       console.warn('[InternshipService] MySQL getApplicationById error:', dbErr.message);
     }
 
-    // 2. Fallback to Local JSON
-    const apps = this.readLocalApplications();
-    const found = apps.find(
-      (a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef)
-    );
-    if (found) {
-      return {
-        ...found,
-        recruitment_status: normalizeStatus(found.recruitment_status) || 'New',
-        is_reviewed_by_hr: found.is_reviewed_by_hr ? 1 : 0
-      };
-    }
-
-    // 3. Fallback to Supabase
+    // 2. Try Supabase FIRST
     try {
       const { getSupabaseClient } = require('../config/supabase');
       const supabase = getSupabaseClient();
@@ -1191,7 +1208,7 @@ class InternshipService {
         const isNumeric = /^\d+$/.test(String(idOrRef).trim());
         let query = supabase.from('internship_applications').select('*');
         if (isNumeric) {
-          query = query.or(`reference_id.eq.${idOrRef}`);
+          query = query.or(`id.eq.${idOrRef},reference_id.eq.${idOrRef}`);
         } else {
           query = query.eq('reference_id', String(idOrRef));
         }
@@ -1214,7 +1231,20 @@ class InternshipService {
         }
       }
     } catch (sbErr) {
-      console.warn('[InternshipService] Supabase getApplicationById error:', sbErr.message);
+      console.warn('[InternshipService] Supabase getApplicationByIdAdmin notice:', sbErr.message);
+    }
+
+    // 3. Fallback to Local JSON
+    const apps = this.readLocalApplications();
+    const found = apps.find(
+      (a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef)
+    );
+    if (found) {
+      return {
+        ...found,
+        recruitment_status: normalizeStatus(found.recruitment_status) || 'New',
+        is_reviewed_by_hr: found.is_reviewed_by_hr ? 1 : 0
+      };
     }
 
     return null;
@@ -1256,6 +1286,24 @@ class InternshipService {
       }
     } catch (dbErr) {
       console.warn('[InternshipService] MySQL status update error:', dbErr.message);
+    }
+
+    // 1b. Mirror update in Supabase
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        await supabase
+          .from('internship_applications')
+          .update({
+            recruitment_status: normalizedStatus,
+            admin_notes: noteText,
+            updated_at: now
+          })
+          .or(`id.eq.${application.id},reference_id.eq.${application.reference_id}`);
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Supabase status update notice:', sbErr.message);
     }
 
     // 2. Mirror update in local JSON
