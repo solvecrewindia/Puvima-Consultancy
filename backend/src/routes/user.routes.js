@@ -12,3 +12,4 @@ router.post(['/company/users', '/admin/users'], (req, res) => userController.cre
 router.patch(['/company/users/:id/toggle', '/admin/users/:id/toggle'], (req, res) => userController.toggleStatus(req, res));
 
 module.exports = router;
+
