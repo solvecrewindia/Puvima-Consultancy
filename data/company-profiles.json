@@ -1,0 +1,88 @@
+{
+  "profiles": [
+    {
+      "id": "usr-admin-1",
+      "user_code": "ADM0001",
+      "user_id": "usr-admin-1",
+      "name": "Dr. P. Sundaram",
+      "email": "admin@puvima.com",
+      "role": "SuperAdmin",
+      "department": "Executive Board",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-09-08T00:00:00.000Z"
+    },
+    {
+      "id": "usr-hr-1",
+      "user_code": "HR0001",
+      "user_id": "usr-hr-1",
+      "name": "Ananya Sharma",
+      "email": "hr@puvima.com",
+      "role": "HR",
+      "department": "Human Resources",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-09-23T00:00:00.000Z"
+    },
+    {
+      "id": "usr-hr-2",
+      "user_code": "HR0002",
+      "user_id": "usr-hr-2",
+      "name": "Puvima HR",
+      "email": "contact@puvima.com",
+      "role": "HR",
+      "department": "Human Resources",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-11-08T06:55:00.000Z"
+    },
+    {
+      "id": "usr-emp-1",
+      "user_code": "EMP0001",
+      "user_id": "usr-emp-1",
+      "name": "Karthik Raman",
+      "email": "karthik@puvima.com",
+      "role": "Employee",
+      "department": "Robotics & Autonomous Systems",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-10-08T00:00:00.000Z"
+    },
+    {
+      "id": "usr-emp-2",
+      "user_code": "EMP0002",
+      "user_id": "usr-emp-2",
+      "name": "Priya Narayanan",
+      "email": "priya@puvima.com",
+      "role": "Employee",
+      "department": "FinTech & Stock Analytics",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-10-13T00:00:00.000Z"
+    },
+    {
+      "id": "usr-int-1",
+      "user_code": "INT0001",
+      "user_id": "usr-int-1",
+      "name": "Sneha Patel",
+      "email": "sneha@puvima.com",
+      "role": "Intern",
+      "department": "AI/ML & Research Solutions",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-10-23T00:00:00.000Z"
+    },
+    {
+      "id": "usr-int-2",
+      "user_code": "INT0002",
+      "user_id": "usr-int-2",
+      "name": "Arjun Verma",
+      "email": "arjun@puvima.com",
+      "role": "Intern",
+      "department": "Robotics & Autonomous Systems",
+      "password": "Password123!",
+      "is_active": true,
+      "created_at": "2026-10-28T00:00:00.000Z"
+    }
+  ]
+}

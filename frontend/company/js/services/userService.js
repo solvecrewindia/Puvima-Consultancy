@@ -1,6 +1,6 @@
 /**
  * PUVIMA Consultancy — User Management Service
- * Handles user profiles, role prefixes, deactivations, and listings
+ * Synchronized with server-side /api/company/users and resilient local cache.
  */
 
 const UserService = (function () {
@@ -15,6 +15,10 @@ const UserService = (function () {
     }
   }
 
+  function saveLocalUsers(users) {
+    localStorage.setItem(STORE_KEY, JSON.stringify(users));
+  }
+
   function generateUuid() {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
       return crypto.randomUUID();
@@ -24,10 +28,6 @@ const UserService = (function () {
       const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
-  }
-
-  function saveLocalUsers(users) {
-    localStorage.setItem(STORE_KEY, JSON.stringify(users));
   }
 
   function generateUserCode(role, existingUsers) {
@@ -49,53 +49,26 @@ const UserService = (function () {
 
   async function getUsers(options = {}) {
     const { role, roles, isActive, search, department } = options;
+    let list = [];
 
-    if (window.portalClient && window.portalClient.supabase) {
-      try {
-        let q = window.portalClient.supabase
-          .from('profiles')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (roles && roles.length > 0) {
-          q = q.in('role', roles);
-        } else if (role) {
-          q = q.eq('role', role);
+    // 1. Try Backend API first for live synchronization
+    try {
+      const res = await fetch('/api/company/users');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.users) && json.users.length > 0) {
+          list = json.users;
+          saveLocalUsers(list);
         }
-
-        if (typeof isActive === 'boolean') {
-          q = q.eq('is_active', isActive);
-        }
-
-        if (department) {
-          q = q.eq('department', department);
-        }
-
-        if (search && search.trim()) {
-          const s = search.trim();
-          q = q.or(`name.ilike.%${s}%,email.ilike.%${s}%,user_code.ilike.%${s}%`);
-        }
-
-        const { data, error } = await q;
-        if (!error && Array.isArray(data) && data.length > 0) {
-          const local = getLocalUsers();
-          const sbIdentifiers = new Set(
-            data.map((u) => (u.user_code || u.email || String(u.id)).toLowerCase())
-          );
-          const extra = local.filter((u) => {
-            const code = (u.user_code || '').toLowerCase();
-            const email = (u.email || '').toLowerCase();
-            return (!code || !sbIdentifiers.has(code)) && (!email || !sbIdentifiers.has(email));
-          });
-          return [...data, ...extra];
-        }
-      } catch (e) {
-        console.warn('[UserService] Supabase error, using local data:', e);
       }
+    } catch (netErr) {
+      console.warn('[UserService] Live server sync notice, falling back to local cache:', netErr);
     }
 
-    // Local Store Filtering
-    let list = getLocalUsers();
+    // 2. Fallback to local store if server was unreachable
+    if (list.length === 0) {
+      list = getLocalUsers();
+    }
 
     if (roles && roles.length > 0) {
       const lowRoles = roles.map((r) => String(r).toLowerCase());
@@ -131,53 +104,73 @@ const UserService = (function () {
   }
 
   async function createUser(userData) {
-    const users = getLocalUsers();
-    const userCode = generateUserCode(userData.role, users);
+    // 1. Try Backend API first
+    try {
+      const res = await fetch('/api/company/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
 
-    const uuid = generateUuid();
-    const newUser = {
-      id: uuid,
-      user_code: userCode,
-      user_id: uuid,
-      name: userData.name.trim(),
-      email: userData.email.trim().toLowerCase(),
-      role: userData.role,
-      department: userData.department || 'General',
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    // Try Supabase insert
-    if (window.portalClient && window.portalClient.supabase) {
-      try {
-        await window.portalClient.supabase.from('profiles').insert([newUser]);
-      } catch (e) {
-        console.warn('[UserService] Supabase insert failed, saved to local cache:', e);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || 'Server rejected user creation.');
       }
+
+      const created = json.user;
+      const local = getLocalUsers();
+      local.unshift(created);
+      saveLocalUsers(local);
+      return created;
+    } catch (err) {
+      console.warn('[UserService] Server user creation failed or offline, saving locally:', err.message);
+
+      // Local fallback
+      const users = getLocalUsers();
+      const userCode = generateUserCode(userData.role, users);
+      const uuid = generateUuid();
+
+      const newUser = {
+        id: uuid,
+        user_code: userCode,
+        user_id: uuid,
+        name: userData.name.trim(),
+        email: userData.email.trim().toLowerCase(),
+        role: userData.role,
+        department: userData.department || 'General',
+        password: userData.password ? userData.password.trim() : 'Password123!',
+        is_active: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      users.unshift(newUser);
+      saveLocalUsers(users);
+      return newUser;
     }
-
-    users.unshift(newUser);
-    saveLocalUsers(users);
-    return newUser;
-  }
-
-  async function updateUser(id, updates) {
-    const users = getLocalUsers();
-    const idx = users.findIndex((u) => u.id === id || u.user_code === id);
-    if (idx === -1) throw new Error('User not found.');
-
-    users[idx] = {
-      ...users[idx],
-      ...updates,
-      updated_at: new Date().toISOString(),
-    };
-
-    saveLocalUsers(users);
-    return users[idx];
   }
 
   async function toggleUserStatus(id) {
+    try {
+      const res = await fetch(`/api/company/users/${encodeURIComponent(id)}/toggle`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.user) {
+          const local = getLocalUsers();
+          const idx = local.findIndex((u) => u.id === id || u.user_code === id);
+          if (idx !== -1) {
+            local[idx] = json.user;
+            saveLocalUsers(local);
+          }
+          return json.user;
+        }
+      }
+    } catch (e) {}
+
+    // Fallback
     const users = getLocalUsers();
     const idx = users.findIndex((u) => u.id === id || u.user_code === id);
     if (idx === -1) throw new Error('User not found.');
@@ -193,7 +186,6 @@ const UserService = (function () {
     getUsers,
     getUserById,
     createUser,
-    updateUser,
     toggleUserStatus,
   };
 })();

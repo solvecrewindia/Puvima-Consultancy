@@ -315,7 +315,7 @@
         <h3 class="modal-title">Create Account Profile</h3>
         <button class="modal-close" data-close-modal="addUserModal">&times;</button>
       </div>
-      <form id="addUserForm">
+      <form id="addUserForm" onsubmit="event.preventDefault(); return false;">
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label" for="newUserName">Full Name</label>
@@ -325,6 +325,12 @@
           <div class="form-group">
             <label class="form-label" for="newUserEmail">Corporate Email Address</label>
             <input type="email" id="newUserEmail" class="form-control" placeholder="ramesh@puvima.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newUserPassword">Initial Access Password</label>
+            <input type="password" id="newUserPassword" class="form-control" placeholder="Leave blank to default to Password123!" autocomplete="new-password">
+            <div class="form-hint">Default initial access password is <code>Password123!</code></div>
           </div>
 
           <div class="form-group">
@@ -351,7 +357,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-close-modal="addUserModal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Create Profile</button>
+          <button type="submit" id="addUserSubmitBtn" class="btn btn-primary">Create Profile</button>
         </div>
       </form>
     </div>
@@ -467,12 +473,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/company/js/config.js"></script>
   <script src="/company/js/supabaseClient.js"></script>
-  <script src="/company/js/auth.js"></script>
+  <script src="/company/js/auth.js?v=20261108_3"></script>
   <script src="/company/js/ui.js"></script>
-  <script src="/company/js/services/userService.js"></script>
+  <script src="/company/js/services/userService.js?v=20261108_3"></script>
   <script src="/company/js/services/projectService.js"></script>
   <script src="/company/js/services/notificationService.js"></script>
   <script src="/company/js/main.js"></script>
-  <script src="/company/js/controllers/adminController.js"></script>
+  <script src="/company/js/controllers/adminController.js?v=20261108_3"></script>
 </body>
 </html>

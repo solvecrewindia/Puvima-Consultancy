@@ -18,6 +18,7 @@ const careersRoutes = require('./routes/careers.routes');
 const internshipRoutes = require('./routes/internship.routes');
 const onboardingRoutes = require('./routes/onboarding.routes');
 const lorRoutes = require('./routes/lor.routes');
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 
@@ -243,6 +244,7 @@ app.use('/api', careersRoutes);
 app.use('/api', internshipRoutes);
 app.use('/api', onboardingRoutes);
 app.use('/api', lorRoutes);
+app.use('/api', userRoutes);
 let mailRoutes = null;
 app.use('/api/mail', (req, res, next) => {
   if (!mailRoutes) {
@@ -272,6 +274,7 @@ app.use(careersRoutes);
 app.use(internshipRoutes);
 app.use(onboardingRoutes);
 app.use(lorRoutes);
+app.use(userRoutes);
 
 app.get('/', (req, res, next) => {
   const indexHtml = path.join(frontendDir, 'index.html');
