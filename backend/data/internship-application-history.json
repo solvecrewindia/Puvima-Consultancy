@@ -83,6 +83,18 @@
       "changed_by_role": "Applicant",
       "notes": "Initial application submitted via Careers portal.",
       "created_at": "2026-11-08T01:56:06.626Z"
+    },
+    {
+      "id": 1794104368548,
+      "application_id": 1794104367571,
+      "reference_id": "PUV-INT-20261108-6AA3CE",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-08T02:19:27.573Z"
     }
   ]
 }

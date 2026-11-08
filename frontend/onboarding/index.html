@@ -12,32 +12,78 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/responsive.css">
   <link rel="stylesheet" href="/onboarding/onboarding.css">
 </head>
 <body>
 
+  <!-- Ambient Glow Background -->
+  <div class="ambient-glow-layer" aria-hidden="true">
+    <div class="ambient-glow-top"></div>
+    <div class="ambient-glow-accent"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
   <!-- Header -->
-  <header class="onb-header">
-    <div class="onb-header-inner">
-      <a href="/" class="onb-brand">
-        <img src="/company/assets/logo/puvima-emblem.png" alt="PUVIMA" class="onb-logo-img">
-        <div class="onb-brand-text">
-          <h1>PUVIMA CONSULTANCY</h1>
-          <span>ONBOARDING &amp; HR VERIFICATION SYSTEM</span>
-        </div>
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+      <a href="/" class="brand-wordmark" aria-label="PUVIMA Home">
+        <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="brand-logo-img">
       </a>
-      
-      <div class="onb-header-actions">
-        <button type="button" class="btn btn-secondary btn-sm" id="btnToggleTrackModal">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+
+      <nav class="nav-wrapper" aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="/pages/services.html" class="nav-link">What we do</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/about.html" class="nav-link">Who we are</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/careers.html" class="nav-link">Careers</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/contact.html" class="nav-link">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnToggleTrackModal" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 0.82rem; border-radius: 9999px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           Track Application
         </button>
-        <a href="/login" class="btn btn-outline-primary btn-sm" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4);">
+        <a href="/company/login" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; padding: 7px 16px; font-size: 0.82rem; border-radius: 9999px;">
           HR Portal
         </a>
       </div>
     </div>
   </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container" style="max-width: 1100px; margin: 0 auto; padding: 0 20px; text-align: center;">
+      <nav class="breadcrumbs" aria-label="Breadcrumb" style="justify-content: center; margin-bottom: 14px;">
+        <a href="/" style="color: #64748B; text-decoration: none;">Home</a>
+        <span class="sep" style="color: #CBD5E1; margin: 0 6px;">/</span>
+        <span class="current" style="color: #0072CE; font-weight: 600;">Onboarding &amp; Verification</span>
+      </nav>
+
+      <div class="page-hero-content">
+        <div class="eyebrow-badge" style="margin: 0 auto 16px auto;">
+          <span class="status-dot"></span>
+          <span>Official Candidate Verification System</span>
+        </div>
+        <h1 class="page-hero-title">
+          Complete Your <span class="text-gradient">Onboarding Profile</span>
+        </h1>
+        <p class="page-hero-desc">
+          Official joining verification for interns, project trainees, and full-time team members at PUVIMA Consultancy. Fill out the guided steps below or track your verified status.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <main class="onb-container">
 
@@ -100,44 +146,72 @@
           </div>
         </div>
         
-        <div class="stepper-track">
-          <div class="stepper-step active" data-step="1">
-            <div class="step-circle">1</div>
-            <span class="step-label">Position</span>
-          </div>
-          <div class="stepper-step" data-step="2">
-            <div class="step-circle">2</div>
-            <span class="step-label">Personal</span>
-          </div>
-          <div class="stepper-step" data-step="3">
-            <div class="step-circle">3</div>
-            <span class="step-label">Contact</span>
-          </div>
-          <div class="stepper-step" data-step="4">
-            <div class="step-circle">4</div>
-            <span class="step-label">Academic</span>
-          </div>
-          <div class="stepper-step" data-step="5">
-            <div class="step-circle">5</div>
-            <span class="step-label">Experience</span>
-          </div>
-          <div class="stepper-step" data-step="6">
-            <div class="step-circle">6</div>
-            <span class="step-label">Emergency</span>
-          </div>
-          <div class="stepper-step" data-step="7">
-            <div class="step-circle">7</div>
-            <span class="step-label">Bank Info</span>
-          </div>
-          <div class="stepper-step" data-step="8">
-            <div class="step-circle">8</div>
-            <span class="step-label">Documents</span>
-          </div>
-          <div class="stepper-step" data-step="9">
-            <div class="step-circle">9</div>
-            <span class="step-label">Review &amp; PDF</span>
-          </div>
-        </div>
+        <nav class="stepper-track internship-stepper" aria-label="Onboarding Application Steps">
+          <button type="button" class="stepper-step stepper-item active" data-step="1">
+            <span class="step-indicator">1</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 01</span>
+              <span class="step-name-text">Position Details</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="2">
+            <span class="step-indicator">2</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 02</span>
+              <span class="step-name-text">Personal Info</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="3">
+            <span class="step-indicator">3</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 03</span>
+              <span class="step-name-text">Contact Info</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="4">
+            <span class="step-indicator">4</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 04</span>
+              <span class="step-name-text">Academic History</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="5">
+            <span class="step-indicator">5</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 05</span>
+              <span class="step-name-text">Skills &amp; Projects</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="6">
+            <span class="step-indicator">6</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 06</span>
+              <span class="step-name-text">Emergency Contact</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="7">
+            <span class="step-indicator">7</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 07</span>
+              <span class="step-name-text">Bank Details</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="8">
+            <span class="step-indicator">8</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 08</span>
+              <span class="step-name-text">Document Upload</span>
+            </div>
+          </button>
+          <button type="button" class="stepper-step stepper-item" data-step="9">
+            <span class="step-indicator">9</span>
+            <div class="step-label-group">
+              <span class="step-number-text">STEP 09</span>
+              <span class="step-name-text">Review &amp; Submit</span>
+            </div>
+          </button>
+        </nav>
+      </div>
       </div>
 
       <!-- Notice Banner for Correction Requests -->
@@ -883,6 +957,67 @@
     </section>
 
   </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="/" class="brand-wordmark" aria-label="PUVIMA Home">
+            <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="brand-logo-img">
+          </a>
+          <p class="footer-tagline">
+            INNOVATION &bull; RESEARCH &bull; EXCELLENCE
+          </p>
+          <p class="footer-desc">
+            High-impact engineering, research consultancy, and autonomous systems architecture.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Solutions</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/robotics.html" class="footer-nav-link">Robotics &amp; Autonomous Systems</a></li>
+            <li><a href="/pages/fintech.html" class="footer-nav-link">FinTech &amp; Market Analytics</a></li>
+            <li><a href="/pages/ai-ml-research.html" class="footer-nav-link">AI/ML &amp; Research Solutions</a></li>
+            <li><a href="/pages/services.html" class="footer-nav-link">Complete Service Catalog</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Company</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/about.html" class="footer-nav-link">About PUVIMA</a></li>
+            <li><a href="/pages/careers.html" class="footer-nav-link">Careers</a></li>
+            <li><a href="/pages/faq.html" class="footer-nav-link">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Engagement</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/contact.html" class="footer-nav-link">Contact Us</a></li>
+            <li><a href="mailto:contact@puvima.com" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: #0072CE;">contact@puvima.com</a></li>
+            <li><a href="tel:+919384787701" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: #0072CE;">+91 93847 87701</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 PUVIMA Consultancy. All rights reserved.
+        </div>
+        <div class="footer-bottom-links">
+          <a href="/pages/privacy-policy.html" class="footer-nav-link">Privacy Policy</a>
+          <span style="color: var(--border-light, #CBD5E1);">&bull;</span>
+          <a href="/pages/terms.html" class="footer-nav-link">Terms of Service</a>
+          <span style="color: var(--border-light, #CBD5E1);">&bull;</span>
+          <a href="/company/login" class="footer-nav-link">Member Portal &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
 
   <!-- Track Application Modal -->
   <div class="modal-overlay" id="trackModal" style="display: none;">

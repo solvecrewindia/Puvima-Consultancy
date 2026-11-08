@@ -18,82 +18,45 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-    .lor-header {
-      background: #001D35;
-      color: #FFFFFF;
-      padding: 18px 24px;
-      border-bottom: 3px solid #D97706;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .lor-header-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .lor-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-      color: inherit;
-    }
-    .lor-logo {
-      height: 42px;
-      width: auto;
-      object-fit: contain;
-    }
-    .lor-title-group h1 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin: 0;
-      letter-spacing: 0.5px;
-    }
-    .lor-title-group p {
-      font-size: 0.75rem;
-      color: #D97706;
-      margin: 2px 0 0 0;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .lor-container {
-      max-width: 860px;
-      margin: 36px auto;
-      padding: 0 16px;
+      max-width: 880px;
+      margin: 32px auto 60px auto;
+      padding: 0 20px;
       width: 100%;
       flex: 1;
+      position: relative;
+      z-index: 2;
     }
     .endorsement-card {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 114, 206, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
       overflow: hidden;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
     .card-banner {
-      background: linear-gradient(135deg, #001D35 0%, #003E7E 100%);
+      background: linear-gradient(135deg, #0072CE 0%, #003E7E 100%);
       color: #FFFFFF;
-      padding: 24px 28px;
+      padding: 28px 32px;
     }
     .card-banner h2 {
-      font-size: 1.35rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: #FFFFFF;
-      margin: 0 0 6px 0;
+      margin: 4px 0 6px 0;
+      font-family: 'Manrope', 'Inter', sans-serif;
     }
     .card-banner p {
-      font-size: 0.88rem;
-      color: #94A3B8;
+      font-size: 0.92rem;
+      color: #E0F2FE;
       margin: 0;
+      line-height: 1.5;
     }
     .card-content {
-      padding: 28px;
+      padding: 32px;
     }
     .detail-grid {
       display: grid;
@@ -101,15 +64,15 @@
       gap: 16px;
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
-      border-radius: 8px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 22px;
       margin-bottom: 24px;
     }
     @media (max-width: 640px) {
       .detail-grid { grid-template-columns: 1fr; }
     }
     .detail-item {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
     }
     .detail-label {
       color: #64748B;
@@ -125,10 +88,10 @@
       line-height: 1.4;
     }
     .prof-card {
-      background: #EFF6FF;
-      border: 1px solid #BFDBFE;
-      border-radius: 8px;
-      padding: 16px 20px;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 12px;
+      padding: 18px 22px;
       margin-bottom: 24px;
       display: flex;
       align-items: center;
@@ -138,7 +101,7 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: #001D35;
+      background: #0072CE;
       color: #FFFFFF;
       display: flex;
       align-items: center;
@@ -148,38 +111,38 @@
       flex-shrink: 0;
     }
     .declaration-box {
-      border: 2px solid #E2E8F0;
-      border-radius: 8px;
-      padding: 20px;
+      border: 1px solid #FDE68A;
+      border-radius: 12px;
+      padding: 22px;
       background: #FFFBEB;
-      border-color: #FDE68A;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
     .btn-confirm-action {
-      background: #001D35;
+      background: #0072CE;
       color: #FFFFFF;
       border: none;
       font-size: 0.95rem;
       font-weight: 700;
       padding: 14px 28px;
-      border-radius: 8px;
+      border-radius: 9999px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 6px rgba(0,29,53,0.25);
+      box-shadow: 0 4px 14px rgba(0, 114, 206, 0.3);
     }
     .btn-confirm-action:hover {
-      background: #003E7E;
+      background: #005BB5;
+      transform: translateY(-1px);
     }
     .success-card {
       text-align: center;
-      padding: 48px 24px;
+      padding: 56px 24px;
     }
     .success-icon {
-      width: 64px;
-      height: 64px;
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
       background: #DCFCE7;
       color: #16A34A;
@@ -188,25 +151,114 @@
       justify-content: center;
       margin: 0 auto 20px;
     }
+    .eyebrow-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0072CE;
+      margin-bottom: 12px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0072CE;
+      box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.25);
+    }
+    .page-hero-title {
+      font-family: 'Manrope', 'Inter', sans-serif;
+      font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #0072CE 0%, #003E7E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-hero-desc {
+      font-size: 1rem;
+      color: #475569;
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
-  <header class="lor-header">
-    <div class="lor-header-inner">
-      <a href="/" class="lor-brand">
-        <img src="/company/assets/logo/puvima-emblem.png" alt="PUVIMA" class="lor-logo">
-        <div class="lor-title-group">
-          <h1>PUVIMA IT SERVICES &amp; RESEARCH CONSULTANCY</h1>
-          <p>Academic Mentor Letter of Recommendation Verification</p>
-        </div>
+  <!-- Ambient Glow Background -->
+  <div class="ambient-glow-layer" aria-hidden="true">
+    <div class="ambient-glow-top"></div>
+    <div class="ambient-glow-accent"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+      <a href="/" class="brand-wordmark" aria-label="PUVIMA Home">
+        <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="brand-logo-img">
       </a>
-      <div style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.12); padding: 4px 10px; border-radius: 4px;">
-        SECURE ENDORSEMENT GATEWAY
+
+      <nav class="nav-wrapper" aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="/pages/services.html" class="nav-link">What we do</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/about.html" class="nav-link">Who we are</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/careers.html" class="nav-link">Careers</a>
+          </li>
+          <li class="nav-item">
+            <a href="/pages/contact.html" class="nav-link">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <span style="font-family: monospace; font-size: 0.78rem; background: #E0F2FE; color: #0072CE; padding: 6px 14px; border-radius: 9999px; font-weight: 700;">
+          SECURE ENDORSEMENT GATEWAY
+        </span>
       </div>
     </div>
   </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px; text-align: center;">
+      <nav class="breadcrumbs" aria-label="Breadcrumb" style="justify-content: center; margin-bottom: 14px;">
+        <a href="/" style="color: #64748B; text-decoration: none;">Home</a>
+        <span class="sep" style="color: #CBD5E1; margin: 0 6px;">/</span>
+        <a href="/onboarding" style="color: #64748B; text-decoration: none;">Candidate Verification</a>
+        <span class="sep" style="color: #CBD5E1; margin: 0 6px;">/</span>
+        <span class="current" style="color: #0072CE; font-weight: 600;">Faculty LOR Endorsement</span>
+      </nav>
+
+      <div class="page-hero-content">
+        <div class="eyebrow-badge" style="margin: 0 auto 16px auto;">
+          <span class="status-dot"></span>
+          <span>Academic Verification Gateway</span>
+        </div>
+        <h1 class="page-hero-title">
+          Faculty Mentor <span class="text-gradient">Academic Endorsement</span>
+        </h1>
+        <p class="page-hero-desc">
+          Official verification portal for faculty guides and academic mentors confirming student internship credentials at PUVIMA Consultancy.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- Main Container -->
   <main class="lor-container">
@@ -391,6 +443,67 @@
     </div>
 
   </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="/" class="brand-wordmark" aria-label="PUVIMA Home">
+            <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="PUVIMA Consultancy" class="brand-logo-img">
+          </a>
+          <p class="footer-tagline">
+            INNOVATION &bull; RESEARCH &bull; EXCELLENCE
+          </p>
+          <p class="footer-desc">
+            High-impact engineering, research consultancy, and autonomous systems architecture.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Solutions</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/robotics.html" class="footer-nav-link">Robotics &amp; Autonomous Systems</a></li>
+            <li><a href="/pages/fintech.html" class="footer-nav-link">FinTech &amp; Market Analytics</a></li>
+            <li><a href="/pages/ai-ml-research.html" class="footer-nav-link">AI/ML &amp; Research Solutions</a></li>
+            <li><a href="/pages/services.html" class="footer-nav-link">Complete Service Catalog</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Company</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/about.html" class="footer-nav-link">About PUVIMA</a></li>
+            <li><a href="/pages/careers.html" class="footer-nav-link">Careers</a></li>
+            <li><a href="/pages/faq.html" class="footer-nav-link">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Engagement</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/pages/contact.html" class="footer-nav-link">Contact Us</a></li>
+            <li><a href="mailto:contact@puvima.com" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: #0072CE;">contact@puvima.com</a></li>
+            <li><a href="tel:+919384787701" class="footer-nav-link" style="font-family: var(--font-mono); font-size: 0.8rem; color: #0072CE;">+91 93847 87701</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 PUVIMA Consultancy. All rights reserved.
+        </div>
+        <div class="footer-bottom-links">
+          <a href="/pages/privacy-policy.html" class="footer-nav-link">Privacy Policy</a>
+          <span style="color: var(--border-light, #CBD5E1);">&bull;</span>
+          <a href="/pages/terms.html" class="footer-nav-link">Terms of Service</a>
+          <span style="color: var(--border-light, #CBD5E1);">&bull;</span>
+          <a href="/company/login" class="footer-nav-link">Member Portal &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
 
   <footer style="background: #FFFFFF; border-top: 1px solid #E2E8F0; padding: 20px 24px; text-align: center; font-size: 0.8rem; color: #64748B;">
     PUVIMA IT Services &amp; Research Consultancy • Official Academic Verification Service • <a href="mailto:contact@puvima.com" style="color: #0B57D0;">contact@puvima.com</a>

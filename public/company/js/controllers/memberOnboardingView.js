@@ -319,17 +319,72 @@
               </div>
             </div>
             
-            <div class="stepper-track">
-              <div class="stepper-step active" data-emb-step="1"><div class="step-circle">1</div><span class="step-label">Position</span></div>
-              <div class="stepper-step" data-emb-step="2"><div class="step-circle">2</div><span class="step-label">Personal</span></div>
-              <div class="stepper-step" data-emb-step="3"><div class="step-circle">3</div><span class="step-label">Contact</span></div>
-              <div class="stepper-step" data-emb-step="4"><div class="step-circle">4</div><span class="step-label">Academic</span></div>
-              <div class="stepper-step" data-emb-step="5"><div class="step-circle">5</div><span class="step-label">Experience</span></div>
-              <div class="stepper-step" data-emb-step="6"><div class="step-circle">6</div><span class="step-label">Emergency</span></div>
-              <div class="stepper-step" data-emb-step="7"><div class="step-circle">7</div><span class="step-label">Bank Info</span></div>
-              <div class="stepper-step" data-emb-step="8"><div class="step-circle">8</div><span class="step-label">Documents</span></div>
-              <div class="stepper-step" data-emb-step="9"><div class="step-circle">9</div><span class="step-label">Review &amp; Submit</span></div>
-            </div>
+            <nav class="stepper-track internship-stepper" aria-label="Onboarding Application Steps">
+              <button type="button" class="stepper-step stepper-item active" data-emb-step="1">
+                <span class="step-indicator">1</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 01</span>
+                  <span class="step-name-text">Position Details</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="2">
+                <span class="step-indicator">2</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 02</span>
+                  <span class="step-name-text">Personal Info</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="3">
+                <span class="step-indicator">3</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 03</span>
+                  <span class="step-name-text">Contact Info</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="4">
+                <span class="step-indicator">4</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 04</span>
+                  <span class="step-name-text">Academic History</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="5">
+                <span class="step-indicator">5</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 05</span>
+                  <span class="step-name-text">Skills &amp; Projects</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="6">
+                <span class="step-indicator">6</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 06</span>
+                  <span class="step-name-text">Emergency Contact</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="7">
+                <span class="step-indicator">7</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 07</span>
+                  <span class="step-name-text">Bank Details</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="8">
+                <span class="step-indicator">8</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 08</span>
+                  <span class="step-name-text">Document Upload</span>
+                </div>
+              </button>
+              <button type="button" class="stepper-step stepper-item" data-emb-step="9">
+                <span class="step-indicator">9</span>
+                <div class="step-label-group">
+                  <span class="step-number-text">STEP 09</span>
+                  <span class="step-name-text">Review &amp; Submit</span>
+                </div>
+              </button>
+            </nav>
+          </div>
           </div>
 
           ${currentApp && currentApp.correction_request ? `
