@@ -112,6 +112,7 @@ function normalizeStatus(status) {
   if (s === 'interview') return 'Interview';
   if (s === 'selected' || s === 'accepted' || s === 'accept') return 'Selected';
   if (s === 'rejected' || s === 'reject') return 'Rejected';
+  if (s === 'archived') return 'Archived';
   return null;
 }
 
@@ -1150,6 +1151,14 @@ class InternshipService {
         seenRefs.add(key);
       }
     }
+    // Filter out archived & automated test records
+    apps = apps.filter((a) => {
+      const s = String(a.recruitment_status || '').toLowerCase();
+      const n = String(a.full_name || '').toLowerCase();
+      const e = String(a.email || '').toLowerCase();
+      return s !== 'archived' && !n.includes('live verification') && !n.includes('john doe') && !e.endsWith('@example.com');
+    });
+
     stats.total = apps.length;
 
     apps.forEach((a) => {
@@ -1275,6 +1284,14 @@ class InternshipService {
         seenRefs.add(key);
       }
     }
+
+    // Filter out archived and test candidate entries
+    apps = apps.filter((a) => {
+      const s = String(a.recruitment_status || '').toLowerCase();
+      const n = String(a.full_name || '').toLowerCase();
+      const e = String(a.email || '').toLowerCase();
+      return s !== 'archived' && !n.includes('live verification') && !n.includes('john doe') && !e.endsWith('@example.com');
+    });
 
     // Normalize applications from either store
     apps = apps.map((a) => {
@@ -1516,6 +1533,56 @@ class InternshipService {
       admin_notes: noteText,
       updated_at: now
     };
+  }
+
+  /**
+   * Delete an internship application from Supabase and local data stores
+   * @param {string} idOrRef
+   * @param {Object} user
+   */
+  async deleteApplicationAdmin(idOrRef, user = {}) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(idOrRef).trim());
+
+    // 1. Supabase deletion / archive
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        if (isUuid) {
+          await supabase.from('internship_applications').update({ recruitment_status: 'Archived' }).eq('id', idOrRef);
+          await supabase.from('internship_applications').delete().eq('id', idOrRef);
+        } else {
+          await supabase.from('internship_applications').update({ recruitment_status: 'Archived' }).eq('reference_id', idOrRef);
+          await supabase.from('internship_applications').delete().eq('reference_id', idOrRef);
+        }
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Supabase delete notice:', sbErr.message);
+    }
+
+    // 2. Local storage deletion
+    this.removeLocalApplication(idOrRef);
+
+    return {
+      success: true,
+      message: 'Application record deleted successfully'
+    };
+  }
+
+  removeLocalApplication(idOrRef) {
+    const cleanId = String(idOrRef || '').trim();
+    [DATA_FILE, BACKEND_DATA_FILE].forEach((fPath) => {
+      try {
+        if (fs.existsSync(fPath)) {
+          const raw = JSON.parse(fs.readFileSync(fPath, 'utf8'));
+          const list = Array.isArray(raw) ? raw : (raw.applications || []);
+          const filtered = list.filter((a) => String(a.id) !== cleanId && a.reference_id !== cleanId);
+          fs.writeFileSync(fPath, JSON.stringify(Array.isArray(raw) ? filtered : { applications: filtered }, null, 2), 'utf8');
+        }
+      } catch (err) {
+        console.warn('[InternshipService] Could not remove from ' + fPath + ':', err.message);
+      }
+    });
   }
 }
 

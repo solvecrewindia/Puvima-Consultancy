@@ -809,6 +809,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                               <button type="button" class="btn btn-sm btn-secondary action-btn-status" data-action="update-status" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.openHrStatusModal('${app.reference_id || app.id}')" title="Update Status" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                                 Status
                               </button>
+                              <button type="button" class="btn btn-sm btn-outline action-btn-delete" data-action="delete-app" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.deleteHrApplication('${app.reference_id || app.id}')" title="Delete Record" style="padding: 4px 8px; font-size: 12px; margin-left: 4px; color: #dc2626; border-color: #fca5a5; cursor: pointer;">
+                                🗑
+                              </button>
                             </td>
                           </tr>
                         `;
@@ -834,6 +837,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (action === 'view-details') window.viewHrApplicationDetails(id);
         else if (action === 'quick-accept') window.quickAcceptApp(id);
         else if (action === 'quick-reject') window.quickRejectApp(id);
+        else if (action === 'delete-app') window.deleteHrApplication(id);
         else if (action === 'view-resume') window.viewHrApplicationResume(id);
         else if (action === 'update-status') window.openHrStatusModal(id);
       });
@@ -1032,6 +1036,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
     }
 
+    const modalDeleteBtn = document.getElementById('hrAppModalDeleteBtn');
+    if (modalDeleteBtn) {
+      modalDeleteBtn.onclick = () => {
+        window.deleteHrApplication(app.reference_id || app.id);
+      };
+    }
+
     const skills = Array.isArray(app.skills)
       ? app.skills
       : (typeof app.skills === 'string' ? JSON.parse(app.skills || '[]') : []);
@@ -1191,6 +1202,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Update modal badge if open
       const modalStatus = document.getElementById('hrAppModalStatus');
       if (modalStatus) modalStatus.innerHTML = getAppStatusBadge('Selected');
+
+      await fetchApplicationsData();
+      updateStats();
+    } catch (err) {
+      if (window.UI) window.UI.showToast('Error', err.message, 'error');
+      else alert('Error: ' + err.message);
+    } finally {
+      if (window.UI) window.UI.hideLoading();
+    }
+  };
+
+  window.deleteHrApplication = async function (idOrRef) {
+    const app = allApplications.find((a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef));
+    const name = app ? app.full_name : idOrRef;
+    const ref = app ? app.reference_id : idOrRef;
+
+    const confirmed = window.confirm(`Permanently delete internship application for ${name} (${ref})?\n\nThis will remove the candidate from the HR portal.`);
+    if (!confirmed) return;
+
+    if (window.UI) window.UI.showLoading(`Deleting application for ${name}...`);
+    try {
+      const res = await fetch(`/api/hr/internship-applications/${encodeURIComponent(ref)}`, {
+        method: 'DELETE',
+        headers: getPortalHeaders()
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || 'Failed to delete application.');
+
+      if (window.UI) window.UI.showToast('Application Deleted', `Record for ${name} removed.`, 'info');
+      if (window.UI) window.UI.closeModal('hrApplicationModal');
+
+      // Update in-memory
+      allApplications = allApplications.filter((a) => String(a.id) !== String(idOrRef) && a.reference_id !== String(idOrRef));
+
+      // Update row DOM
+      const targetId = app ? app.id : idOrRef;
+      const row = document.getElementById(`hr-app-row-${targetId}`) || document.querySelector(`tr[data-ref="${ref}"]`);
+      if (row) row.remove();
 
       await fetchApplicationsData();
       updateStats();

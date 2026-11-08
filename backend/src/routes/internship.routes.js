@@ -108,6 +108,10 @@ router.get('/hr/internship-applications/:id/resume', requireHrOrAdmin, (req, res
   internshipController.getApplicationResume(req, res)
 );
 
+router.delete('/hr/internship-applications/:id', requireHrOrAdmin, (req, res) =>
+  internshipController.deleteApplication(req, res)
+);
+
 // ----------------------------------------------------------------------------
 // Super Admin Endpoints (Accessible by SuperAdmin and Admin)
 // ----------------------------------------------------------------------------

@@ -361,6 +361,28 @@ class InternshipController {
     }
   }
 
+  /**
+   * DELETE /api/hr/internship-applications/:id
+   * Allows HR / Super Admin to delete candidate application records
+   */
+  async deleteApplication(req, res) {
+    try {
+      const { id } = req.params;
+      const user = req.portalUser || req.user || {};
+      const result = await internshipService.deleteApplicationAdmin(id, user);
+      return res.status(200).json({
+        success: true,
+        ...result
+      });
+    } catch (err) {
+      console.error('[InternshipController] Delete application error:', err.message);
+      return res.status(err.statusCode || 500).json({
+        success: false,
+        message: err.message || 'Failed to delete application'
+      });
+    }
+  }
+
   // Alias methods for backwards compatibility
   getApplicationsAdmin(req, res) { return this.getApplications(req, res); }
   getApplicationByIdAdmin(req, res) { return this.getApplicationById(req, res); }
