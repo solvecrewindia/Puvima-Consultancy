@@ -1,3 +1,88 @@
 {
-  "history": []
+  "history": [
+    {
+      "id": 1794066527490,
+      "application_id": 1794066526555,
+      "reference_id": "PUV-INT-20261107-EB486F",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-07T15:48:46.556Z"
+    },
+    {
+      "id": 1794066552507,
+      "application_id": 1794066552372,
+      "reference_id": "PUV-INT-20261107-39D840",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-07T15:49:12.373Z"
+    },
+    {
+      "id": 1794066579514,
+      "application_id": 1794066579490,
+      "reference_id": "PUV-INT-20261107-BF3E07",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-07T15:49:39.491Z"
+    },
+    {
+      "id": 1794102421993,
+      "application_id": 1794102421803,
+      "reference_id": "PUV-INT-20261108-0AF208",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-08T01:47:01.806Z"
+    },
+    {
+      "id": 1794102440653,
+      "application_id": 1794102440406,
+      "reference_id": "PUV-INT-20261108-253A45",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-08T01:47:20.407Z"
+    },
+    {
+      "id": 1794102778171,
+      "application_id": 1794102777551,
+      "reference_id": "PUV-INT-20261108-1FE051",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-08T01:52:57.552Z"
+    },
+    {
+      "id": 1794102967228,
+      "application_id": 1794102966624,
+      "reference_id": "PUV-INT-20261108-178AE2",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "Live Verification Candidate",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-08T01:56:06.626Z"
+    }
+  ]
 }

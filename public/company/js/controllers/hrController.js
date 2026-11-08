@@ -66,7 +66,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   // Tab switching
+  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  if (urlTab) {
+    currentTab = urlTab;
+  }
+
   document.querySelectorAll('[data-hr-tab]').forEach((tabBtn) => {
+    if (tabBtn.getAttribute('data-hr-tab') === currentTab) {
+      document.querySelectorAll('[data-hr-tab]').forEach((b) => b.classList.remove('active'));
+      tabBtn.classList.add('active');
+    }
     tabBtn.addEventListener('click', () => {
       document.querySelectorAll('[data-hr-tab]').forEach((b) => b.classList.remove('active'));
       tabBtn.classList.add('active');
@@ -119,6 +128,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       elNavBadge.textContent = unreadCount;
       elNavBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
     }
+
+
+    // Check LOR endorsement stats for badge
+    fetch('/api/hr/lor/stats')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.stats) {
+          const badge = document.getElementById('hrLorBadge');
+          if (badge) {
+            if (data.stats.confirmed_by_professor > 0) {
+              badge.textContent = `${data.stats.confirmed_by_professor} Endorsed`;
+              badge.style.display = 'inline-block';
+            } else if (data.stats.total > 0) {
+              badge.textContent = `${data.stats.total}`;
+              badge.style.display = 'inline-block';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        }
+      })
+      .catch(() => {});
   }
 
   function renderCurrentTab() {
@@ -135,6 +166,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderInternsTable(container);
     } else if (currentTab === 'reviews') {
       renderReviewsList(container);
+    } else if (currentTab === 'onboarding') {
+      if (window.initHrOnboardingModule) {
+        window.initHrOnboardingModule(container);
+      }
+    } else if (currentTab === 'lor') {
+      if (window.initHrLorModule) {
+        window.initHrLorModule(container);
+      }
     }
   }
 

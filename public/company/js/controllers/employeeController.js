@@ -16,14 +16,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentTimelineType = 'Main';
   let timelineEntries = [];
   let currentTab = 'current';
+  let memberOnboardingData = null;
 
-  // Tab switching (Current Project vs Past Projects)
+  // Check URL tab parameter on load
+  const tabParam = urlParams.get('tab');
+  if (tabParam) {
+    currentTab = tabParam;
+  }
+
+  function switchToMemberTab(tab) {
+    document.querySelectorAll('[data-member-tab]').forEach((b) => b.classList.remove('active'));
+    const targetBtn = document.querySelector(`[data-member-tab="${tab}"]`);
+    if (targetBtn) targetBtn.classList.add('active');
+    currentTab = tab;
+    renderCurrentTab();
+    const tabContent = document.getElementById('memberTabContent');
+    if (tabContent) tabContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Tab switching (Current Project vs Past Projects vs Onboarding)
   document.querySelectorAll('[data-member-tab]').forEach((tabBtn) => {
-    tabBtn.addEventListener('click', () => {
+    if (tabBtn.getAttribute('data-member-tab') === currentTab) {
       document.querySelectorAll('[data-member-tab]').forEach((b) => b.classList.remove('active'));
       tabBtn.classList.add('active');
-      currentTab = tabBtn.getAttribute('data-member-tab');
-      renderCurrentTab();
+    }
+    tabBtn.addEventListener('click', () => {
+      const tab = tabBtn.getAttribute('data-member-tab');
+      switchToMemberTab(tab);
     });
   });
 
@@ -34,6 +53,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       allUsers = await window.UserService.getUsers();
       const allProjects = await window.ProjectService.getProjects();
+
+      // Check worker onboarding status
+      await checkMemberOnboarding();
+
+      // Check LOR status
+      if (window.MemberLorView) {
+        const lorBadge = document.getElementById('memberLorBadge');
+        await window.MemberLorView.checkAndRenderBadge(currentUser, lorBadge);
+      }
 
       // Find projects where user is lead or member
       userProjects = allProjects.filter(
@@ -56,6 +84,20 @@ document.addEventListener('DOMContentLoaded', async () => {
           userProjects[0];
       }
 
+      // If no explicit tab or project requested in URL, and worker onboarding is pending / not submitted yet,
+      // initially open onboarding tab right on this page so the member can complete their profile!
+      if (!requestedProjectId && !tabParam) {
+        const isSubmitted = window.MemberOnboarding && window.MemberOnboarding.isSubmitted();
+        if (!isSubmitted) {
+          currentTab = 'onboarding';
+        }
+      }
+
+      // Sync active tab styling
+      document.querySelectorAll('[data-member-tab]').forEach((b) => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`[data-member-tab="${currentTab}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
       renderCurrentTab();
     } catch (e) {
       if (window.UI) window.UI.showToast('Error', 'Unable to load member project data.', 'error');
@@ -68,7 +110,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('memberTabContent');
     if (!container) return;
 
-    if (currentTab === 'past') {
+    if (currentTab === 'onboarding') {
+      if (window.MemberOnboarding) {
+        window.MemberOnboarding.renderWorkspaceTab(container, currentUser);
+      } else {
+        renderOnboardingProfile(container);
+      }
+    } else if (currentTab === 'lor') {
+      if (window.MemberLorView) {
+        window.MemberLorView.renderWorkspaceTab(container, currentUser);
+      }
+    } else if (currentTab === 'past') {
       renderPastProjects(container);
     } else {
       renderCurrentProject(container);
@@ -392,4 +444,39 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.UI.showToast('Error', 'Unable to complete project.', 'error');
     }
   };
+
+  // --- WORKER ONBOARDING VERIFICATION INTEGRATION ---
+
+  async function checkMemberOnboarding() {
+    const bannerEl = document.getElementById('memberOnboardingBanner');
+    const badgeEl = document.getElementById('memberOnbBadge');
+
+    if (window.MemberOnboarding) {
+      await window.MemberOnboarding.checkAndRenderBanner(currentUser, bannerEl, badgeEl, (targetTab) => {
+        switchToMemberTab(targetTab);
+      });
+      return;
+    }
+  }
+
+  function renderOnboardingProfile(container) {
+    if (window.MemberOnboarding) {
+      window.MemberOnboarding.renderWorkspaceTab(container, currentUser);
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="card" style="padding: 32px; text-align: center; max-width: 650px; margin: 20px auto;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+        </div>
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: #001D35; margin-bottom: 8px;">
+          Workforce Onboarding
+        </h2>
+        <p style="font-size: 0.9rem; color: #64748B; margin-bottom: 24px;">
+          Loading your onboarding module...
+        </p>
+      </div>
+    `;
+  }
 });

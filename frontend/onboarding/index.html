@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding &amp; Verification Portal — PUVIMA Consultancy</title>
+  <meta name="description" content="PUVIMA Consultancy Official Applicant Onboarding and HR Verification Management Portal.">
+  <link rel="icon" type="image/png" href="/assets/images/logo/favicon.png">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/onboarding/onboarding.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="onb-header">
+    <div class="onb-header-inner">
+      <a href="/" class="onb-brand">
+        <img src="/company/assets/logo/puvima-emblem.png" alt="PUVIMA" class="onb-logo-img">
+        <div class="onb-brand-text">
+          <h1>PUVIMA CONSULTANCY</h1>
+          <span>ONBOARDING &amp; HR VERIFICATION SYSTEM</span>
+        </div>
+      </a>
+      
+      <div class="onb-header-actions">
+        <button type="button" class="btn btn-secondary btn-sm" id="btnToggleTrackModal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Track Application
+        </button>
+        <a href="/login" class="btn btn-outline-primary btn-sm" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4);">
+          HR Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="onb-container">
+
+    <!-- INITIALIZATION VIEW: Start New or Resume -->
+    <section id="viewInitial" class="form-card" style="max-width: 600px; margin: 40px auto;">
+      <div class="form-card-header">
+        <div>
+          <h2 class="form-card-title">Welcome to PUVIMA Onboarding</h2>
+          <p class="form-card-subtitle">Complete your verified onboarding profile in 8 guided steps</p>
+        </div>
+      </div>
+      <div class="form-card-body">
+        <form id="initForm">
+          <div class="form-grid">
+            <div class="form-group col-12">
+              <label class="form-label" for="initEmail">Applicant Email Address <span class="required">*</span></label>
+              <input type="email" id="initEmail" class="form-control" placeholder="e.g. yourname@domain.com" required>
+              <span class="form-hint">Used for progress saving, verification updates, and status tracking.</span>
+            </div>
+            <div class="form-group col-12">
+              <label class="form-label" for="initName">Full Legal Name</label>
+              <input type="text" id="initName" class="form-control" placeholder="As per official government identification">
+            </div>
+            <div class="form-group col-12">
+              <label class="form-label" for="initPosition">Position Applied For</label>
+              <select id="initPosition" class="form-control">
+                <option value="Intern">Intern</option>
+                <option value="Project Trainee">Project Trainee</option>
+                <option value="Research Associate">Research Associate</option>
+                <option value="Full-Time Software Engineer">Full-Time Software Engineer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group col-12" style="margin-top: 10px;">
+              <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="btnStartOnboarding">
+                Start or Resume Application
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="form-card-footer" style="justify-content: center;">
+        <span style="font-size: 0.82rem; color: var(--text-muted);">
+          Already submitted? <a href="#" id="linkTrackStatus" style="color: var(--secondary); font-weight: 600;">Check Application Status</a>
+        </span>
+      </div>
+    </section>
+
+    <!-- ACTIVE ONBOARDING WIZARD VIEW -->
+    <div id="viewWizard" style="display: none;">
+      
+      <!-- Stepper Indicator -->
+      <div class="stepper-card">
+        <div class="stepper-header">
+          <span class="stepper-title" id="stepperStepTitle">Step 1 — Position Details</span>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);" id="stepperAppIdDisplay">ID: PV-ONB-...</span>
+            <span class="stepper-count" id="stepperIndicator">Step 1 of 8</span>
+          </div>
+        </div>
+        
+        <div class="stepper-track">
+          <div class="stepper-step active" data-step="1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Position</span>
+          </div>
+          <div class="stepper-step" data-step="2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Personal</span>
+          </div>
+          <div class="stepper-step" data-step="3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Contact</span>
+          </div>
+          <div class="stepper-step" data-step="4">
+            <div class="step-circle">4</div>
+            <span class="step-label">Academic</span>
+          </div>
+          <div class="stepper-step" data-step="5">
+            <div class="step-circle">5</div>
+            <span class="step-label">Experience</span>
+          </div>
+          <div class="stepper-step" data-step="6">
+            <div class="step-circle">6</div>
+            <span class="step-label">Emergency</span>
+          </div>
+          <div class="stepper-step" data-step="7">
+            <div class="step-circle">7</div>
+            <span class="step-label">Bank Info</span>
+          </div>
+          <div class="stepper-step" data-step="8">
+            <div class="step-circle">8</div>
+            <span class="step-label">Documents</span>
+          </div>
+          <div class="stepper-step" data-step="9">
+            <div class="step-circle">9</div>
+            <span class="step-label">Review &amp; PDF</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notice Banner for Correction Requests -->
+      <div id="correctionAlertBanner" class="onb-alert onb-alert-danger" style="display: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <div style="flex: 1;">
+          <h4 style="font-weight: 700; margin-bottom: 4px;">HR Correction Required</h4>
+          <p id="correctionBannerRemarks" style="margin-bottom: 6px;"></p>
+          <div id="correctionBannerFields" style="font-size: 0.8rem; font-weight: 600;"></div>
+        </div>
+      </div>
+
+      <!-- STEP 1: POSITION DETAILS -->
+      <section id="stepSection1" class="form-card step-section">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 1 — Position Details</h3>
+            <p class="form-card-subtitle">Specify your applied role, domain specialization, and engagement terms</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <form id="stepForm1">
+            <div class="form-grid">
+              <div class="form-group col-6">
+                <label class="form-label" for="pos_position">Position Applied For <span class="required">*</span></label>
+                <select id="pos_position" class="form-control" required>
+                  <option value="">Select Position</option>
+                  <option value="Intern">Intern</option>
+                  <option value="Project Trainee">Project Trainee</option>
+                  <option value="Research Associate">Research Associate</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="pos_domain">Domain / Area of Interest <span class="required">*</span></label>
+                <input type="text" id="pos_domain" class="form-control" placeholder="e.g. AI / ML, Full Stack, Robotics, FinTech" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="pos_joining_date">Preferred Joining Date <span class="required">*</span></label>
+                <input type="date" id="pos_joining_date" class="form-control" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="pos_duration">Internship / Engagement Duration <span class="required">*</span></label>
+                <select id="pos_duration" class="form-control" required>
+                  <option value="">Select Duration</option>
+                  <option value="3 Months">3 Months</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="12 Months">12 Months</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <div></div>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="2">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: PERSONAL INFORMATION -->
+      <section id="stepSection2" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 2 — Personal Information</h3>
+            <p class="form-card-subtitle">Provide your official identification details. Sensitive fields are masked and encrypted.</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <form id="stepForm2">
+            <div class="form-grid">
+              <div class="form-group col-6">
+                <label class="form-label" for="pi_name">Full Legal Name (as per ID) <span class="required">*</span></label>
+                <input type="text" id="pi_name" class="form-control" placeholder="As in official documents" required>
+              </div>
+              <div class="form-group col-3">
+                <label class="form-label" for="pi_dob">Date of Birth <span class="required">*</span></label>
+                <input type="date" id="pi_dob" class="form-control" required>
+              </div>
+              <div class="form-group col-3">
+                <label class="form-label" for="pi_gender">Gender <span class="required">*</span></label>
+                <select id="pi_gender" class="form-control" required>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+              <div class="form-group col-4">
+                <label class="form-label" for="pi_nationality">Nationality <span class="required">*</span></label>
+                <input type="text" id="pi_nationality" class="form-control" value="Indian" required>
+              </div>
+              <div class="form-group col-5">
+                <label class="form-label" for="pi_aadhaar">Aadhaar / Government ID Number</label>
+                <input type="text" id="pi_aadhaar" class="form-control" placeholder="12-digit Aadhaar / ID number" maxlength="16">
+                <span class="form-hint">Stored encrypted. Displayed masked (e.g. XXXX-XXXX-1234) for security.</span>
+              </div>
+              <div class="form-group col-3">
+                <label class="form-label" for="pi_blood_group">Blood Group</label>
+                <select id="pi_blood_group" class="form-control">
+                  <option value="">Select</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="1">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="3">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: CONTACT & ADDRESS DETAILS -->
+      <section id="stepSection3" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 3 — Contact &amp; Address Details</h3>
+            <p class="form-card-subtitle">Enter your active communication details and residential addresses</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <form id="stepForm3">
+            <div class="form-grid">
+              <div class="form-group col-6">
+                <label class="form-label" for="cnt_mobile">Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="cnt_mobile" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="cnt_email">Personal Email ID <span class="required">*</span></label>
+                <input type="email" id="cnt_email" class="form-control" placeholder="personal.email@domain.com" required readonly>
+                <span class="form-hint">Locked to initial registration email.</span>
+              </div>
+              <div class="form-group col-12">
+                <label class="form-label" for="cnt_permanent_address">Permanent Address <span class="required">*</span></label>
+                <textarea id="cnt_permanent_address" class="form-control" rows="3" placeholder="Door No., Street, City, District, State, PIN Code" required></textarea>
+              </div>
+              <div class="col-12" style="margin-bottom: 4px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="chkSameAddress">
+                  <span>Current Address is same as Permanent Address</span>
+                </label>
+              </div>
+              <div class="form-group col-12" id="groupCurrentAddress">
+                <label class="form-label" for="cnt_current_address">Current / Communication Address <span class="required">*</span></label>
+                <textarea id="cnt_current_address" class="form-control" rows="3" placeholder="Door No., Street, City, District, State, PIN Code" required></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="2">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="4">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 4: ACADEMIC INFORMATION -->
+      <section id="stepSection4" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 4 — Academic Information</h3>
+            <p class="form-card-subtitle">List your educational qualifications starting from most recent</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnAddAcademic">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Another Qualification
+          </button>
+        </div>
+        <div class="form-card-body">
+          <div id="academicContainer">
+            <!-- Dynamic rows rendered here -->
+          </div>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="3">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="5">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 5: SKILLS & EXPERIENCE -->
+      <section id="stepSection5" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 5 — Skills &amp; Experience</h3>
+            <p class="form-card-subtitle">Highlight your technical proficiencies and completed engineering / research projects</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <form id="stepForm5">
+            <div class="form-grid" style="margin-bottom: 24px;">
+              <div class="form-group col-6">
+                <label class="form-label" for="sk_technical">Technical Skills <span class="required">*</span></label>
+                <input type="text" id="sk_technical" class="form-control" placeholder="e.g. Python, React, PostgreSQL, ROS2, Node.js" required>
+                <span class="form-hint">Comma separated list of core technologies</span>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="sk_tools">Tools &amp; Platforms</label>
+                <input type="text" id="sk_tools" class="form-control" placeholder="e.g. Git, Docker, Linux, VS Code, Supabase, Figma">
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--primary);">Projects &amp; Prior Experience</h4>
+              <button type="button" class="btn btn-secondary btn-sm" id="btnAddProject">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Another Project
+              </button>
+            </div>
+            
+            <div id="projectsContainer">
+              <!-- Dynamic rows rendered here -->
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="4">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="6">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 6: EMERGENCY CONTACT -->
+      <section id="stepSection6" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 6 — Emergency Contact</h3>
+            <p class="form-card-subtitle">Designate a responsible contact person in case of urgent situations</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <form id="stepForm6">
+            <div class="form-grid">
+              <div class="form-group col-6">
+                <label class="form-label" for="emg_name">Contact Person Name <span class="required">*</span></label>
+                <input type="text" id="emg_name" class="form-control" placeholder="Parent / Guardian / Spouse / Relative name" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="emg_relationship">Relationship <span class="required">*</span></label>
+                <select id="emg_relationship" class="form-control" required>
+                  <option value="">Select Relationship</option>
+                  <option value="Parent">Parent</option>
+                  <option value="Guardian">Guardian</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="Sibling">Sibling</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="emg_mobile">Primary Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="emg_mobile" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="emg_alternate">Alternate Contact Number</label>
+                <input type="tel" id="emg_alternate" class="form-control" placeholder="Optional alternate number">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="5">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="7">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 7: BANK DETAILS -->
+      <section id="stepSection7" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 7 — Bank Account Details</h3>
+            <p class="form-card-subtitle">Required for monthly stipend disbursement, reimbursement, or compensation</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <div class="onb-alert onb-alert-info">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <div>
+              <strong>Secure Banking Data Protection:</strong> Your account number and IFSC are stored using AES-256 military-grade encryption and are only accessible by authorized HR payroll personnel.
+            </div>
+          </div>
+          
+          <form id="stepForm7">
+            <div class="form-grid">
+              <div class="form-group col-6">
+                <label class="form-label" for="bnk_holder">Account Holder Name <span class="required">*</span></label>
+                <input type="text" id="bnk_holder" class="form-control" placeholder="Must match applicant bank records" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="bnk_name">Bank Name <span class="required">*</span></label>
+                <input type="text" id="bnk_name" class="form-control" placeholder="e.g. State Bank of India, HDFC, ICICI" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="bnk_account">Account Number <span class="required">*</span></label>
+                <input type="password" id="bnk_account" class="form-control" placeholder="Enter bank account number" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="bnk_account_confirm">Confirm Account Number <span class="required">*</span></label>
+                <input type="text" id="bnk_account_confirm" class="form-control" placeholder="Re-enter bank account number" required>
+              </div>
+              <div class="form-group col-6">
+                <label class="form-label" for="bnk_ifsc">IFSC Code <span class="required">*</span></label>
+                <input type="text" id="bnk_ifsc" class="form-control" placeholder="11-character IFSC (e.g. SBIN0001234)" style="text-transform: uppercase;" required>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="6">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="8">
+            Save &amp; Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 8: DOCUMENT UPLOAD -->
+      <section id="stepSection8" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 8 — Document Upload</h3>
+            <p class="form-card-subtitle">Upload clear scanned copies or photos (PDF, JPG, JPEG, PNG, up to 10MB each)</p>
+          </div>
+        </div>
+        <div class="form-card-body">
+          <div class="upload-grid" id="uploadDropzonesContainer">
+            <!-- 7 categories rendered dynamically by JavaScript -->
+          </div>
+        </div>
+        <div class="form-card-footer">
+          <button type="button" class="btn btn-secondary btn-prev-step" data-target="7">Back</button>
+          <button type="button" class="btn btn-primary btn-next-step" data-target="9">
+            Proceed to Final Review
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 9: APPLICATION REVIEW & PDF GENERATION -->
+      <section id="stepSection9" class="form-card step-section" style="display: none;">
+        <div class="form-card-header">
+          <div>
+            <h3 class="form-card-title">Step 9 — Final Application Review</h3>
+            <p class="form-card-subtitle">Review all populated details and preview the generated official application form</p>
+          </div>
+          <button type="button" class="btn btn-accent btn-sm" id="btnPreviewPdf">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Download / Preview Form (PDF)
+          </button>
+        </div>
+        <div class="form-card-body">
+          
+          <!-- Structured Application Summary Sheet -->
+          <div class="review-sheet" id="reviewSummarySheet">
+            <div class="review-sheet-header">
+              <div>
+                <div class="review-company-title">PUVIMA IT SERVICES AND RESEARCH CONSULTANCY</div>
+                <div class="review-company-sub">OFFICIAL ONBOARDING &amp; VERIFICATION RECORD</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);" id="revAppId">PV-ONB-2026-XXXX</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);" id="revAppDate">Date: 2026-11-05</div>
+              </div>
+            </div>
+
+            <!-- Position Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>1. Position Details</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="1">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Position Applied:</th>
+                  <td style="width: 25%;" id="revPosTitle">-</td>
+                  <th style="width: 25%;">Domain / Interest:</th>
+                  <td style="width: 25%;" id="revPosDomain">-</td>
+                </tr>
+                <tr>
+                  <th>Preferred Joining:</th>
+                  <td id="revPosJoin">-</td>
+                  <th>Engagement Duration:</th>
+                  <td id="revPosDuration">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Personal Info Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>2. Personal Information</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="2">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Full Name:</th>
+                  <td style="width: 25%;" id="revPiName">-</td>
+                  <th style="width: 25%;">Date of Birth:</th>
+                  <td style="width: 25%;" id="revPiDob">-</td>
+                </tr>
+                <tr>
+                  <th>Gender:</th>
+                  <td id="revPiGender">-</td>
+                  <th>Nationality:</th>
+                  <td id="revPiNationality">-</td>
+                </tr>
+                <tr>
+                  <th>Aadhaar / Govt ID:</th>
+                  <td id="revPiAadhaar">-</td>
+                  <th>Blood Group:</th>
+                  <td id="revPiBlood">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Contact Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>3. Contact &amp; Residential Address</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="3">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Mobile Number:</th>
+                  <td style="width: 25%;" id="revCntMobile">-</td>
+                  <th style="width: 25%;">Personal Email:</th>
+                  <td style="width: 25%;" id="revCntEmail">-</td>
+                </tr>
+                <tr>
+                  <th>Permanent Address:</th>
+                  <td colspan="3" id="revCntPerm">-</td>
+                </tr>
+                <tr>
+                  <th>Current Address:</th>
+                  <td colspan="3" id="revCntCurr">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Academic Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>4. Academic Qualifications</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="4">Edit</button>
+              </div>
+              <table class="review-table" id="revAcademicTable">
+                <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>Degree / Course</th>
+                    <th>Institution / University</th>
+                    <th>Passing Year</th>
+                    <th>CGPA / %</th>
+                  </tr>
+                </thead>
+                <tbody id="revAcademicBody">
+                  <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No qualifications entered</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Skills & Projects Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>5. Skills &amp; Projects</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="5">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Technical Skills:</th>
+                  <td colspan="3" id="revSkills">-</td>
+                </tr>
+                <tr>
+                  <th>Tools &amp; Platforms:</th>
+                  <td colspan="3" id="revTools">-</td>
+                </tr>
+              </table>
+              <div id="revProjectsContainer" style="margin-top: 10px;"></div>
+            </div>
+
+            <!-- Emergency Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>6. Emergency Contact</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="6">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Contact Name:</th>
+                  <td style="width: 25%;" id="revEmgName">-</td>
+                  <th style="width: 25%;">Relationship:</th>
+                  <td style="width: 25%;" id="revEmgRel">-</td>
+                </tr>
+                <tr>
+                  <th>Primary Mobile:</th>
+                  <td id="revEmgMobile">-</td>
+                  <th>Alternate Phone:</th>
+                  <td id="revEmgAlt">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Bank Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>7. Bank Details</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="7">Edit</button>
+              </div>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 25%;">Account Holder:</th>
+                  <td style="width: 25%;" id="revBnkHolder">-</td>
+                  <th style="width: 25%;">Bank Name:</th>
+                  <td style="width: 25%;" id="revBnkName">-</td>
+                </tr>
+                <tr>
+                  <th>Account Number:</th>
+                  <td id="revBnkAcc">Masked for Security (XXXX...XXXX)</td>
+                  <th>IFSC Code:</th>
+                  <td id="revBnkIfsc">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Uploaded Documents Checklist Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <span>8. Uploaded Supporting Documents</span>
+                <button type="button" class="review-section-edit-btn" data-goto-step="8">Edit</button>
+              </div>
+              <table class="review-table" id="revDocsTable">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Filename</th>
+                    <th>Uploaded At</th>
+                    <th>Verification Status</th>
+                  </tr>
+                </thead>
+                <tbody id="revDocsBody">
+                  <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No documents uploaded yet</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Declaration & Submission Form -->
+          <div class="card" style="border: 2px solid var(--accent); border-radius: var(--radius-md); padding: 22px; background: #FFFBEB;">
+            <h4 style="font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 12px;">
+              Applicant Declaration and Confirmation
+            </h4>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+              <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; cursor: pointer;">
+                <input type="checkbox" id="chkDecl1" required style="margin-top: 3px;">
+                <span>I hereby declare and confirm that all the information furnished above is true, complete, and correct to the best of my knowledge and belief.</span>
+              </label>
+              <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; cursor: pointer;">
+                <input type="checkbox" id="chkDecl2" required style="margin-top: 3px;">
+                <span>I agree to abide by the policies, professional code of conduct, confidentiality agreements, and rules of PUVIMA Consultancy.</span>
+              </label>
+              <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; cursor: pointer;">
+                <input type="checkbox" id="chkDecl3" required style="margin-top: 3px;">
+                <span>I confirm that I have uploaded all mandatory supporting documents for official HR verification.</span>
+              </label>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+              <button type="button" class="btn btn-secondary" data-goto-step="8">Back to Documents</button>
+              <button type="button" class="btn btn-success btn-lg" id="btnConfirmSubmit">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                CONFIRM &amp; SUBMIT APPLICATION
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TRACKING & STATUS DASHBOARD VIEW -->
+    <section id="viewTracking" style="display: none;">
+      
+      <!-- Banner Card -->
+      <div class="tracking-header-card">
+        <div>
+          <span style="font-size: 0.85rem; letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase;">Application Status Record</span>
+          <h2 class="tracking-title" id="trackApplicantName">Applicant Name</h2>
+          <div class="tracking-app-id" id="trackAppIdDisplay">PV-ONB-2026-000001</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.85rem; opacity: 0.85;">Current Stage</div>
+          <div id="trackStatusBadge" style="font-size: 1.1rem; font-weight: 800; padding: 6px 14px; border-radius: var(--radius-full); display: inline-block; margin-top: 6px; background: #FFFFFF; color: var(--primary);">
+            SUBMITTED
+          </div>
+        </div>
+      </div>
+
+      <!-- Action notice if correction required -->
+      <div id="trackCorrectionAlert" class="onb-alert onb-alert-danger" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <div style="flex: 1;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 4px;">Action Required: HR Requested Corrections</h3>
+          <p id="trackCorrectionMessage" style="margin-bottom: 8px;"></p>
+          <div style="font-size: 0.85rem; margin-bottom: 12px;" id="trackCorrectionFieldsList"></div>
+          <button type="button" class="btn btn-primary btn-sm" id="btnFixCorrectionsNow">
+            Make Corrections &amp; Resubmit Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Application Details & Timeline Layout -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+        
+        <!-- Left: Summary Details & Document Status Table -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h3 class="form-card-title">Verification Progress</h3>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnDownloadSubmittedPdf">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download Application PDF
+            </button>
+          </div>
+          <div class="form-card-body">
+            
+            <div style="margin-bottom: 24px;">
+              <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">Application Summary</h4>
+              <table class="review-table">
+                <tr>
+                  <th style="width: 30%;">Position Applied:</th>
+                  <td id="trackPosTitle">-</td>
+                </tr>
+                <tr>
+                  <th>Domain:</th>
+                  <td id="trackPosDomain">-</td>
+                </tr>
+                <tr>
+                  <th>Submission Date:</th>
+                  <td id="trackSubmittedAt">-</td>
+                </tr>
+                <tr>
+                  <th>Overall Verification:</th>
+                  <td id="trackOverallStatus">-</td>
+                </tr>
+              </table>
+            </div>
+
+            <div>
+              <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--primary); margin-bottom: 10px;">Submitted Documents Verification Status</h4>
+              <table class="review-table">
+                <thead>
+                  <tr>
+                    <th>Document Category</th>
+                    <th>Status</th>
+                    <th>HR Review Note</th>
+                  </tr>
+                </thead>
+                <tbody id="trackDocumentsStatusBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Stepper Timeline -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h3 class="form-card-title">Timeline</h3>
+          </div>
+          <div class="form-card-body">
+            <div class="timeline" id="trackingTimelineContainer">
+              <div class="timeline-item completed" id="tlItemCreated">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>Application Created</h4>
+                  <p id="tlDateCreated">-</p>
+                </div>
+              </div>
+              <div class="timeline-item" id="tlItemSubmitted">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>Application Submitted</h4>
+                  <p id="tlDateSubmitted">Pending submission</p>
+                </div>
+              </div>
+              <div class="timeline-item" id="tlItemHrReview">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>Under HR Review</h4>
+                  <p id="tlDateHrReview">Awaiting review</p>
+                </div>
+              </div>
+              <div class="timeline-item" id="tlItemDocVerify">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>Documents Verification</h4>
+                  <p id="tlDateDocVerify">Awaiting document check</p>
+                </div>
+              </div>
+              <div class="timeline-item" id="tlItemFinalDecision">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>Final Decision</h4>
+                  <p id="tlDateFinalDecision">Pending final approval</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-card-footer" style="justify-content: center;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnTrackRefresh">Refresh Status</button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Track Application Modal -->
+  <div class="modal-overlay" id="trackModal" style="display: none;">
+    <div class="modal-content">
+      <div class="form-card-header">
+        <h3 class="form-card-title">Track Application</h3>
+        <button type="button" class="btn-remove-row" id="btnCloseTrackModal" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="form-card-body">
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Enter your Application ID (e.g. PV-ONB-2026-XXXXXX) or the email address used during submission:
+        </p>
+        <form id="trackSearchForm">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="searchTrackInput">Application ID or Email <span class="required">*</span></label>
+            <input type="text" id="searchTrackInput" class="form-control" placeholder="PV-ONB-2026-000001 or applicant@email.com" required>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" id="btnCancelTrackModal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Track Application</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Preview Modal -->
+  <div class="modal-overlay" id="docPreviewModal" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; height: 80vh; display: flex; flex-direction: column;">
+      <div class="form-card-header" style="flex-shrink: 0;">
+        <h3 class="form-card-title" id="docPreviewTitle">Document Preview</h3>
+        <button type="button" class="btn-remove-row" id="btnCloseDocPreview" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="form-card-body" style="flex: 1; padding: 0; background: #0F172A; display: flex; align-items: center; justify-content: center;" id="docPreviewContent">
+        <!-- iframe or img injected -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Submission Confirmation Modal -->
+  <div class="modal-overlay" id="submitSuccessModal" style="display: none;">
+    <div class="modal-content" style="text-align: center; padding: 32px 24px;">
+      <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--status-approved-bg); color: var(--status-approved); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h2 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;">
+        Application Submitted Successfully!
+      </h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+        Your onboarding profile and documents have been securely recorded. Our HR verification team has been notified.
+      </p>
+      <div style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 20px;" id="successModalAppId">
+        PV-ONB-2026-000001
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px;">
+        Please save this Application ID to track the real-time status of your verification.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button type="button" class="btn btn-secondary" id="btnSuccessDownloadPdf">Download Form (PDF)</button>
+        <button type="button" class="btn btn-primary" id="btnSuccessGoToTracking">View Status Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding Frontend Client Script -->
+  <script src="/onboarding/onboarding.js"></script>
+</body>
+</html>
+

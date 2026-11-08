@@ -210,15 +210,65 @@ class InternshipController {
         });
       }
 
-      // 1. Check local disk storage
+      const mimeType = app.resume_mime_type || 'application/pdf';
+      const filename = app.resume_filename || 'resume.pdf';
+
+      // 1. Supabase Persistence: Check resume_documents table (direct base64)
+      try {
+        const { getSupabaseClient } = require('../config/supabase');
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const targetRef = app.reference_id || id;
+          const { data: docData, error: docErr } = await supabase
+            .from('resume_documents')
+            .select('file_data_base64, mime_type, filename, storage_url')
+            .eq('reference_id', targetRef)
+            .maybeSingle();
+
+          if (!docErr && docData && docData.file_data_base64) {
+            const buffer = Buffer.from(docData.file_data_base64, 'base64');
+            res.setHeader('Content-Type', docData.mime_type || mimeType);
+            res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(docData.filename || filename)}"`);
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+            return res.send(buffer);
+          }
+
+          // 2. Supabase Storage Bucket ('resumes')
+          const storagePath = app.resume_supabase_path || (app.resume_storage_key ? `resumes/${app.resume_storage_key}` : null);
+          if (storagePath) {
+            const cleanPath = storagePath.replace(/^resumes\//, '');
+            const { data: fileBlob, error: downloadErr } = await supabase.storage
+              .from('resumes')
+              .download(cleanPath);
+
+            if (!downloadErr && fileBlob) {
+              const arrayBuffer = await fileBlob.arrayBuffer();
+              const buffer = Buffer.from(arrayBuffer);
+              res.setHeader('Content-Type', mimeType);
+              res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(filename)}"`);
+              res.setHeader('X-Content-Type-Options', 'nosniff');
+              return res.send(buffer);
+            }
+          }
+
+          // 3. Supabase Public URL redirect fallback
+          if (app.resume_supabase_url && /^https?:\/\//i.test(app.resume_supabase_url)) {
+            return res.redirect(app.resume_supabase_url);
+          }
+        }
+      } catch (sbErr) {
+        console.warn('[InternshipController] Supabase resume retrieval notice:', sbErr.message);
+      }
+
+      // 4. Check local disk storage
       const localResumesDir = process.env.VERCEL
         ? path.join(require('os').tmpdir(), 'puvima-resumes')
         : path.resolve(__dirname, '../../uploads/resumes');
       const localPath = app.resume_storage_key ? path.join(localResumesDir, app.resume_storage_key) : null;
 
       if (localPath && fs.existsSync(localPath)) {
-        res.setHeader('Content-Type', app.resume_mime_type || 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(app.resume_filename || 'resume.pdf')}"`);
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(filename)}"`);
         res.setHeader('X-Content-Type-Options', 'nosniff');
         return res.sendFile(localPath);
       }

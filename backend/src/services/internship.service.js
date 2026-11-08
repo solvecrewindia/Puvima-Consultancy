@@ -484,9 +484,108 @@ class InternshipService {
       console.warn('[InternshipService] Local resume storage warning:', fsErr.message);
     }
 
-    // Google Drive integration: Only attempt if configured; do not generate fake links
+    // Supabase Resume Storage & Persistence
+    appData.resume_supabase_path = null;
+    appData.resume_supabase_url = null;
     appData.resume_drive_file_id = null;
     appData.resume_drive_url = null;
+
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase && file.buffer) {
+        const sanitizedName = (appData.resume_filename || 'resume.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
+        const storagePath = `resumes/${referenceId}_${Date.now()}_${sanitizedName}`;
+
+        // 1. Upload binary file into Supabase Storage 'resumes' bucket
+        try {
+          const { data: uploadData, error: uploadErr } = await supabase.storage
+            .from('resumes')
+            .upload(storagePath, file.buffer, {
+              contentType: canonicalMime,
+              upsert: true
+            });
+
+          if (!uploadErr && uploadData) {
+            appData.resume_supabase_path = storagePath;
+            const { data: urlData } = supabase.storage.from('resumes').getPublicUrl(storagePath);
+            if (urlData && urlData.publicUrl) {
+              appData.resume_supabase_url = urlData.publicUrl;
+            }
+          } else if (uploadErr) {
+            console.warn('[InternshipService] Supabase Storage upload notice:', uploadErr.message);
+          }
+        } catch (storageErr) {
+          console.warn('[InternshipService] Supabase Storage upload exception:', storageErr.message);
+        }
+
+        // 2. Also save resume document directly into Supabase table 'resume_documents'
+        try {
+          const fileBase64 = file.buffer.toString('base64');
+          await supabase
+            .from('resume_documents')
+            .upsert({
+              reference_id: referenceId,
+              filename: appData.resume_filename,
+              mime_type: canonicalMime,
+              size_bytes: file.size,
+              file_data_base64: fileBase64,
+              storage_url: appData.resume_supabase_url || null
+            });
+        } catch (dbDocErr) {
+          console.warn('[InternshipService] Supabase resume_documents table notice:', dbDocErr.message);
+        }
+
+        // 3. Sync full application record into Supabase 'internship_applications'
+        try {
+          await supabase
+            .from('internship_applications')
+            .upsert({
+              reference_id: appData.reference_id,
+              full_name: appData.full_name,
+              email: appData.email,
+              phone: appData.phone,
+              city_state: appData.city_state,
+              linkedin_url: appData.linkedin_url,
+              college: appData.college,
+              degree: appData.degree,
+              study_year: appData.study_year,
+              graduation_year: appData.graduation_year,
+              cgpa_range: appData.cgpa_range,
+              internship_role: appData.internship_role,
+              skills: appData.skills,
+              strongest_skills: appData.strongest_skills,
+              projects_experience: appData.projects_experience,
+              github_portfolio_url: appData.github_portfolio_url,
+              resume_filename: appData.resume_filename,
+              resume_mime_type: appData.resume_mime_type,
+              resume_size_bytes: appData.resume_size_bytes,
+              resume_storage_key: appData.resume_storage_key,
+              resume_supabase_url: appData.resume_supabase_url,
+              resume_supabase_path: appData.resume_supabase_path,
+              motivation: appData.motivation,
+              expected_contribution: appData.expected_contribution,
+              internship_mode: appData.internship_mode,
+              duration: appData.duration,
+              joining_availability: appData.joining_availability,
+              specific_joining_date: appData.specific_joining_date,
+              weekly_hours: appData.weekly_hours,
+              referral_source: appData.referral_source,
+              other_referral_details: appData.other_referral_details,
+              additional_information: appData.additional_information,
+              recruitment_status: 'New',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+        } catch (sbAppErr) {
+          console.warn('[InternshipService] Supabase internship_applications table notice:', sbAppErr.message);
+        }
+      }
+    } catch (sbTotalErr) {
+      console.warn('[InternshipService] Supabase overall persistence notice:', sbTotalErr.message);
+    }
+
+    // Google Drive fallback if configured
     if (googleDriveService.isConfigured()) {
       try {
         const driveResult = await googleDriveService.uploadResume({
@@ -864,8 +963,24 @@ class InternshipService {
       console.warn('[InternshipService] MySQL getApplicationStats warning:', err.message);
     }
 
-    // 2. Fallback to Local JSON
-    const apps = this.readLocalApplications();
+    // 2. Fallback to Local JSON & Supabase
+    let apps = this.readLocalApplications();
+    if (apps.length === 0) {
+      try {
+        const { getSupabaseClient } = require('../config/supabase');
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const { data: sbApps, error: sbErr } = await supabase
+            .from('internship_applications')
+            .select('*');
+          if (!sbErr && sbApps && sbApps.length > 0) {
+            apps = sbApps;
+          }
+        }
+      } catch (sbErr) {
+        console.warn('[InternshipService] Supabase getApplicationStats notice:', sbErr.message);
+      }
+    }
     stats.total = apps.length;
 
     apps.forEach((a) => {
@@ -964,8 +1079,25 @@ class InternshipService {
       console.warn('[InternshipService] Admin query from MySQL failed, falling back to local storage:', dbErr.message);
     }
 
-    // 2. Fallback to Local JSON
+    // 2. Fallback to Local JSON & Supabase
     let apps = this.readLocalApplications();
+    if (apps.length === 0) {
+      try {
+        const { getSupabaseClient } = require('../config/supabase');
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const { data: sbApps, error: sbErr } = await supabase
+            .from('internship_applications')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!sbErr && sbApps && sbApps.length > 0) {
+            apps = sbApps;
+          }
+        }
+      } catch (sbErr) {
+        console.warn('[InternshipService] Supabase getApplicationsAdmin notice:', sbErr.message);
+      }
+    }
 
     if (status && status !== 'all') {
       apps = apps.filter((a) => normalizeStatus(a.recruitment_status) === normalizedFilterStatus);
@@ -1043,13 +1175,49 @@ class InternshipService {
     const found = apps.find(
       (a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef)
     );
-    if (!found) return null;
+    if (found) {
+      return {
+        ...found,
+        recruitment_status: normalizeStatus(found.recruitment_status) || 'New',
+        is_reviewed_by_hr: found.is_reviewed_by_hr ? 1 : 0
+      };
+    }
 
-    return {
-      ...found,
-      recruitment_status: normalizeStatus(found.recruitment_status) || 'New',
-      is_reviewed_by_hr: found.is_reviewed_by_hr ? 1 : 0
-    };
+    // 3. Fallback to Supabase
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        const isNumeric = /^\d+$/.test(String(idOrRef).trim());
+        let query = supabase.from('internship_applications').select('*');
+        if (isNumeric) {
+          query = query.or(`reference_id.eq.${idOrRef}`);
+        } else {
+          query = query.eq('reference_id', String(idOrRef));
+        }
+        const { data, error } = await query.maybeSingle();
+        if (!error && data) {
+          let skills = [];
+          if (data.skills) {
+            try {
+              skills = typeof data.skills === 'string' ? JSON.parse(data.skills) : data.skills;
+            } catch (e) {
+              skills = [data.skills];
+            }
+          }
+          return {
+            ...data,
+            skills,
+            recruitment_status: normalizeStatus(data.recruitment_status) || 'New',
+            is_reviewed_by_hr: data.is_reviewed_by_hr ? 1 : 0
+          };
+        }
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Supabase getApplicationById error:', sbErr.message);
+    }
+
+    return null;
   }
 
   /**

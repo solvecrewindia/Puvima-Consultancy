@@ -16,6 +16,8 @@ const settingsRoutes = require('./routes/settings.routes');
 const reviewRoutes = require('./routes/review.routes');
 const careersRoutes = require('./routes/careers.routes');
 const internshipRoutes = require('./routes/internship.routes');
+const onboardingRoutes = require('./routes/onboarding.routes');
+const lorRoutes = require('./routes/lor.routes');
 
 const app = express();
 
@@ -140,6 +142,15 @@ app.get(['/mail', '/mail/'], (req, res, next) => {
   next();
 });
 
+// Applicant Onboarding Portal route
+app.get(['/onboarding', '/onboarding/', '/onboarding/status', '/onboarding/status/'], (req, res, next) => {
+  const onboardingHtml = path.join(frontendDir, 'onboarding', 'index.html');
+  if (fs.existsSync(onboardingHtml)) {
+    return res.sendFile(onboardingHtml);
+  }
+  next();
+});
+
 // Company Management Portal routes
 const companyDir = fs.existsSync(path.join(frontendDir, 'company'))
   ? path.join(frontendDir, 'company')
@@ -150,7 +161,14 @@ app.get(['/company/login', '/company/login/', '/company/login.html'], (req, res)
   return res.redirect(301, '/login');
 });
 
-const companyPages = ['admin', 'hr', 'employee', 'intern', 'about'];
+// Direct route for HR Onboarding Verification Module
+app.get(['/company/hr/onboarding', '/company/hr/onboarding/', '/company/hr-onboarding', '/company/hr-onboarding.html'], (req, res, next) => {
+  const hrOnbHtml = path.join(companyDir, 'hr-onboarding.html');
+  if (fs.existsSync(hrOnbHtml)) return res.sendFile(hrOnbHtml);
+  next();
+});
+
+const companyPages = ['admin', 'hr', 'employee', 'intern', 'about', 'hr-onboarding', 'lorconfirm', 'lor-confirm'];
 companyPages.forEach(p => {
   app.get([`/company/${p}`, `/company/${p}/`, `/company/${p}.html`], (req, res, next) => {
     const pagePath = path.join(companyDir, `${p}.html`);
@@ -204,7 +222,10 @@ app.get('/api', (req, res) => {
       settings: '/api/site-settings',
       admin: '/api/admin/login',
       auth: '/api/auth/mfa/status',
-      mail: '/api/mail/account'
+      mail: '/api/mail/account',
+      onboarding: '/api/onboarding',
+      hrOnboarding: '/api/hr/onboarding/applications',
+      internship: '/api/internship/apply'
     }
   });
 });
@@ -219,7 +240,8 @@ app.use('/api', settingsRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api', careersRoutes);
 app.use('/api', internshipRoutes);
-
+app.use('/api', onboardingRoutes);
+app.use('/api', lorRoutes);
 let mailRoutes = null;
 app.use('/api/mail', (req, res, next) => {
   if (!mailRoutes) {
@@ -247,6 +269,8 @@ app.use(settingsRoutes);
 app.use(reviewRoutes);
 app.use(careersRoutes);
 app.use(internshipRoutes);
+app.use(onboardingRoutes);
+app.use(lorRoutes);
 
 app.get('/', (req, res, next) => {
   const indexHtml = path.join(frontendDir, 'index.html');

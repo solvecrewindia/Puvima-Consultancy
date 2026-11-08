@@ -8,7 +8,12 @@
  * and supports orphan cleanup if downstream database transactions fail.
  */
 
-const { google } = require('googleapis');
+let google = null;
+try {
+  google = require('googleapis').google;
+} catch (e) {
+  // Optional dependency: googleapis
+}
 const { Readable } = require('stream');
 const path = require('path');
 const crypto = require('crypto');
@@ -39,6 +44,7 @@ class GoogleDriveService {
    */
   isConfigured() {
     return Boolean(
+      google &&
       this.clientEmail &&
       this.privateKey &&
       this.folderId
