@@ -7,6 +7,36 @@
   padding: 40px 0 80px;
 }
 
+/* Careers Hub Card */
+.careers-hub-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: var(--radius-lg, 16px);
+  padding: clamp(32px, 5vw, 56px);
+  box-shadow: var(--shadow-card, 0 10px 30px rgba(0, 114, 206, 0.08));
+  text-align: center;
+  max-width: 1060px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.careers-hub-title {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.careers-hub-desc {
+  font-size: clamp(0.98rem, 1.2vw, 1.1rem);
+  color: var(--text-secondary);
+  max-width: 720px;
+  margin: 0 auto 36px auto;
+  line-height: 1.7;
+}
+
 /* Category Filter Bar */
 .careers-filter-bar {
   display: flex;
@@ -1121,19 +1151,250 @@
   color: #ffffff;
 }
 
+/* ==========================================================================
+   MOBILE VIEWPORT ENHANCEMENTS (<= 768px & <= 480px)
+   Card Alignment, Sizing, and Typography Corrections
+   ========================================================================== */
 @media (max-width: 768px) {
+  .careers-section {
+    padding: 20px 0 60px !important;
+  }
+
+  .careers-section .container {
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Unnest the outer card container on mobile so the application card spans cleanly */
+  .careers-hub-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    text-align: left;
+  }
+
+  .careers-hub-title {
+    font-size: 1.55rem;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .careers-hub-desc {
+    font-size: 0.9rem;
+    text-align: left;
+    margin: 0 0 24px 0;
+    line-height: 1.55;
+  }
+
+  .careers-disciplines-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .discipline-card {
+    padding: 14px 16px;
+    border-radius: 12px;
+  }
+
+  .internship-app-section {
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  /* Dedicated, perfectly centered, full-width application card on mobile */
+  .internship-app-card {
+    background: #ffffff !important;
+    border: 1px solid var(--border-light, #e2e8f0) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 114, 206, 0.08) !important;
+    padding: 22px 16px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Stepper Progress Bar on Mobile */
+  .internship-stepper {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    position: relative;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 4px;
+    overflow-x: visible;
+  }
+
+  .stepper-item {
+    padding: 0 !important;
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+  }
+
+  .step-label-group {
+    display: none !important;
+  }
+
+  .step-indicator {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* Section Titles & Descriptions */
+  .step-header {
+    margin-bottom: 18px;
+  }
+
+  .step-title {
+    font-size: 1.22rem !important;
+    font-weight: 800;
+    line-height: 1.35;
+    display: block !important;
+    margin-bottom: 6px;
+    color: #0f172a;
+    word-break: break-word;
+  }
+
+  .step-desc {
+    font-size: 0.88rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Form Elements */
   .form-grid-2,
   .form-grid-3,
   .review-data-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
   }
-  .internship-stepper {
+
+  .app-form-group {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .app-form-label {
+    display: block !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .app-form-label .required-star {
+    display: inline;
+    color: #ef4444;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+
+  .app-form-control {
+    width: 100% !important;
+    font-size: 16px !important; /* Critical: Stops iOS Safari from auto-zooming */
+    padding: 12px 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    line-height: 1.4;
+  }
+
+  /* Wizard Navigation Buttons */
+  .wizard-footer {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+    width: 100%;
+  }
+
+  .btn-wizard-next,
+  .btn-wizard-submit,
+  .btn-wizard-prev {
+    width: 100% !important;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  /* Resume Dropzone */
+  .resume-dropzone {
+    padding: 22px 14px;
+  }
+
+  .resume-dropzone-text {
+    font-size: 0.88rem;
+  }
+
+  .resume-dropzone-sub {
+    font-size: 0.78rem;
+  }
+
+  /* Skills Selection Chips */
+  .skills-selector-grid {
     gap: 6px;
   }
-  .step-label-group {
-    display: none;
+
+  .skill-chip-label {
+    padding: 6px 12px;
+    font-size: 0.82rem;
   }
-  .stepper-item {
-    padding: 4px;
+
+  /* Review Step Summary */
+  .review-step-card {
+    padding: 14px 12px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+  }
+
+  .review-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  /* Eligibility Alert */
+  .eligibility-alert-card {
+    padding: 14px 14px !important;
+    margin-bottom: 18px !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .careers-section .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .internship-app-card {
+    padding: 18px 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .step-indicator {
+    width: 32px;
+    height: 32px;
+    font-size: 0.82rem;
+  }
+
+  .step-title {
+    font-size: 1.15rem !important;
   }
 }
