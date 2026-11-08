@@ -356,10 +356,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <button type="button" class="btn btn-sm btn-primary action-btn-view" data-action="view-dossier" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewAdminApplicationDetails('${app.id}')" title="View Dossier & History" style="padding: 4px 10px; font-size: 12px;">
                   View Dossier
                 </button>
-                <button type="button" class="btn btn-sm btn-outline action-btn-resume" data-action="view-resume" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewAdminApplicationResume('${app.id}')" title="View Resume" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                <button type="button" class="btn btn-sm btn-outline action-btn-resume" data-action="view-resume" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewAdminApplicationResume('${app.reference_id || app.id}')" title="View Resume" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                   Resume
                 </button>
-                <button type="button" class="btn btn-sm btn-secondary action-btn-status" data-action="update-status" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.openAdminStatusModal('${app.id}')" title="Update Status & Notes" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                <button type="button" class="btn btn-sm btn-secondary action-btn-status" data-action="update-status" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.openAdminStatusModal('${app.reference_id || app.id}')" title="Update Status & Notes" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                   Status
                 </button>
               </td>
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (!btn) return;
           e.preventDefault();
           const action = btn.getAttribute('data-action');
-          const id = btn.getAttribute('data-id') || btn.getAttribute('data-ref');
+          const id = btn.getAttribute('data-ref') || btn.getAttribute('data-id');
           if (!id) return;
           if (action === 'view-dossier') window.viewAdminApplicationDetails(id);
           else if (action === 'view-resume') window.viewAdminApplicationResume(id);
@@ -721,14 +721,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (resumeBtn) {
       resumeBtn.onclick = (e) => {
         e.preventDefault();
-        window.viewAdminApplicationResume(app.id);
+        window.viewAdminApplicationResume(app.reference_id || app.id);
       };
     }
 
     if (quickUpdateBtn) {
       quickUpdateBtn.onclick = () => {
         window.UI.closeModal('adminApplicationModal');
-        window.openAdminStatusModal(app.id);
+        window.openAdminStatusModal(app.reference_id || app.id);
       };
     }
 

@@ -794,13 +794,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                               ${getAppStatusBadge(app.recruitment_status)}
                             </td>
                             <td style="text-align: right; white-space: nowrap;">
-                              <button type="button" class="btn btn-sm btn-primary action-btn-view" data-action="view-details" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationDetails('${app.id}')" title="View Details" style="padding: 4px 10px; font-size: 12px;">
+                              <button type="button" class="btn btn-sm btn-primary action-btn-view" data-action="view-details" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationDetails('${app.reference_id || app.id}')" title="View Details" style="padding: 4px 10px; font-size: 12px;">
                                 View Details
                               </button>
-                              <button type="button" class="btn btn-sm btn-outline action-btn-resume" data-action="view-resume" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationResume('${app.id}')" title="View Resume" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                              <button type="button" class="btn btn-sm btn-outline action-btn-resume" data-action="view-resume" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationResume('${app.reference_id || app.id}')" title="View Resume" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                                 Resume
                               </button>
-                              <button type="button" class="btn btn-sm btn-secondary action-btn-status" data-action="update-status" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.openHrStatusModal('${app.id}')" title="Update Status" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
+                              <button type="button" class="btn btn-sm btn-secondary action-btn-status" data-action="update-status" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.openHrStatusModal('${app.reference_id || app.id}')" title="Update Status" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                                 Status
                               </button>
                             </td>
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!btn) return;
         e.preventDefault();
         const action = btn.getAttribute('data-action');
-        const id = btn.getAttribute('data-id') || btn.getAttribute('data-ref');
+        const id = btn.getAttribute('data-ref') || btn.getAttribute('data-id');
         if (!id) return;
         if (action === 'view-details') window.viewHrApplicationDetails(id);
         else if (action === 'view-resume') window.viewHrApplicationResume(id);
@@ -999,14 +999,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (resumeBtn) {
       resumeBtn.onclick = (e) => {
         e.preventDefault();
-        window.viewHrApplicationResume(app.id);
+        window.viewHrApplicationResume(app.reference_id || app.id);
       };
     }
 
     if (quickUpdateBtn) {
       quickUpdateBtn.onclick = () => {
         window.UI.closeModal('hrApplicationModal');
-        window.openHrStatusModal(app.id);
+        window.openHrStatusModal(app.reference_id || app.id);
       };
     }
 

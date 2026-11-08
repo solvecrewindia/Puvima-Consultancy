@@ -1200,19 +1200,27 @@ class InternshipService {
       console.warn('[InternshipService] MySQL getApplicationById error:', dbErr.message);
     }
 
-    // 2. Try Supabase FIRST
+    // 2. Try Supabase
     try {
       const { getSupabaseClient } = require('../config/supabase');
       const supabase = getSupabaseClient();
       if (supabase) {
-        const isNumeric = /^\d+$/.test(String(idOrRef).trim());
+        const str = String(idOrRef).trim();
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
         let query = supabase.from('internship_applications').select('*');
-        if (isNumeric) {
-          query = query.or(`id.eq.${idOrRef},reference_id.eq.${idOrRef}`);
+        if (isUuid) {
+          query = query.eq('id', str);
         } else {
-          query = query.eq('reference_id', String(idOrRef));
+          query = query.eq('reference_id', str);
         }
-        const { data, error } = await query.maybeSingle();
+        let { data, error } = await query.maybeSingle();
+
+        if (!data && !isUuid && /^\d+$/.test(str)) {
+          // If numeric local ID was passed, also try matching reference_id
+          const r = await supabase.from('internship_applications').select('*').eq('reference_id', str).maybeSingle();
+          if (r && r.data) data = r.data;
+        }
+
         if (!error && data) {
           let skills = [];
           if (data.skills) {

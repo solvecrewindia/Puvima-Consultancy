@@ -215,17 +215,17 @@
       "verification_token": "3b34c1fee1363cf72496e79ea41f19fed1bf83a1a406bb97e42bf4514f6d01f5",
       "token_expires_at": "2026-12-06T04:39:51.910Z",
       "status": "HR Approved",
-      "email_sent_at": "2026-11-08T02:19:18.903Z",
+      "email_sent_at": "2026-11-08T04:02:10.406Z",
       "email_delivery_status": "SMTP transport idle in environment. Direct confirmation link generated: http://localhost:5000/company/lorconfirm?token=3b34c1fee1363cf72496e79ea41f19fed1bf83a1a406bb97e42bf4514f6d01f5",
-      "professor_confirmed_at": "2026-11-08T02:19:18.908Z",
+      "professor_confirmed_at": "2026-11-08T04:02:10.411Z",
       "professor_endorsement_remarks": "Ananya is an exceptional researcher with profound analytical capabilities and exemplary work ethic.",
       "professor_rating": "Strongly Recommended (Top 5%)",
       "professor_ip_address": "192.168.1.100",
       "hr_verified_by": "Dr. P. Sundaram",
-      "hr_verified_at": "2026-11-08T02:19:18.913Z",
+      "hr_verified_at": "2026-11-08T04:02:10.416Z",
       "hr_remarks": "All academic credentials and mentor endorsement verified.",
       "created_at": "2026-11-06T04:39:51.909Z",
-      "updated_at": "2026-11-08T02:19:18.913Z",
+      "updated_at": "2026-11-08T04:02:10.416Z",
       "direct_confirmation_url": "http://localhost:5000/company/lorconfirm?token=3b34c1fee1363cf72496e79ea41f19fed1bf83a1a406bb97e42bf4514f6d01f5"
     }
   ],
@@ -733,6 +733,42 @@
       "actor_role": "HR",
       "remarks": "All academic credentials and mentor endorsement verified.",
       "created_at": "2026-11-08T02:19:18.915Z"
+    },
+    {
+      "id": "6e77e0ea-00f3-4661-b184-98f37ab5df7f",
+      "lor_id": "9422fa51-d9be-457c-9968-2183fbc2f302",
+      "action": "LOR Request Submitted",
+      "actor": "Ananya Sharma",
+      "actor_role": "Intern",
+      "remarks": "Nominated Prof. Dr. K. Rajesh Kumar",
+      "created_at": "2026-11-08T04:02:10.402Z"
+    },
+    {
+      "id": "df0253c0-c051-48d7-be87-9c059137b65c",
+      "lor_id": "9422fa51-d9be-457c-9968-2183fbc2f302",
+      "action": "Email Sent to Professor",
+      "actor": "PUVIMA System",
+      "actor_role": "System",
+      "remarks": "SMTP transport idle in environment. Direct confirmation link generated: http://localhost:5000/company/lorconfirm?token=3b34c1fee1363cf72496e79ea41f19fed1bf83a1a406bb97e42bf4514f6d01f5",
+      "created_at": "2026-11-08T04:02:10.407Z"
+    },
+    {
+      "id": "28294ef3-8c25-45d4-ab88-eb8d22339655",
+      "lor_id": "9422fa51-d9be-457c-9968-2183fbc2f302",
+      "action": "Confirmed by Professor",
+      "actor": "Dr. K. Rajesh Kumar",
+      "actor_role": "Professor",
+      "remarks": "Endorsed as Strongly Recommended (Top 5%)",
+      "created_at": "2026-11-08T04:02:10.412Z"
+    },
+    {
+      "id": "518f32d0-e94c-4067-9ff1-316be58c43ee",
+      "lor_id": "9422fa51-d9be-457c-9968-2183fbc2f302",
+      "action": "HR Approved & Issued",
+      "actor": "Dr. P. Sundaram",
+      "actor_role": "HR",
+      "remarks": "All academic credentials and mentor endorsement verified.",
+      "created_at": "2026-11-08T04:02:10.418Z"
     }
   ]
 }
