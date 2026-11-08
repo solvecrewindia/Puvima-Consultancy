@@ -131,9 +131,12 @@ body {
     transform: none;
   }
 
-  .intro-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
+  .intro-grid,
+  #about-preview .container > div,
+  #overview .container > div,
+  #values .container > div {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
   }
 
   .service-deep-columns {
@@ -236,6 +239,10 @@ body {
   }
 
   /* Collapse Multi-Column Grids to 1 Column */
+  .intro-grid,
+  #about-preview .container > div,
+  #overview .container > div,
+  #values .container > div,
   .portfolio-grid,
   .principles-grid,
   .services-compact-grid,

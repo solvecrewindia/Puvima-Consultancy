@@ -481,6 +481,13 @@ main {
   z-index: 1;
 }
 
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
 .section {
   padding-top: clamp(32px, 4vw, 50px);
   padding-bottom: clamp(32px, 4vw, 50px);
