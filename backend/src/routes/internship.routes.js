@@ -77,6 +77,10 @@ router.post('/internship-applications', internshipRateLimiter, uploadResumeMiddl
   internshipController.submitApplication(req, res)
 );
 
+router.post('/internship-applications/check-eligibility', (req, res) =>
+  internshipController.checkEligibility(req, res)
+);
+
 // ----------------------------------------------------------------------------
 // HR Portal Endpoints (Accessible by HR, Admin, SuperAdmin)
 // ----------------------------------------------------------------------------

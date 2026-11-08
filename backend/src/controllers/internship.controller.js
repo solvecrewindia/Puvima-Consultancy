@@ -39,7 +39,30 @@ class InternshipController {
       console.error('[InternshipController] Application submission error:', err.message);
       return res.status(err.statusCode || 500).json({
         success: false,
-        message: err.message || 'An error occurred while processing your internship application.'
+        message: err.message || 'An error occurred while processing your internship application.',
+        eligibility: err.eligibility
+      });
+    }
+  }
+
+  /**
+   * POST /api/internship-applications/check-eligibility
+   * Check if a candidate can submit an application, enforcing active/pending and 2-month rejection rules.
+   */
+  async checkEligibility(req, res) {
+    try {
+      const { email, phone } = req.body || {};
+      const result = await internshipService.checkReapplicationEligibility(email, phone);
+      return res.status(200).json({
+        success: true,
+        ...result
+      });
+    } catch (err) {
+      console.error('[InternshipController] Check eligibility error:', err.message);
+      return res.status(500).json({
+        success: false,
+        allowed: true,
+        message: err.message
       });
     }
   }

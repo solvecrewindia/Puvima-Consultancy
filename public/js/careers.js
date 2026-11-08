@@ -70,13 +70,46 @@
   }
 
   function setupNextPrevButtons() {
-    // Next buttons
+    // Next buttons with Step 1 Eligibility Pre-check
     document.querySelectorAll('[data-next-to]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const nextStep = parseInt(btn.getAttribute('data-next-to'), 10);
-        if (validateCurrentStep()) {
-          goToStep(nextStep);
+        if (!validateCurrentStep()) return;
+
+        // If advancing from Step 1, verify candidate reapplication eligibility
+        if (currentStep === 1 && nextStep > 1) {
+          const email = (document.getElementById('appEmail')?.value || '').trim();
+          const phone = (document.getElementById('appPhone')?.value || '').trim();
+          const originalText = btn.textContent;
+
+          btn.disabled = true;
+          btn.textContent = 'Checking Eligibility...';
+
+          try {
+            const checkRes = await fetch(`${API_BASE}/api/internship-applications/check-eligibility`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, phone })
+            });
+
+            if (checkRes.ok) {
+              const checkData = await checkRes.json();
+              if (checkData && !checkData.allowed) {
+                showEligibilityAlert(checkData.reason, checkData.status);
+                btn.disabled = false;
+                btn.textContent = originalText;
+                return;
+              }
+            }
+          } catch (chkErr) {
+            console.warn('[EligibilityCheck] Pre-flight notice:', chkErr);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
         }
+
+        goToStep(nextStep);
       });
     });
 
@@ -295,9 +328,35 @@
     }
   }
 
+  function showEligibilityAlert(reason, status) {
+    const alertBox = document.getElementById('step1EligibilityAlert');
+    const titleEl = document.getElementById('step1EligibilityTitle');
+    const msgEl = document.getElementById('step1EligibilityMessage');
+
+    if (alertBox && msgEl) {
+      if (titleEl) {
+        if (status === 'Pending') titleEl.textContent = 'Application Currently Pending in Review';
+        else if (status === 'Rejected') titleEl.textContent = 'Reapplication Cooldown Active (2 Months)';
+        else if (status === 'Selected') titleEl.textContent = 'Application Already Accepted';
+        else titleEl.textContent = 'Reapplication Notice';
+      }
+      msgEl.textContent = reason || 'An existing application was found for this contact information.';
+      alertBox.style.display = 'block';
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function clearEligibilityAlert() {
+    const alertBox = document.getElementById('step1EligibilityAlert');
+    if (alertBox) {
+      alertBox.style.display = 'none';
+    }
+  }
+
   function clearErrors() {
     document.querySelectorAll('.field-error-hint').forEach(el => el.classList.remove('visible'));
     document.querySelectorAll('.field-has-error').forEach(el => el.classList.remove('field-has-error'));
+    clearEligibilityAlert();
     const banner = document.getElementById('submitErrorBanner');
     if (banner) {
       banner.style.display = 'none';

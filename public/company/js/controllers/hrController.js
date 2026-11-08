@@ -797,6 +797,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                               <button type="button" class="btn btn-sm btn-primary action-btn-view" data-action="view-details" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationDetails('${app.reference_id || app.id}')" title="View Details" style="padding: 4px 10px; font-size: 12px;">
                                 View Details
                               </button>
+                              <button type="button" class="btn btn-sm action-btn-accept" data-action="quick-accept" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.quickAcceptApp('${app.reference_id || app.id}')" title="Accept Candidate" style="padding: 4px 8px; font-size: 12px; margin-left: 4px; background: #16a34a; border-color: #16a34a; color: #fff; font-weight: 600; cursor: pointer;">
+                                &#10003; Accept
+                              </button>
+                              <button type="button" class="btn btn-sm action-btn-reject" data-action="quick-reject" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.quickRejectApp('${app.reference_id || app.id}')" title="Reject Candidate (2-month cooldown applies)" style="padding: 4px 8px; font-size: 12px; margin-left: 4px; background: #dc2626; border-color: #dc2626; color: #fff; font-weight: 600; cursor: pointer;">
+                                &#10005; Reject
+                              </button>
                               <button type="button" class="btn btn-sm btn-outline action-btn-resume" data-action="view-resume" data-id="${app.id}" data-ref="${app.reference_id}" onclick="window.viewHrApplicationResume('${app.reference_id || app.id}')" title="View Resume" style="padding: 4px 8px; font-size: 12px; margin-left: 4px;">
                                 Resume
                               </button>
@@ -826,6 +832,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const id = btn.getAttribute('data-ref') || btn.getAttribute('data-id');
         if (!id) return;
         if (action === 'view-details') window.viewHrApplicationDetails(id);
+        else if (action === 'quick-accept') window.quickAcceptApp(id);
+        else if (action === 'quick-reject') window.quickRejectApp(id);
         else if (action === 'view-resume') window.viewHrApplicationResume(id);
         else if (action === 'update-status') window.openHrStatusModal(id);
       });
@@ -1010,6 +1018,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
     }
 
+    const modalAcceptBtn = document.getElementById('hrAppModalAcceptBtn');
+    if (modalAcceptBtn) {
+      modalAcceptBtn.onclick = () => {
+        window.quickAcceptApp(app.reference_id || app.id);
+      };
+    }
+
+    const modalRejectBtn = document.getElementById('hrAppModalRejectBtn');
+    if (modalRejectBtn) {
+      modalRejectBtn.onclick = () => {
+        window.quickRejectApp(app.reference_id || app.id);
+      };
+    }
+
     const skills = Array.isArray(app.skills)
       ? app.skills
       : (typeof app.skills === 'string' ? JSON.parse(app.skills || '[]') : []);
@@ -1129,6 +1151,107 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
 
     window.UI.openModal('hrApplicationModal');
+  };
+
+  window.quickAcceptApp = async function (idOrRef) {
+    const app = allApplications.find((a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef));
+    const name = app ? app.full_name : idOrRef;
+    const ref = app ? app.reference_id : idOrRef;
+
+    const confirmed = window.confirm(`Accept internship application for ${name} (${ref})?\n\nThis will mark the applicant status as "Selected".`);
+    if (!confirmed) return;
+
+    if (window.UI) window.UI.showLoading(`Accepting ${name}...`);
+    try {
+      const res = await fetch(`/api/hr/internship-applications/${encodeURIComponent(ref)}/status`, {
+        method: 'PATCH',
+        headers: getPortalHeaders(),
+        body: JSON.stringify({ status: 'Selected', notes: 'Accepted by HR' })
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || 'Failed to accept application.');
+
+      if (window.UI) window.UI.showToast('Application Accepted', `${name} has been marked as Selected.`, 'success');
+
+      // Update in-memory
+      const idx = allApplications.findIndex((a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef));
+      if (idx !== -1) {
+        allApplications[idx].recruitment_status = 'Selected';
+        allApplications[idx].admin_notes = 'Accepted by HR';
+      }
+
+      // Update row DOM
+      const targetId = app ? app.id : idOrRef;
+      const row = document.getElementById(`hr-app-row-${targetId}`) || document.querySelector(`tr[data-ref="${ref}"]`);
+      if (row) {
+        const cell = row.querySelector('.hr-app-status-cell');
+        if (cell) cell.innerHTML = getAppStatusBadge('Selected');
+      }
+
+      // Update modal badge if open
+      const modalStatus = document.getElementById('hrAppModalStatus');
+      if (modalStatus) modalStatus.innerHTML = getAppStatusBadge('Selected');
+
+      await fetchApplicationsData();
+      updateStats();
+    } catch (err) {
+      if (window.UI) window.UI.showToast('Error', err.message, 'error');
+      else alert('Error: ' + err.message);
+    } finally {
+      if (window.UI) window.UI.hideLoading();
+    }
+  };
+
+  window.quickRejectApp = async function (idOrRef) {
+    const app = allApplications.find((a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef));
+    const name = app ? app.full_name : idOrRef;
+    const ref = app ? app.reference_id : idOrRef;
+
+    const reason = window.prompt(
+      `Reject application for ${name} (${ref})?\n\nNote: Candidate will not be able to reapply for 2 months.\n\nEnter optional rejection remarks:`,
+      'Profile does not align with current project requirements.'
+    );
+    if (reason === null) return;
+
+    if (window.UI) window.UI.showLoading(`Rejecting ${name}...`);
+    try {
+      const res = await fetch(`/api/hr/internship-applications/${encodeURIComponent(ref)}/status`, {
+        method: 'PATCH',
+        headers: getPortalHeaders(),
+        body: JSON.stringify({ status: 'Rejected', notes: reason || 'Application rejected by HR' })
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || 'Failed to reject application.');
+
+      if (window.UI) window.UI.showToast('Application Rejected', `${name} marked as Rejected. 2-month reapplication cooldown active.`, 'info');
+
+      // Update in-memory
+      const idx = allApplications.findIndex((a) => String(a.id) === String(idOrRef) || a.reference_id === String(idOrRef));
+      if (idx !== -1) {
+        allApplications[idx].recruitment_status = 'Rejected';
+        allApplications[idx].admin_notes = reason;
+      }
+
+      // Update row DOM
+      const targetId = app ? app.id : idOrRef;
+      const row = document.getElementById(`hr-app-row-${targetId}`) || document.querySelector(`tr[data-ref="${ref}"]`);
+      if (row) {
+        const cell = row.querySelector('.hr-app-status-cell');
+        if (cell) cell.innerHTML = getAppStatusBadge('Rejected');
+      }
+
+      // Update modal badge if open
+      const modalStatus = document.getElementById('hrAppModalStatus');
+      if (modalStatus) modalStatus.innerHTML = getAppStatusBadge('Rejected');
+
+      await fetchApplicationsData();
+      updateStats();
+    } catch (err) {
+      if (window.UI) window.UI.showToast('Error', err.message, 'error');
+      else alert('Error: ' + err.message);
+    } finally {
+      if (window.UI) window.UI.hideLoading();
+    }
   };
 
   window.openHrStatusModal = function (idOrRef) {

@@ -110,8 +110,8 @@ function normalizeStatus(status) {
   if (s === 'under review') return 'Under Review';
   if (s === 'shortlisted') return 'Shortlisted';
   if (s === 'interview') return 'Interview';
-  if (s === 'selected') return 'Selected';
-  if (s === 'rejected') return 'Rejected';
+  if (s === 'selected' || s === 'accepted' || s === 'accept') return 'Selected';
+  if (s === 'rejected' || s === 'reject') return 'Rejected';
   return null;
 }
 
@@ -440,6 +440,157 @@ class InternshipService {
    * @param {string} clientIp 
    * @returns {Promise<Object>}
    */
+  /**
+   * Check for an existing application by email or phone and enforce reapplication rules:
+   * 1. If an application is active (New, Under Review, Shortlisted, Interview):
+   *    Candidate cannot reapply ("pending in review").
+   * 2. If an application was Selected/Accepted:
+   *    Candidate cannot reapply.
+   * 3. If an application was Rejected:
+   *    Must wait 2 months (60 days) before reapplying ("after 2 months apply again").
+   * @param {string} email
+   * @param {string} phone
+   * @returns {Promise<{ allowed: boolean, reason?: string, status?: string, reference_id?: string, eligibleDate?: string, daysRemaining?: number }>}
+   */
+  async checkReapplicationEligibility(email, phone) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const digits = (phone || '').replace(/\D/g, '');
+    const last10 = digits.length >= 10 ? digits.slice(-10) : digits;
+
+    if (!cleanEmail && !last10) {
+      return { allowed: true };
+    }
+
+    let candidateApps = [];
+
+    // 1. Check Supabase
+    try {
+      const { getSupabaseClient } = require('../config/supabase');
+      const supabase = getSupabaseClient();
+      if (supabase) {
+        if (cleanEmail) {
+          const { data: byEmail } = await supabase
+            .from('internship_applications')
+            .select('*')
+            .eq('email', cleanEmail)
+            .order('created_at', { ascending: false });
+          if (byEmail && byEmail.length > 0) {
+            candidateApps.push(...byEmail);
+          }
+        }
+
+        // Query by phone
+        if (last10) {
+          const { data: allRecent } = await supabase
+            .from('internship_applications')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(200);
+          if (allRecent && allRecent.length > 0) {
+            for (const app of allRecent) {
+              const appDigits = (app.phone || '').replace(/\D/g, '');
+              const appLast10 = appDigits.length >= 10 ? appDigits.slice(-10) : appDigits;
+              if (appLast10 && appLast10 === last10) {
+                if (!candidateApps.some((c) => c.reference_id === app.reference_id)) {
+                  candidateApps.push(app);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (sbErr) {
+      console.warn('[InternshipService] Duplicate check Supabase error:', sbErr.message);
+    }
+
+    // 2. Check local JSON fallback
+    const localApps = this.readLocalApplications();
+    for (const app of localApps) {
+      const appEmail = (app.email || '').trim().toLowerCase();
+      const appDigits = (app.phone || '').replace(/\D/g, '');
+      const appLast10 = appDigits.length >= 10 ? appDigits.slice(-10) : appDigits;
+
+      const emailMatch = cleanEmail && appEmail === cleanEmail;
+      const phoneMatch = last10 && appLast10 && last10 === appLast10;
+
+      if (emailMatch || phoneMatch) {
+        if (!candidateApps.some((c) => c.reference_id === app.reference_id)) {
+          candidateApps.push(app);
+        }
+      }
+    }
+
+    if (candidateApps.length === 0) {
+      return { allowed: true };
+    }
+
+    // Sort by latest decision/update date
+    candidateApps.sort((a, b) => {
+      const dateA = new Date(a.updated_at || a.created_at || 0).getTime();
+      const dateB = new Date(b.updated_at || b.created_at || 0).getTime();
+      return dateB - dateA;
+    });
+
+    const latestApp = candidateApps[0];
+    const status = normalizeStatus(latestApp.recruitment_status) || 'New';
+
+    // Rule 1: Pending / Active Application (New, Under Review, Shortlisted, Interview)
+    if (status === 'New' || status === 'Under Review' || status === 'Shortlisted' || status === 'Interview') {
+      return {
+        allowed: false,
+        status: 'Pending',
+        reference_id: latestApp.reference_id,
+        reason: `Your application is currently pending in review (Reference: ${latestApp.reference_id}). You cannot submit another application while your profile is under review.`
+      };
+    }
+
+    // Rule 2: Selected / Accepted Application
+    if (status === 'Selected') {
+      return {
+        allowed: false,
+        status: 'Selected',
+        reference_id: latestApp.reference_id,
+        reason: `An application with this contact information has already been accepted (Reference: ${latestApp.reference_id}). Please check your email for official onboarding instructions.`
+      };
+    }
+
+    // Rule 3: Rejected Application -> 2 months (60 days) cooldown
+    if (status === 'Rejected') {
+      const decisionDate = new Date(latestApp.updated_at || latestApp.hr_reviewed_at || latestApp.created_at || Date.now());
+      const COOLDOWN_DAYS = 60;
+      const cooldownMs = COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+      const eligibleDate = new Date(decisionDate.getTime() + cooldownMs);
+      const now = new Date();
+
+      if (now < eligibleDate) {
+        const msRemaining = eligibleDate.getTime() - now.getTime();
+        const daysRemaining = Math.max(1, Math.ceil(msRemaining / (24 * 60 * 60 * 1000)));
+        const formattedEligible = eligibleDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        const formattedDecision = decisionDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        return {
+          allowed: false,
+          status: 'Rejected',
+          reference_id: latestApp.reference_id,
+          rejectionDate: formattedDecision,
+          eligibleDate: formattedEligible,
+          daysRemaining,
+          reason: `Your previous application was rejected on ${formattedDecision}. Candidates may apply again after 2 months (eligible on ${formattedEligible}, ${daysRemaining} day${daysRemaining === 1 ? '' : 's'} remaining).`
+        };
+      }
+    }
+
+    return { allowed: true };
+  }
+
   async submitApplication(rawFormData, file, clientIp = '') {
     // 1. Validation
     const validation = this.validateApplication(rawFormData, file);
@@ -451,6 +602,16 @@ class InternshipService {
     }
 
     const appData = validation.sanitized;
+
+    // Duplicate application check & 2-month rejection cooldown
+    const eligibility = await this.checkReapplicationEligibility(appData.email, appData.phone);
+    if (!eligibility.allowed) {
+      const err = new Error(eligibility.reason);
+      err.statusCode = 409;
+      err.eligibility = eligibility;
+      throw err;
+    }
+
     const referenceId = this.generateReferenceId();
     appData.reference_id = referenceId;
 
@@ -1301,14 +1462,25 @@ class InternshipService {
       const { getSupabaseClient } = require('../config/supabase');
       const supabase = getSupabaseClient();
       if (supabase) {
-        await supabase
-          .from('internship_applications')
-          .update({
-            recruitment_status: normalizedStatus,
-            admin_notes: noteText,
-            updated_at: now
-          })
-          .or(`id.eq.${application.id},reference_id.eq.${application.reference_id}`);
+        if (application.reference_id) {
+          await supabase
+            .from('internship_applications')
+            .update({
+              recruitment_status: normalizedStatus,
+              admin_notes: noteText,
+              updated_at: now
+            })
+            .eq('reference_id', application.reference_id);
+        } else if (application.id) {
+          await supabase
+            .from('internship_applications')
+            .update({
+              recruitment_status: normalizedStatus,
+              admin_notes: noteText,
+              updated_at: now
+            })
+            .eq('id', application.id);
+        }
       }
     } catch (sbErr) {
       console.warn('[InternshipService] Supabase status update notice:', sbErr.message);
