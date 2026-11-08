@@ -573,6 +573,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert(`Project: ${p.name}\nStatus: ${p.status}\nCategory: ${p.category}\nDescription: ${p.description}`);
   };
 
+    // Open Add User Modal handlers
+  window.openAddUserModal = function () {
+    if (window.UI && typeof window.UI.openModal === 'function') {
+      window.UI.openModal('addUserModal');
+    } else {
+      const modal = document.getElementById('addUserModal');
+      if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  };
+
+  // Bind Add User buttons explicitly
+  document.querySelectorAll('#adminAddUserBtn, #adminToolbarAddUserBtn, [data-action="add-user"]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.openAddUserModal();
+    });
+  });
+
+  // Delegated handler to guarantee Add User button works anywhere in the portal
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#adminAddUserBtn, #adminToolbarAddUserBtn, [data-action="add-user"]');
+    if (btn) {
+      e.preventDefault();
+      window.openAddUserModal();
+    }
+  });
+
   // Add User Form Submission
   const addUserForm = document.getElementById('addUserForm');
   if (addUserForm) {
@@ -582,6 +612,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const email = document.getElementById('newUserEmail').value.trim();
       const role = document.getElementById('newUserRole').value;
       const department = document.getElementById('newUserDepartment').value;
+
+      const submitBtn = addUserForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Create Profile';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Creating Profile...</span>';
+      }
 
       if (!name || !email) {
         alert('Please fill out all required fields.');

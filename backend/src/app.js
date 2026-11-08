@@ -42,6 +42,7 @@ app.use(
         fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
         imgSrc: ["'self'", "data:", "https:"],
         scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://unpkg.com", "https://cdnjs.cloudflare.com"],
+        scriptSrcAttr: ["'unsafe-inline'"],
         connectSrc: ["'self'", "https://*.supabase.co", "https://*.vercel.app"],
         frameAncestors: ["'none'"],
         formAction: ["'self'"],

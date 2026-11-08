@@ -15,6 +15,17 @@ const UserService = (function () {
     }
   }
 
+  function generateUuid() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   function saveLocalUsers(users) {
     localStorage.setItem(STORE_KEY, JSON.stringify(users));
   }
@@ -66,8 +77,17 @@ const UserService = (function () {
         }
 
         const { data, error } = await q;
-        if (!error && data && data.length > 0) {
-          return data;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const local = getLocalUsers();
+          const sbIdentifiers = new Set(
+            data.map((u) => (u.user_code || u.email || String(u.id)).toLowerCase())
+          );
+          const extra = local.filter((u) => {
+            const code = (u.user_code || '').toLowerCase();
+            const email = (u.email || '').toLowerCase();
+            return (!code || !sbIdentifiers.has(code)) && (!email || !sbIdentifiers.has(email));
+          });
+          return [...data, ...extra];
         }
       } catch (e) {
         console.warn('[UserService] Supabase error, using local data:', e);
@@ -114,10 +134,11 @@ const UserService = (function () {
     const users = getLocalUsers();
     const userCode = generateUserCode(userData.role, users);
 
+    const uuid = generateUuid();
     const newUser = {
-      id: 'usr-' + Date.now(),
+      id: uuid,
       user_code: userCode,
-      user_id: 'usr-' + Date.now(),
+      user_id: uuid,
       name: userData.name.trim(),
       email: userData.email.trim().toLowerCase(),
       role: userData.role,
