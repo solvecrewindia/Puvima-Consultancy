@@ -194,6 +194,8 @@ input, textarea {
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-content: flex-end;
+  position: relative;
 }
 
 .btn-header-icon {
