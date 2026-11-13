@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (overviewSection) overviewSection.style.display = 'block';
       if (userFilterGroup) userFilterGroup.style.display = 'none';
       if (appsFilterGroup) appsFilterGroup.style.display = 'flex';
-      if (breadcrumb) breadcrumb.textContent = 'Internship Applications Management';
+      if (breadcrumb) breadcrumb.textContent = 'New Applications Management';
 
       // 1. Render 7 Status Metric Cards
       if (overviewSection) {
