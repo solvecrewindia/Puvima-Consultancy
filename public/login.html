@@ -26,47 +26,6 @@
         <h1 class="login-title" style="font-size: 22px;">Central Operations Sign In</h1>
         <p class="login-subtitle">Sign in to access PUVIMA Website Administration or the Company Workforce Management Portal.</p>
       </div>
-
-      <!-- Quick Fill Credentials helper -->
-      <div class="demo-accounts-box">
-        <div class="demo-box-header">
-          <span class="demo-box-title">1-Click Test Credentials</span>
-          <span style="font-size: 11px; color: var(--puvima-blue); font-weight: 700;">Click Any Account</span>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <!-- PUVIMA Website Admin Demo -->
-          <div class="demo-chip" data-account-type="website-admin" data-demo-user="admin@puvima.com" data-demo-pass="admin123" style="border-left: 3px solid var(--puvima-blue);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="demo-chip-role" style="color: var(--puvima-navy);">PUVIMA Website Admin</span>
-              <span class="badge badge-blue" style="font-size: 10px;">Routes to /admin</span>
-            </div>
-            <span class="demo-chip-code">admin@puvima.com &bull; admin123</span>
-          </div>
-
-          <!-- Company Management Grid -->
-          <div class="demo-chips-grid">
-            <div class="demo-chip" data-account-type="company" data-demo-user="ADM0001" data-demo-pass="Password123!">
-              <span class="demo-chip-role">Company SuperAdmin</span>
-              <span class="demo-chip-code">ADM0001 &bull; /company/admin</span>
-            </div>
-            
-            <div class="demo-chip" data-account-type="company" data-demo-user="HR0001" data-demo-pass="Password123!">
-              <span class="demo-chip-role">HR Operations</span>
-              <span class="demo-chip-code">HR0001 &bull; /company/hr</span>
-            </div>
-            
-            <div class="demo-chip" data-account-type="company" data-demo-user="EMP0001" data-demo-pass="Password123!">
-              <span class="demo-chip-role">Employee (Engineer)</span>
-              <span class="demo-chip-code">EMP0001 &bull; /company/employee</span>
-            </div>
-            
-            <div class="demo-chip" data-account-type="company" data-demo-user="INT0001" data-demo-pass="Password123!">
-              <span class="demo-chip-role">Research Intern</span>
-              <span class="demo-chip-code">INT0001 &bull; /company/intern</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Alert -->
@@ -83,10 +42,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="centralPassword">
-            <span>Password</span>
-            <span style="font-size: 11px; color: var(--text-dim); font-weight: 500;">admin123 / Password123!</span>
-          </label>
+          <label class="form-label" for="centralPassword">Password</label>
           <div class="input-with-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             <input type="password" id="centralPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
@@ -129,19 +85,6 @@
       const togglePass = document.getElementById('togglePassBtn');
 
       let selectedType = 'auto';
-
-      // 1-Click Demo chips
-      document.querySelectorAll('[data-demo-user]').forEach(chip => {
-        chip.addEventListener('click', () => {
-          userField.value = chip.getAttribute('data-demo-user');
-          passField.value = chip.getAttribute('data-demo-pass');
-          selectedType = chip.getAttribute('data-account-type') || 'auto';
-          alertBox.style.display = 'none';
-          if (window.UI) {
-            window.UI.showToast('Credentials Selected', `Loaded demo account: ${userField.value}`, 'info');
-          }
-        });
-      });
 
       // Toggle password
       if (togglePass && passField) {
