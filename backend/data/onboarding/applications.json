@@ -2814,9 +2814,306 @@
       },
       "approved_by": "HR Lead Reviewer",
       "approved_at": "2026-11-08T04:02:01.398Z"
+    },
+    {
+      "id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "application_id": "PV-ONB-2026-B96C0A",
+      "access_token": "cdd61cc2ffe21de0b125d1b3331cc580c9da35623479219d",
+      "applicant_email": "candidate.1794586892083@puvima.com",
+      "applicant_name": "Vigneshwaran R",
+      "applicant_phone": "9840123456",
+      "position_applied": "Research Associate",
+      "position_other": "",
+      "domain_interest": "Robotics & Computer Vision",
+      "preferred_joining_date": "2026-12-01",
+      "duration": "6 Months",
+      "duration_other": "",
+      "dob": "2001-08-20",
+      "gender": "Male",
+      "nationality": "Indian",
+      "id_type": "Aadhaar",
+      "id_number_masked": "XXXX-XXXX-9012",
+      "id_number_encrypted": "a4f3d69157f79da685475a2951dabb75:1fc66eb83ef322f44165c210d5603ef4",
+      "blood_group": "O+",
+      "permanent_address": "42, Sardar Patel Road, Adyar, Chennai - 600020",
+      "current_address": "42, Sardar Patel Road, Adyar, Chennai - 600020",
+      "skills": "Python, C++, ROS2, Gazebo, OpenCV, PyTorch",
+      "tools_platforms": "Git, Docker, Linux, VS Code",
+      "academic_details": [
+        {
+          "id": "f426b8ab-315e-4339-b506-dd0d1b89f388",
+          "qualification_type": "UG",
+          "degree_name": "B.Tech Mechatronics",
+          "institution": "Anna University",
+          "year_of_passing": 2025,
+          "score_cgpa": "8.92"
+        },
+        {
+          "id": "26b4e07d-2492-4c01-9f26-69fcec55a0dc",
+          "qualification_type": "Higher Secondary",
+          "degree_name": "HSC Science",
+          "institution": "Kendriya Vidyalaya",
+          "year_of_passing": 2021,
+          "score_cgpa": "94%"
+        }
+      ],
+      "projects": [
+        {
+          "id": "8ced6e2a-f56b-4d5d-9b3d-df25c9a432c5",
+          "title": "Autonomous Mobile Robot Navigation",
+          "technologies": "ROS2, C++",
+          "description": "Implemented SLAM and LiDAR point cloud processing."
+        }
+      ],
+      "experiences": [],
+      "emergency_contacts": [
+        {
+          "id": "d5b69b2f-f69e-4309-aa1c-e4babe25b331",
+          "contact_person": "R. Ravichandran",
+          "relationship": "Parent",
+          "mobile_number": "9840998877",
+          "alternate_number": "04424912345"
+        }
+      ],
+      "bank_details": {
+        "account_holder_name": "Vigneshwaran R",
+        "bank_name": "HDFC Bank",
+        "account_number_masked": "XXXXXXXXXX7890",
+        "account_number_encrypted": "6075606229da812cd57560c2905b29f6:cc8662765d8ff196d0fbc254caeb6027",
+        "ifsc_code": "HDFC0001234"
+      },
+      "documents": [
+        {
+          "id": "f5603f59-57c8-4a2e-9701-bf7cdcb38ea9",
+          "category": "resume",
+          "original_filename": "resume_sample_doc.pdf",
+          "storage_path": "resume_test_1794586892540.pdf",
+          "mime_type": "application/pdf",
+          "size_bytes": 245000,
+          "verification_status": "Verified",
+          "hr_remarks": "Verified by HR.",
+          "verified_by": "HR Lead Reviewer",
+          "verified_at": "2026-11-13T16:21:33.196Z",
+          "uploaded_at": "2026-11-13T16:21:32.543Z"
+        },
+        {
+          "id": "7f829433-bf2a-4be5-a696-73152bee76a2",
+          "category": "govt_id",
+          "original_filename": "govt_id_sample_doc.pdf",
+          "storage_path": "govt_id_test_1794586892560.pdf",
+          "mime_type": "application/pdf",
+          "size_bytes": 245000,
+          "verification_status": "Verified",
+          "hr_remarks": "Verified by HR.",
+          "verified_by": "HR Lead Reviewer",
+          "verified_at": "2026-11-13T16:21:33.216Z",
+          "uploaded_at": "2026-11-13T16:21:32.565Z"
+        },
+        {
+          "id": "6774d7cb-e357-4a60-91b8-83afd1cd511f",
+          "category": "academic_marksheets",
+          "original_filename": "academic_marksheets_sample_doc.pdf",
+          "storage_path": "academic_marksheets_test_1794586892580.pdf",
+          "mime_type": "application/pdf",
+          "size_bytes": 245000,
+          "verification_status": "Verified",
+          "hr_remarks": "Verified by HR.",
+          "verified_by": "HR Lead Reviewer",
+          "verified_at": "2026-11-13T16:21:33.235Z",
+          "uploaded_at": "2026-11-13T16:21:32.583Z"
+        },
+        {
+          "id": "eb3001f8-b45e-4883-bbf7-c3fa6429519a",
+          "category": "passport_photo",
+          "original_filename": "passport_photo_sample_doc.pdf",
+          "storage_path": "passport_photo_test_1794586892599.pdf",
+          "mime_type": "application/pdf",
+          "size_bytes": 245000,
+          "verification_status": "Verified",
+          "hr_remarks": "Verified by HR.",
+          "verified_by": "HR Lead Reviewer",
+          "verified_at": "2026-11-13T16:21:33.250Z",
+          "uploaded_at": "2026-11-13T16:21:32.602Z"
+        }
+      ],
+      "status": "Approved",
+      "declaration_accepted": true,
+      "declaration_timestamp": "2026-11-13T16:21:33.056Z",
+      "applicant_signature_name": "Vigneshwaran R",
+      "submission_date": "2026-11-13T16:21:33.056Z",
+      "created_at": "2026-11-13T16:21:32.089Z",
+      "updated_at": "2026-11-13T16:21:33.267Z",
+      "correction_request": {
+        "id": "fd7603e7-cb54-4394-8f04-c85101bf6b71",
+        "requested_by": "HR Lead Reviewer",
+        "requested_at": "2026-11-13T16:21:33.140Z",
+        "affected_fields": [
+          "Passport Size Photograph"
+        ],
+        "affected_documents": [
+          "passport_photo"
+        ],
+        "remarks": "Please re-upload a clearer copy of the passport photograph."
+      },
+      "approved_by": "HR Lead Reviewer",
+      "approved_at": "2026-11-13T16:21:33.267Z"
     }
   ],
   "history": [
+    {
+      "id": "fb339822-40df-41c2-92c4-0ac9f9040ed6",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Application Approved",
+      "previous_status": "Documents Under Verification",
+      "new_status": "Approved",
+      "remarks": "All credentials and documents verified successfully.",
+      "created_at": "2026-11-13T16:21:33.269Z"
+    },
+    {
+      "id": "9ac50cb5-387f-4e5c-bbd7-42f1de47acac",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Document Verified",
+      "previous_status": "Correction Required",
+      "new_status": "Verified",
+      "remarks": "passport_photo: Verified by HR.",
+      "created_at": "2026-11-13T16:21:33.252Z"
+    },
+    {
+      "id": "f77879a0-37ac-4fc3-b2b5-4664a884417a",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Document Verified",
+      "previous_status": "Pending",
+      "new_status": "Verified",
+      "remarks": "academic_marksheets: Verified by HR.",
+      "created_at": "2026-11-13T16:21:33.237Z"
+    },
+    {
+      "id": "79fbca1e-cad1-4ce9-a042-29502b3b510a",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Document Verified",
+      "previous_status": "Pending",
+      "new_status": "Verified",
+      "remarks": "govt_id: Verified by HR.",
+      "created_at": "2026-11-13T16:21:33.218Z"
+    },
+    {
+      "id": "47a31c4c-a7cd-4acf-a6b4-2b2a83ba568e",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Document Verified",
+      "previous_status": "Verified",
+      "new_status": "Verified",
+      "remarks": "resume: Verified by HR.",
+      "created_at": "2026-11-13T16:21:33.199Z"
+    },
+    {
+      "id": "230844ac-c11f-4abd-a41c-b4b936497bed",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Applicant Resubmitted",
+      "previous_status": "Correction Required",
+      "new_status": "Resubmitted",
+      "remarks": "Updated photograph has been uploaded.",
+      "created_at": "2026-11-13T16:21:33.169Z"
+    },
+    {
+      "id": "80679dd2-a6b8-4341-a9de-618c2c96818d",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Correction Requested",
+      "previous_status": "Documents Under Verification",
+      "new_status": "Correction Required",
+      "remarks": "Please re-upload a clearer copy of the passport photograph.",
+      "created_at": "2026-11-13T16:21:33.142Z"
+    },
+    {
+      "id": "828968b9-08c6-4ffe-96d4-b3def6ca594e",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "HR Lead Reviewer",
+      "user_role": "HR",
+      "action": "Document Verified",
+      "previous_status": "Pending",
+      "new_status": "Verified",
+      "remarks": "resume: Resume verified against LinkedIn profile.",
+      "created_at": "2026-11-13T16:21:33.122Z"
+    },
+    {
+      "id": "726b7904-017f-4e1f-9add-f9468c29056c",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Application Submitted",
+      "previous_status": "Draft",
+      "new_status": "Submitted",
+      "remarks": "Submitted application with digital confirmation by Vigneshwaran R",
+      "created_at": "2026-11-13T16:21:33.058Z"
+    },
+    {
+      "id": "79388a8c-e9f3-44e1-8f9a-6e2463b7b1e9",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Document Uploaded",
+      "previous_status": "Draft",
+      "new_status": "Draft",
+      "remarks": "Uploaded passport_photo (passport_photo_sample_doc.pdf)",
+      "created_at": "2026-11-13T16:21:32.605Z"
+    },
+    {
+      "id": "e83c036f-05b8-447b-83ef-8a6f8e7eae0a",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Document Uploaded",
+      "previous_status": "Draft",
+      "new_status": "Draft",
+      "remarks": "Uploaded academic_marksheets (academic_marksheets_sample_doc.pdf)",
+      "created_at": "2026-11-13T16:21:32.586Z"
+    },
+    {
+      "id": "8b5a2ff5-3ed1-4e05-b541-754ad5b1f17d",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Document Uploaded",
+      "previous_status": "Draft",
+      "new_status": "Draft",
+      "remarks": "Uploaded govt_id (govt_id_sample_doc.pdf)",
+      "created_at": "2026-11-13T16:21:32.567Z"
+    },
+    {
+      "id": "1623107c-3eff-4632-a29b-497c4f64d20f",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Document Uploaded",
+      "previous_status": "Draft",
+      "new_status": "Draft",
+      "remarks": "Uploaded resume (resume_sample_doc.pdf)",
+      "created_at": "2026-11-13T16:21:32.545Z"
+    },
+    {
+      "id": "5d451fb7-e38a-4a71-9073-47aa09a9c67e",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "user_id": "candidate.1794586892083@puvima.com",
+      "user_role": "Applicant",
+      "action": "Application Initialized",
+      "previous_status": null,
+      "new_status": "Draft",
+      "remarks": "Applicant started onboarding for Intern",
+      "created_at": "2026-11-13T16:21:32.092Z"
+    },
     {
       "id": "c2629dce-a088-4e9a-88f6-b93f77c51a37",
       "application_id": "cfe0c34b-d08a-4007-8731-be1cb30add32",
@@ -5514,6 +5811,61 @@
     }
   ],
   "notifications": [
+    {
+      "id": "686c19d3-2a6a-4744-a451-f5a816bb3114",
+      "recipient_type": "applicant",
+      "recipient_email": "candidate.1794586892083@puvima.com",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "title": "Congratulations! Your PUVIMA Onboarding is Approved",
+      "message": "Your onboarding application (PV-ONB-2026-B96C0A) for Research Associate has been fully verified and approved by PUVIMA HR Operations. Welcome to PUVIMA!",
+      "type": "success",
+      "is_read": false,
+      "created_at": "2026-11-13T16:21:33.280Z"
+    },
+    {
+      "id": "59dd16c2-3854-4eb8-891f-f3cd5916a6b9",
+      "recipient_type": "hr",
+      "recipient_email": null,
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "title": "Applicant Resubmitted Corrections",
+      "message": "Vigneshwaran R (PV-ONB-2026-B96C0A) has resubmitted updated details/documents.",
+      "type": "info",
+      "is_read": false,
+      "created_at": "2026-11-13T16:21:33.178Z"
+    },
+    {
+      "id": "04be40c1-90ad-474e-8bdc-9817ae67d59c",
+      "recipient_type": "applicant",
+      "recipient_email": "candidate.1794586892083@puvima.com",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "title": "Action Required: Application Correction Requested",
+      "message": "PUVIMA HR has reviewed your application (PV-ONB-2026-B96C0A) and requested updates: Please re-upload a clearer copy of the passport photograph.",
+      "type": "warning",
+      "is_read": false,
+      "created_at": "2026-11-13T16:21:33.154Z"
+    },
+    {
+      "id": "de83f8ec-5de9-4cfc-9ab6-b067d5fd615c",
+      "recipient_type": "hr",
+      "recipient_email": null,
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "title": "New Onboarding Application Submitted",
+      "message": "Vigneshwaran R submitted an onboarding application for Research Associate (PV-ONB-2026-B96C0A).",
+      "type": "info",
+      "is_read": false,
+      "created_at": "2026-11-13T16:21:33.092Z"
+    },
+    {
+      "id": "330bce25-3df4-4297-9e73-71bf3c63f658",
+      "recipient_type": "applicant",
+      "recipient_email": "candidate.1794586892083@puvima.com",
+      "application_id": "da3a922a-573a-40c5-9369-320e086d3481",
+      "title": "Application Successfully Submitted",
+      "message": "Your onboarding application (PV-ONB-2026-B96C0A) for Research Associate has been submitted to PUVIMA HR Operations for review.",
+      "type": "success",
+      "is_read": false,
+      "created_at": "2026-11-13T16:21:33.076Z"
+    },
     {
       "id": "8212e8bf-7073-44ba-828f-b8e287c7a566",
       "recipient_type": "applicant",

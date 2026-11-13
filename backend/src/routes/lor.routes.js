@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Letter of Recommendation (LOR) Routes
+ * Puvima IT Service and Research Consultancy — Letter of Recommendation (LOR) Routes
  */
 
 const express = require('express');

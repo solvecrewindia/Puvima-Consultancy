@@ -107,6 +107,54 @@
       "changed_by_role": "Applicant",
       "notes": "Initial application submitted via Careers portal.",
       "created_at": "2026-11-08T02:33:31.466Z"
+    },
+    {
+      "id": 1794586906625,
+      "application_id": 1794586906512,
+      "reference_id": "PUV-INT-20261113-4600AD",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "John Doe Testing",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-13T16:21:46.516Z"
+    },
+    {
+      "id": 1794586907800,
+      "application_id": 1794586907593,
+      "reference_id": "PUV-INT-20261113-889ABC",
+      "previous_status": "None",
+      "new_status": "New",
+      "changed_by_id": "applicant",
+      "changed_by_name": "Arunachalam Venkatesh",
+      "changed_by_role": "Applicant",
+      "notes": "Initial application submitted via Careers portal.",
+      "created_at": "2026-11-13T16:21:47.598Z"
+    },
+    {
+      "id": 1794586943633,
+      "application_id": 1794586907593,
+      "reference_id": "PUV-INT-20261113-889ABC",
+      "previous_status": "New",
+      "new_status": "Under Review",
+      "changed_by_id": "HR001",
+      "changed_by_name": "Priya HR",
+      "changed_by_role": "HR",
+      "notes": "Initial profile screening completed. Passing to Technical Lead.",
+      "created_at": "2026-11-13T16:22:23.035Z"
+    },
+    {
+      "id": 1794586979367,
+      "application_id": 1794586907593,
+      "reference_id": "PUV-INT-20261113-889ABC",
+      "previous_status": "Under Review",
+      "new_status": "Interview",
+      "changed_by_id": "admin",
+      "changed_by_name": "PUVIMA Administrator",
+      "changed_by_role": "SuperAdmin",
+      "notes": "Executive approved for final technical interview on December 2.",
+      "created_at": "2026-11-13T16:22:58.501Z"
     }
   ]
 }

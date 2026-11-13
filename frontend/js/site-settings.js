@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Live Main Page Settings Synchronizer
+ * Puvima IT Service and Research Consultancy — Live Main Page Settings Synchronizer
  * Dynamically applies announcement banners, customized headlines, and advisory contact details
  * published from the Executive Admin Portal (/admin).
  */

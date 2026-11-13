@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Internship Application Wizard Controller
+ * Puvima IT Service and Research Consultancy — Internship Application Wizard Controller
  * Manages the 5-step application questionnaire, drag-and-drop resume upload,
  * client-side validations, review summary generation, and API submission.
  */

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Company User Management Routes
+ * Puvima IT Service and Research Consultancy — Company User Management Routes
  */
 
 const express = require('express');

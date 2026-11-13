@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Letter of Recommendation (LOR) PDF Generator
+ * Puvima IT Service and Research Consultancy — Letter of Recommendation (LOR) PDF Generator
  * Produces an official publication-grade Letter of Recommendation document using PDFKit.
  * Dynamically populated with intern achievements, academic mentor endorsement, and corporate signatures.
  */
@@ -31,7 +31,7 @@ class LorPdfService {
           margin: 40,
           info: {
             Title: `PUVIMA Letter of Recommendation - ${lor.lor_request_id || 'Document'}`,
-            Author: 'PUVIMA IT Services & Research Consultancy',
+            Author: 'Puvima IT Service and Research Consultancy',
             Subject: `Letter of Recommendation for ${lor.intern_name}`,
             Keywords: 'PUVIMA, LOR, Recommendation, Research, Intern'
           }
@@ -61,7 +61,7 @@ class LorPdfService {
         doc.fillColor(navyColor)
            .font('Helvetica-Bold')
            .fontSize(16)
-           .text('PUVIMA IT SERVICES & RESEARCH CONSULTANCY', 100, 42);
+           .text('PUVIMA IT SERVICE AND RESEARCH CONSULTANCY', 100, 42);
 
         doc.fillColor(goldColor)
            .font('Helvetica-Bold')
@@ -125,7 +125,7 @@ class LorPdfService {
         const startStr = lor.internship_start_date || 'January 2026';
         const endStr = lor.internship_end_date || 'Present';
 
-        const para1 = `It is with immense pleasure and high professional confidence that we provide this official Letter of Recommendation for ${internName}, a student of ${college}, who has successfully undertaken and served an intensive research internship in ${domain} at PUVIMA IT Services and Research Consultancy from ${startStr} to ${endStr}.`;
+        const para1 = `It is with immense pleasure and high professional confidence that we provide this official Letter of Recommendation for ${internName}, a student of ${college}, who has successfully undertaken and served an intensive research internship in ${domain} at Puvima IT Service and Research Consultancy from ${startStr} to ${endStr}.`;
 
         doc.fillColor(slateDark)
            .font('Helvetica')
@@ -191,7 +191,7 @@ class LorPdfService {
         }
 
         // Conclusion Paragraph
-        const para3 = `Based on their demonstrated performance, technical proficiency, and moral integrity throughout their engagement with PUVIMA Consultancy, we endorse ${internName} wholeheartedly for higher academic pursuits, industrial opportunities, or research fellowships. We wish them exemplary success in all their future endeavors.`;
+        const para3 = `Based on their demonstrated performance, technical proficiency, and moral integrity throughout their engagement with Puvima IT Service and Research Consultancy, we endorse ${internName} wholeheartedly for higher academic pursuits, industrial opportunities, or research fellowships. We wish them exemplary success in all their future endeavors.`;
 
         doc.fillColor(slateDark)
            .font('Helvetica')
@@ -204,7 +204,7 @@ class LorPdfService {
         doc.fillColor(navyColor)
            .font('Helvetica-Bold')
            .fontSize(10)
-           .text('For PUVIMA IT SERVICES & RESEARCH CONSULTANCY', 40, sigTop);
+           .text('For PUVIMA IT SERVICE AND RESEARCH CONSULTANCY', 40, sigTop);
 
         doc.fillColor(slateDark)
            .font('Helvetica-Bold')
@@ -216,7 +216,7 @@ class LorPdfService {
            .fontSize(8.5)
            .text('Principal Consultant & Director of Research', 40, sigTop + 58);
 
-        doc.text('PUVIMA IT Services & Research Consultancy', 40, sigTop + 70);
+        doc.text('Puvima IT Service and Research Consultancy', 40, sigTop + 70);
 
         // Seal / Verification Box on Right
         doc.rect(370, sigTop - 5, 185, 88)
@@ -255,7 +255,7 @@ class LorPdfService {
         doc.fillColor(slateMuted)
            .font('Helvetica')
            .fontSize(7.5)
-           .text('PUVIMA Consultancy • Corporate Headquarters: Coimbatore & Chennai, Tamil Nadu, India • www.puvima.com', 40, 758, { align: 'center', width: 515 });
+           .text('Puvima IT Service and Research Consultancy • Corporate Headquarters: Coimbatore & Chennai, Tamil Nadu, India • www.puvima.com', 40, 758, { align: 'center', width: 515 });
 
         doc.end();
       } catch (err) {

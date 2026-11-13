@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Application Server Entrypoint for Vercel
+ * Puvima IT Service and Research Consultancy — Application Server Entrypoint for Vercel
  * Mounts the Express application for serverless invocation on Vercel.
  */
 const express = require('express');

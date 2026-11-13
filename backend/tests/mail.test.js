@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Mail API & Integration Test Suite
+ * Puvima IT Service and Research Consultancy — Mail API & Integration Test Suite
  */
 
 const { test, describe, before, after } = require('node:test');

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding Authentication & Role Authorization Middleware
+ * Puvima IT Service and Research Consultancy — Onboarding Authentication & Role Authorization Middleware
  */
 
 const { verifyToken } = require('../utils/token');

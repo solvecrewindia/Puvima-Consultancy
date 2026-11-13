@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — Functionality Preservation & Regression Report
+# Puvima IT Service and Research Consultancy — Functionality Preservation & Regression Report
 
 ## 1. Executive Summary & Verification Methodology
 

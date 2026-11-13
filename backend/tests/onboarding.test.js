@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding & HR Verification Comprehensive Unit & Integration Test Suite
+ * Puvima IT Service and Research Consultancy — Onboarding & HR Verification Comprehensive Unit & Integration Test Suite
  * Fully sandboxed test execution without requiring TCP loopback network sockets.
  */
 

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Mail Authorization Middleware
+ * Puvima IT Service and Research Consultancy — Mail Authorization Middleware
  * Verifies valid admin or authorized company executive session tokens.
  */
 

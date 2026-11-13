@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — User Management Service
+ * Puvima IT Service and Research Consultancy — User Management Service
  * Synchronized with server-side /api/company/users and resilient local cache.
  */
 

@@ -44,7 +44,7 @@ function post(path, body, headers = {}) {
 
 async function run() {
   console.log('====================================================');
-  console.log(' PUVIMA Consultancy — Full Production Verification');
+  console.log(' Puvima IT Service and Research Consultancy — Full Production Verification');
   console.log('====================================================\n');
 
   console.log('--- 1. TESTING STATIC PAGES & ASSETS ---');

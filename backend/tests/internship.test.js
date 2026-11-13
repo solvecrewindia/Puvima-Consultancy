@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Internship Application System Test Suite
+ * Puvima IT Service and Research Consultancy — Internship Application System Test Suite
  * Tests multi-step questionnaire validation, authentic resume file storage,
  * MySQL/JSON persistence, removal of recruitment email dispatches,
  * HR Portal review & lifecycle tracking, Super Admin oversight,

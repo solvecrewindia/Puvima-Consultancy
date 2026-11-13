@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Project Management Service
+ * Puvima IT Service and Research Consultancy — Project Management Service
  * Handles project creation, team assignments, reviews, and lifecycles
  */
 

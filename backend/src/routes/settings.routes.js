@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Public Site Settings Route
+ * Puvima IT Service and Research Consultancy — Public Site Settings Route
  */
 
 const express = require('express');

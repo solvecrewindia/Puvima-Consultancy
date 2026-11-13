@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Internship Applications Routes
+ * Puvima IT Service and Research Consultancy — Internship Applications Routes
  * Public candidate submission, HR Portal management, and Super Admin oversight.
  */
 

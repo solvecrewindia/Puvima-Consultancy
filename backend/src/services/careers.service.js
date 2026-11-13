@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Careers & Recruitment Service
+ * Puvima IT Service and Research Consultancy — Careers & Recruitment Service
  * Handles persistence for job positions and candidate applications.
  * Executes parameterized queries against MySQL with resilient local JSON fallback.
  */

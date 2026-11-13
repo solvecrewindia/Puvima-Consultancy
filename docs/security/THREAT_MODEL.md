@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — Threat Model & STRIDE Analysis
+# Puvima IT Service and Research Consultancy — Threat Model & STRIDE Analysis
 
 ## 1. Scope & System Assets
 

@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — Google Drive Resume Upload Integration & Setup Guide
+# Puvima IT Service and Research Consultancy — Google Drive Resume Upload Integration & Setup Guide
 
 This guide details step-by-step instructions to configure Google Drive API v3 using a Google Cloud Service Account for automated candidate resume uploads on the PUVIMA website.
 
@@ -12,7 +12,7 @@ When a candidate applies on `https://puvima.com/pages/careers.html`:
 3. The server authenticates with Google Drive API v3 via a private Service Account JWT.
 4. The resume is uploaded directly into PUVIMA's private folder:
    ```
-   PUVIMA Consultancy / Recruitment / Internship Applications
+   Puvima IT Service and Research Consultancy / Recruitment / Internship Applications
    ```
 5. Google Drive API returns the authentic file ID and web view URL (`https://drive.google.com/file/d/{fileId}/view`).
 6. All application data and the Google Drive URL are persisted in MySQL.
@@ -63,7 +63,7 @@ From the downloaded JSON file, note:
 1. Open [Google Drive](https://drive.google.com/) signed in with your PUVIMA workspace or recruitment administrator account.
 2. Create your dedicated folder hierarchy:
    ```
-   PUVIMA Consultancy
+   Puvima IT Service and Research Consultancy
    └── Recruitment
        └── Internship Applications
    ```

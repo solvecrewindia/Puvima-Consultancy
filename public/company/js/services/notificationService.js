@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Notification Center Service
+ * Puvima IT Service and Research Consultancy — Notification Center Service
  * Real-time updates, alerts, and unread counts
  */
 

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Resilient DNS Resolver Utility
+ * Puvima IT Service and Research Consultancy — Resilient DNS Resolver Utility
  * Prevents intermittent Windows getaddrinfo EAI_AGAIN lookup failures
  * by attempting multi-tier resolution with known reliable fallback IPs.
  */

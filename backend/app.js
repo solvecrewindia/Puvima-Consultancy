@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Backend Express App Entrypoint
+ * Puvima IT Service and Research Consultancy — Backend Express App Entrypoint
  */
 const express = require('express');
 const app = require('./src/app');

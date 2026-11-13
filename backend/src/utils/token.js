@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise JWT Security & Token Utility
+ * Puvima IT Service and Research Consultancy — Enterprise JWT Security & Token Utility
  * Built-in HMAC-SHA256 token generation, timing-safe verification,
  * explicit algorithm validation, and in-memory session revocation support.
  */

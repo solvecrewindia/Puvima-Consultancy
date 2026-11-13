@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Executive Administration Controller
+ * Puvima IT Service and Research Consultancy — Executive Administration Controller
  * SuperAdmin & Admin portal views, user lifecycle & metrics
  */
 

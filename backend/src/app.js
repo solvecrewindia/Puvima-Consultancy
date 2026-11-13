@@ -212,7 +212,7 @@ if (fs.existsSync(frontendDir)) {
 // Public API endpoints
 app.get('/api', (req, res) => {
   res.json({
-    service: 'PUVIMA Consultancy API',
+    service: 'Puvima IT Service and Research Consultancy API',
     status: 'ONLINE',
     version: '1.0.0',
     endpoints: {
@@ -282,7 +282,7 @@ app.get('/', (req, res, next) => {
     return res.sendFile(indexHtml);
   }
   res.json({
-    service: 'PUVIMA Consultancy API',
+    service: 'Puvima IT Service and Research Consultancy API',
     status: 'ONLINE',
     version: '1.0.0',
     endpoints: {

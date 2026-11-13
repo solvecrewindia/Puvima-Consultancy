@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Internship Application Service
+ * Puvima IT Service and Research Consultancy — Internship Application Service
  * Manages full lifecycle of candidate internship applications:
  * validation, secure resume storage, MySQL persistence with JSON fallback,
  * HR & Super Admin review tracking, and immutable audit history.
@@ -933,7 +933,7 @@ class InternshipService {
       referenceId: appData.reference_id,
       applicationId: appData.id,
       resumeFilename: appData.resume_filename,
-      message: 'Your internship application has been successfully submitted to PUVIMA Consultancy.'
+      message: 'Your internship application has been successfully submitted to Puvima IT Service and Research Consultancy.'
     };
   }
 

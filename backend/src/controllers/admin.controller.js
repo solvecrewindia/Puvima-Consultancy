@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Admin Controller
+ * Puvima IT Service and Research Consultancy — Admin Controller
  * Handles authentication, inquiries review, bookings management, and main-page settings.
  */
 

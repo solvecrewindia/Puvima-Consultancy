@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Company User Profiles Backend Service
+ * Puvima IT Service and Research Consultancy — Company User Profiles Backend Service
  * Server-backed profile management synchronized across all environments.
  */
 

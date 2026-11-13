@@ -1,14 +1,14 @@
-# PUVIMA Consultancy — Full-Stack Web Platform
+# Puvima IT Service and Research Consultancy — Full-Stack Web Platform
 
 > **Innovation. Research. Excellence.**
 >
-> "PUVIMA Consultancy is an emerging technology and research consultancy dedicated to transforming innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration."
+> "Puvima IT Service and Research Consultancy is an emerging technology and research consultancy dedicated to transforming innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration."
 
 ---
 
 ## 1. Project Overview
 
-**PUVIMA Consultancy** is a production-ready, full-stack web platform built for an emerging technology and research consultancy. The platform is architected with a strict separation of concerns across:
+**Puvima IT Service and Research Consultancy** is a production-ready, full-stack web platform built for an emerging technology and research consultancy. The platform is architected with a strict separation of concerns across:
 1. **Frontend**: Clean, semantic HTML5, modern vanilla CSS3 design system, and modular vanilla JavaScript.
 2. **Backend**: Node.js and Express.js REST API layer with server-side validation, multi-tier rate limiting, collision-resistant reference ID generation, and enterprise security headers (Helmet, restrictive CORS, proxy trust).
 3. **Database**: MySQL 8.0+ production schema with indexed foreign keys, constraints, automated timestamps, and parameterized queries.
@@ -233,7 +233,7 @@ Platform URLs:
 ### On-Page SEO
 - **Unique Metadata**: Every HTML file features an individual, descriptive `<title>` and `<meta name="description">`.
 - **Target Keywords**: Natural incorporation of brand and discipline keywords:
-  - PUVIMA Consultancy
+  - Puvima IT Service and Research Consultancy
   - Robotics and autonomous systems
   - FinTech and stock market analytics
   - AI and machine learning solutions
@@ -488,6 +488,6 @@ npm test
 
 ## 11. License & Copyright
 
-Copyright © 2026 PUVIMA Consultancy. All rights reserved.  
+Copyright © 2026 Puvima IT Service and Research Consultancy. All rights reserved.  
 *Innovation. Research. Excellence.*
 

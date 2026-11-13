@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Public Customer Reviews API Routes
+ * Puvima IT Service and Research Consultancy — Public Customer Reviews API Routes
  */
 
 const express = require('express');

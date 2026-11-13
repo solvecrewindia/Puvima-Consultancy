@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Portal Authentication & RBAC Middleware
+ * Puvima IT Service and Research Consultancy — Portal Authentication & RBAC Middleware
  * Validates either JWT token or portal session headers, enforcing role access.
  * Rejects Employee and Intern accounts from administrative endpoints with 403 Forbidden.
  */

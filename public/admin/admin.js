@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Executive Administration Portal Controller
+ * Puvima IT Service and Research Consultancy — Executive Administration Portal Controller
  * Full client-side management logic for authentication, inquiries review, customer reviews moderation, and site configuration.
  */
 
@@ -896,7 +896,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     // Email Candidate mailto link
     const mailtoBtn = document.getElementById('internModalMailtoBtn');
     if (mailtoBtn) {
-      mailtoBtn.href = `mailto:${app.email}?subject=PUVIMA%20Consultancy%20Internship%20Application%20%5B${encodeURIComponent(app.reference_id)}%5D`;
+      mailtoBtn.href = `mailto:${app.email}?subject=Puvima%20IT%20Service%20and%20Research%20Consultancy%20Internship%20Application%20%5B${encodeURIComponent(app.reference_id)}%5D`;
     }
 
     // Workflow controls
@@ -1214,7 +1214,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     modalCreatedAt.textContent = new Date(contact.created_at || Date.now()).toLocaleString();
     modalSenderName.textContent = contact.name;
     modalSenderEmail.textContent = contact.email;
-    modalSenderEmail.href = `mailto:${contact.email}?subject=PUVIMA Consultancy — Regarding your inquiry [${contact.reference_id}]`;
+    modalSenderEmail.href = `mailto:${contact.email}?subject=Puvima IT Service and Research Consultancy — Regarding your inquiry [${contact.reference_id}]`;
 
     if (contact.company) {
       modalCompanyWrap.style.display = 'block';
@@ -1238,7 +1238,7 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     modalStatusBadge.className = `status-pill status-${contact.status || 'new'}`;
     modalStatusBadge.textContent = (contact.status || 'new').replace('_', ' ').toUpperCase();
 
-    modalMailtoBtn.href = `mailto:${contact.email}?subject=PUVIMA Advisory — Response to ${encodeURIComponent(contact.subject || 'Inquiry')} [${contact.reference_id}]&body=Dear ${encodeURIComponent(contact.name)},%0D%0A%0D%0AThank you for reaching out to PUVIMA Consultancy.%0D%0A%0D%0A---%0D%0AAdvisory Team%0D%0APUVIMA Consultancy`;
+    modalMailtoBtn.href = `mailto:${contact.email}?subject=PUVIMA Advisory — Response to ${encodeURIComponent(contact.subject || 'Inquiry')} [${contact.reference_id}]&body=Dear ${encodeURIComponent(contact.name)},%0D%0A%0D%0AThank you for reaching out to Puvima IT Service and Research Consultancy.%0D%0A%0D%0A---%0D%0AAdvisory Team%0D%0APuvima IT Service and Research Consultancy`;
 
     modalOverlay.style.display = 'flex';
   }

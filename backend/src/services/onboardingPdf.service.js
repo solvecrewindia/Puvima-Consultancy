@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding Application Form PDF Generator
+ * Puvima IT Service and Research Consultancy — Onboarding Application Form PDF Generator
  * Creates an official, publication-quality A4 application document using PDFKit.
  * Dynamically populated with real applicant data, tables, check-boxes, and signature blocks.
  */
@@ -31,7 +31,7 @@ class OnboardingPdfService {
           margin: 36, // 0.5 inch margins
           info: {
             Title: `PUVIMA Onboarding Application - ${application.application_id || 'Draft'}`,
-            Author: 'PUVIMA IT Services & Research Consultancy',
+            Author: 'Puvima IT Service and Research Consultancy',
             Subject: 'Employee / Intern Onboarding Application Form',
             Keywords: 'PUVIMA, Onboarding, HR, Application'
           }
@@ -59,7 +59,7 @@ class OnboardingPdfService {
         doc.fillColor(navyColor)
            .font('Helvetica-Bold')
            .fontSize(14)
-           .text('PUVIMA IT SERVICES & RESEARCH CONSULTANCY', 160, 36, { align: 'right' });
+           .text('PUVIMA IT SERVICE AND RESEARCH CONSULTANCY', 160, 36, { align: 'right' });
 
         doc.fillColor(slateMuted)
            .font('Helvetica')
@@ -227,7 +227,7 @@ class OnboardingPdfService {
         
         doc.fillColor(slateDark).font('Helvetica').fontSize(7.5);
         doc.text('1. I hereby certify that the information provided in this onboarding application and all attached documents are true, complete, and correct to the best of my knowledge.', 44, currY + 6, { width: 507 });
-        doc.text('2. I agree to abide by the rules, confidentiality policies, intellectual property terms, and code of conduct of PUVIMA Consultancy.', 44, currY + 20, { width: 507 });
+        doc.text('2. I agree to abide by the rules, confidentiality policies, intellectual property terms, and code of conduct of Puvima IT Service and Research Consultancy.', 44, currY + 20, { width: 507 });
         doc.text('3. I understand that any false statement or omission of facts may lead to the revocation of my engagement or disciplinary action.', 44, currY + 34, { width: 507 });
 
         doc.fillColor(navyColor).font('Helvetica-Bold').fontSize(8);

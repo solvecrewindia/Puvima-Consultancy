@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Security Audit Logging & Monitoring Service
+ * Puvima IT Service and Research Consultancy — Enterprise Security Audit Logging & Monitoring Service
  * Implements structured, immutable security event logging for authentication,
  * administrative actions, authorization failures, and sensitive asset access.
  * Strictly filters out passwords, tokens, cookies, and sensitive payloads.

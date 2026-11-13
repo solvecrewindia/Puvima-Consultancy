@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Storage & Settings Service
+ * Puvima IT Service and Research Consultancy — Storage & Settings Service
  * Handles resilient persistence for contact enquiries, bookings, and live main-page settings.
  * Supports MySQL database with graceful local JSON fallback when MySQL is inactive.
  */
@@ -38,7 +38,7 @@ const DEFAULT_SETTINGS = {
   hero: {
     headlineMain: 'Innovation.',
     headlineGradient: 'Research. Excellence.',
-    subhead: 'PUVIMA Consultancy transforms innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration.'
+    subhead: 'Puvima IT Service and Research Consultancy transforms innovative ideas into impactful solutions. We specialize in technical project development, IT solutions, data analytics, and research support, delivering quality-driven services through innovation, expertise, and collaboration.'
   },
   contact: {
     email: 'contact@puvima.com',

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Frontend API & Runtime Configuration
+ * Puvima IT Service and Research Consultancy — Frontend API & Runtime Configuration
  * 
  * If frontend and backend are deployed as two separate Vercel projects:
  * Set your backend Vercel URL here or via localStorage.setItem('puvima_api_base_url', 'https://...').

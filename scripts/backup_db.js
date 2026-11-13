@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * PUVIMA Consultancy — Automated Database Backup Utility
+ * Puvima IT Service and Research Consultancy — Automated Database Backup Utility
  * Exports structured table dumps (SQL + JSON) for disaster recovery.
  * Works independently of mysqldump system binary.
  */
@@ -28,7 +28,7 @@ const TABLES = [
 
 async function runBackup() {
   console.log('====================================================');
-  console.log(' PUVIMA Consultancy — Database Backup Utility');
+  console.log(' Puvima IT Service and Research Consultancy — Database Backup Utility');
   console.log('====================================================');
 
   if (!fs.existsSync(BACKUP_DIR)) {
@@ -48,7 +48,7 @@ async function runBackup() {
   console.log(`[CONNECTED] MySQL server ready. Exporting tables...`);
 
   let sqlOutput = `-- ====================================================\n`;
-  sqlOutput += `-- PUVIMA Consultancy Database Backup\n`;
+  sqlOutput += `-- Puvima IT Service and Research Consultancy Database Backup\n`;
   sqlOutput += `-- Date: ${new Date().toISOString()}\n`;
   sqlOutput += `-- Database: ${process.env.DB_NAME || 'puvima_db'}\n`;
   sqlOutput += `-- ====================================================\n\n`;

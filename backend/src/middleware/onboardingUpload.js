@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding Document Upload Middleware
+ * Puvima IT Service and Research Consultancy — Onboarding Document Upload Middleware
  * Supports PDF, JPG, JPEG, and PNG document uploads with validation and secure storage.
  */
 

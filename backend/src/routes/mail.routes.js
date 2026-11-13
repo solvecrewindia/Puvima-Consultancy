@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Mail Routes
+ * Puvima IT Service and Research Consultancy — Mail Routes
  * Endpoints for the PUVIMA Mail Application.
  */
 

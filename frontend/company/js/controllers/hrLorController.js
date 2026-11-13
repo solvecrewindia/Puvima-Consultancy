@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — HR Letter of Recommendation (LOR) Verification Controller
+ * Puvima IT Service and Research Consultancy — HR Letter of Recommendation (LOR) Verification Controller
  * Displays all intern LOR requests, professor endorsement status, remarks,
  * and allows HR to approve, reject, and generate official LOR PDFs.
  */

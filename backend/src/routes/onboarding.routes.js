@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding & HR Verification Routes
+ * Puvima IT Service and Research Consultancy — Onboarding & HR Verification Routes
  */
 
 const express = require('express');

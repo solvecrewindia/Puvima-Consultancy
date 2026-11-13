@@ -1,8 +1,8 @@
-# PUVIMA Consultancy — Comprehensive Security Audit Report
+# Puvima IT Service and Research Consultancy — Comprehensive Security Audit Report
 
 ## 1. Executive Summary
 
-A comprehensive application security audit, code review, and penetration test were conducted across the PUVIMA Consultancy full-stack platform (`puvima.com`). The audit covered web application security (OWASP Top 10 2021), API authorization, cryptographic implementations, authentication and session management, database least-privilege configurations, SSRF protections, and file upload pipelines.
+A comprehensive application security audit, code review, and penetration test were conducted across the Puvima IT Service and Research Consultancy full-stack platform (`puvima.com`). The audit covered web application security (OWASP Top 10 2021), API authorization, cryptographic implementations, authentication and session management, database least-privilege configurations, SSRF protections, and file upload pipelines.
 
 All identified vulnerabilities have been completely remediated and verified through automated test suites (77/77 tests passing).
 

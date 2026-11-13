@@ -1,8 +1,8 @@
-# PUVIMA Consultancy — Authentication & Role-Based Access Control (RBAC)
+# Puvima IT Service and Research Consultancy — Authentication & Role-Based Access Control (RBAC)
 
 ## 1. Authentication Architecture
 
-PUVIMA Consultancy employs a unified, multi-factor identity architecture serving public visitors, candidate applicants, employees, interns, HR coordinators, and executive administrators.
+Puvima IT Service and Research Consultancy employs a unified, multi-factor identity architecture serving public visitors, candidate applicants, employees, interns, HR coordinators, and executive administrators.
 
 ```mermaid
 sequenceDiagram

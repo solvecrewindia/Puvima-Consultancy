@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Rate Limiting & Brute-Force Protection
+ * Puvima IT Service and Research Consultancy — Enterprise Rate Limiting & Brute-Force Protection
  * Protects authentication, public forms, sensitive APIs, and MFA against automated attacks.
  */
 

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Onboarding & HR Verification Controller
+ * Puvima IT Service and Research Consultancy — Onboarding & HR Verification Controller
  */
 
 const path = require('path');

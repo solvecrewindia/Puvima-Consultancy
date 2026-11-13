@@ -1,7 +1,7 @@
 {
   "name": "puvima-consultancy-backend",
   "version": "1.0.0",
-  "description": "Enterprise REST API backend for PUVIMA Consultancy",
+  "description": "Enterprise REST API backend for Puvima IT Service and Research Consultancy",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
@@ -17,7 +17,7 @@
     "ai-ml",
     "research"
   ],
-  "author": "PUVIMA Consultancy",
+  "author": "Puvima IT Service and Research Consultancy",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

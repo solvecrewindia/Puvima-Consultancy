@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise SMTP Email Dispatch Service
+ * Puvima IT Service and Research Consultancy — Enterprise SMTP Email Dispatch Service
  * Powered by Nodemailer.
  * Supports multi-account dynamic login (Gmail, PUVIMA, Custom SMTP).
  */

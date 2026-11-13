@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — User Management API Controller
+ * Puvima IT Service and Research Consultancy — User Management API Controller
  */
 
 const userService = require('../services/userService');

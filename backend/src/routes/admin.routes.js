@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Admin API Routes
+ * Puvima IT Service and Research Consultancy — Admin API Routes
  */
 
 const express = require('express');

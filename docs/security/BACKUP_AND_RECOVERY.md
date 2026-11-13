@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — Database Backup & Disaster Recovery Guide
+# Puvima IT Service and Research Consultancy — Database Backup & Disaster Recovery Guide
 
 ## 1. Overview & Recovery Objectives
 

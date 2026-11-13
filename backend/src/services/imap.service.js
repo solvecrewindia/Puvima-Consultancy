@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise IMAP Email Service
+ * Puvima IT Service and Research Consultancy — Enterprise IMAP Email Service
  * Powered by imapflow and mailparser.
  * Supports multi-account dynamic login (Gmail, PUVIMA, Custom IMAP)
  * with connection pooling, message parsing, search, and flags.

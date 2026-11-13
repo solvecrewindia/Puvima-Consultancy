@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Letter of Recommendation (LOR) Controller
+ * Puvima IT Service and Research Consultancy — Letter of Recommendation (LOR) Controller
  * Orchestrates intern LOR submission, professor email verification,
  * professor endorsement confirmation, and HR approval.
  */

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Customer Reviews & Rotating Carousel Controller
+ * Puvima IT Service and Research Consultancy — Customer Reviews & Rotating Carousel Controller
  * Handles loading approved reviews, rendering the infinite marquee, and review submission modal with profile photo upload.
  */
 

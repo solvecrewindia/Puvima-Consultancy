@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — HR Careers & Resume Verification Controller
+ * Puvima IT Service and Research Consultancy — HR Careers & Resume Verification Controller
  * Allows HR to view candidate applications, inspect profiles, download resumes stored in Supabase,
  * and update recruitment statuses.
  */

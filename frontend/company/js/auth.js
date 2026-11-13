@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Authentication & Session Manager
+ * Puvima IT Service and Research Consultancy — Authentication & Session Manager
  * Role-Based Access Control (RBAC) & Session Persistence
  */
 

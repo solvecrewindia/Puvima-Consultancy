@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Centralized Authentication & MFA Controller
+ * Puvima IT Service and Research Consultancy — Centralized Authentication & MFA Controller
  * Provides MFA enrollment, verification, status check, and session invalidation.
  */
 

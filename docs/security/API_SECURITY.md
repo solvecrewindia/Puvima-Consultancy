@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — API Security Architecture
+# Puvima IT Service and Research Consultancy — API Security Architecture
 
 ## 1. Overview & API Attack Surface
 

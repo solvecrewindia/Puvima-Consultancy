@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Supabase Client Configuration
+ * Puvima IT Service and Research Consultancy — Supabase Client Configuration
  * Project: jarrtmqdhfcijarbuntl (https://supabase.com/dashboard/project/jarrtmqdhfcijarbuntl)
  */
 

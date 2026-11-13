@@ -15,7 +15,7 @@ const PORT = parseInt(process.env.PORT, 10) || 5000;
 
 async function startServer() {
   console.log('====================================================');
-  console.log(' PUVIMA Consultancy — Enterprise Backend API Server');
+  console.log(' Puvima IT Service and Research Consultancy — Enterprise Backend API Server');
   console.log(' Innovation. Research. Excellence.');
   console.log('====================================================');
 

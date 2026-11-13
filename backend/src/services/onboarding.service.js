@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Onboarding & HR Verification Service
+ * Puvima IT Service and Research Consultancy — Enterprise Onboarding & HR Verification Service
  * Supports complete applicant onboarding lifecycle:
  * Application -> Multi-Step Details -> Document Upload -> Verification -> Approval/Rejection.
  * Connected to Supabase Cloud with resilient local file fallback.
@@ -183,7 +183,7 @@ class OnboardingService {
             from: `"PUVIMA HR Operations" <${process.env.MAIL_FROM || 'contact@puvima.com'}>`,
             to: recipientEmail,
             subject: `[PUVIMA Onboarding] ${title}`,
-            text: `${message}\n\nPUVIMA IT Services and Research Consultancy\nWebsite: https://puvima.com`
+            text: `${message}\n\nPuvima IT Service and Research Consultancy\nWebsite: https://puvima.com`
           });
         }
       } catch (err) {

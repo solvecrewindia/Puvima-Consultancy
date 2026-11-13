@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — HR Onboarding & Verification Controller
+ * Puvima IT Service and Research Consultancy — HR Onboarding & Verification Controller
  * Full verification lifecycle: Review -> Document Inspection -> Approve / Correct / Reject
  */
 

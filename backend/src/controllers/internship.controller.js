@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Internship Applications Controller
+ * Puvima IT Service and Research Consultancy — Internship Applications Controller
  * Express controller for public candidate submission, HR Portal management,
  * and Super Admin oversight with status transition audit trail.
  */

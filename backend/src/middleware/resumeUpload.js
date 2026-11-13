@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Secure Resume Upload Middleware
+ * Puvima IT Service and Research Consultancy — Secure Resume Upload Middleware
  * Validates resume file uploads: extension, MIME type, magic bytes signature, and size limit.
  * Stores resumes securely outside the public web root with unguessable cryptographic filenames.
  */

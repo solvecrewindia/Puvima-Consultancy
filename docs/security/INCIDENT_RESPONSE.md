@@ -1,8 +1,8 @@
-# PUVIMA Consultancy — Security Incident Response Plan (IRP)
+# Puvima IT Service and Research Consultancy — Security Incident Response Plan (IRP)
 
 ## 1. Overview & Objectives
 
-This Incident Response Plan defines operational procedures to detect, contain, investigate, and remediate cybersecurity incidents impacting PUVIMA Consultancy (`puvima.com`). 
+This Incident Response Plan defines operational procedures to detect, contain, investigate, and remediate cybersecurity incidents impacting Puvima IT Service and Research Consultancy (`puvima.com`). 
 
 Objectives:
 - Protect candidate PII, client consultations, corporate emails, and platform infrastructure.

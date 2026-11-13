@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Admin & Settings API Test Suite
+ * Puvima IT Service and Research Consultancy — Admin & Settings API Test Suite
  */
 
 const { test, describe, before, after } = require('node:test');

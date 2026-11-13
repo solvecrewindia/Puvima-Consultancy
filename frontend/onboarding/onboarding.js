@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Applicant Onboarding & Verification Client Logic
+ * Puvima IT Service and Research Consultancy — Applicant Onboarding & Verification Client Logic
  */
 
 (function () {

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Password Security & Cryptographic Hashing Utility
+ * Puvima IT Service and Research Consultancy — Enterprise Password Security & Cryptographic Hashing Utility
  * Implements OWASP ASVS compliant scrypt password hashing with cryptographically random salts,
  * constant-time verification against timing attacks, and automatic legacy password migration.
  */

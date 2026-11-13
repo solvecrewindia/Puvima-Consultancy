@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Letter of Recommendation (LOR) & Professor Endorsement Service
+ * Puvima IT Service and Research Consultancy — Letter of Recommendation (LOR) & Professor Endorsement Service
  * Handles candidate LOR application, automated professor email dispatch with verification token,
  * professor endorsement confirmation, and HR approval/issuance lifecycle.
  */
@@ -185,7 +185,7 @@ class LorService {
     if (!lor) throw new Error('LOR request not found.');
 
     const confirmUrl = `${hostOrigin}/company/lorconfirm?token=${lor.verification_token}`;
-    const subject = `[PUVIMA Consultancy] Academic Mentor Verification Request for ${lor.intern_name}`;
+    const subject = `[Puvima IT Service and Research Consultancy] Academic Mentor Verification Request for ${lor.intern_name}`;
 
     const html = `
       <!DOCTYPE html>
@@ -215,13 +215,13 @@ class LorService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>PUVIMA IT SERVICES AND RESEARCH CONSULTANCY</h1>
+            <h1>PUVIMA IT SERVICE AND RESEARCH CONSULTANCY</h1>
             <p>Official Academic Mentor Verification Portal</p>
           </div>
           <div class="body">
             <div class="salutation">Respected Professor ${lor.professor_name},</div>
             <p style="font-size: 13.5px; color: #334155;">
-              Greetings from <strong>PUVIMA Consultancy</strong>. Your student, <strong>${lor.intern_name}</strong>, has successfully undertaken research and engineering engagement with us in the domain of <strong>${lor.domain_specialization}</strong>.
+              Greetings from <strong>Puvima IT Service and Research Consultancy</strong>. Your student, <strong>${lor.intern_name}</strong>, has successfully undertaken research and engineering engagement with us in the domain of <strong>${lor.domain_specialization}</strong>.
             </p>
             <p style="font-size: 13.5px; color: #334155;">
               The student has applied for an official <strong>PUVIMA Letter of Recommendation (LOR)</strong> and has nominated you as their Academic Supervisor / Faculty Guide (${lor.academic_relationship}) from <strong>${lor.professor_institution}</strong>.
@@ -257,7 +257,7 @@ class LorService {
             </p>
           </div>
           <div class="footer">
-            PUVIMA IT Services &amp; Research Consultancy • Mail: contact@puvima.com • Web: www.puvima.com<br>
+            Puvima IT Service and Research Consultancy • Mail: contact@puvima.com • Web: www.puvima.com<br>
             Reference: ${lor.lor_request_id}
           </div>
         </div>
@@ -266,7 +266,7 @@ class LorService {
     `;
 
     const text = `
-PUVIMA IT Services and Research Consultancy
+Puvima IT Service and Research Consultancy
 Official Academic Mentor Verification
 
 Respected Professor ${lor.professor_name},
@@ -277,7 +277,7 @@ Please confirm your endorsement at the secure link below:
 ${confirmUrl}
 
 Thank you,
-PUVIMA Consultancy
+Puvima IT Service and Research Consultancy
 contact@puvima.com
 Reference: ${lor.lor_request_id}
     `;

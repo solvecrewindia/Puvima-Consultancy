@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Careers & Recruitment API Test Suite
+ * Puvima IT Service and Research Consultancy — Careers & Recruitment API Test Suite
  * Tests public positions, applications submission, security checks, admin controls, and resume downloads.
  */
 

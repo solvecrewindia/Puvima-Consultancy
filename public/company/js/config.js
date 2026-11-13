@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Company Management Portal Configuration
+ * Puvima IT Service and Research Consultancy — Company Management Portal Configuration
  */
 
 const CONFIG = {

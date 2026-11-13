@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Public Careers API Routes
+ * Puvima IT Service and Research Consultancy — Public Careers API Routes
  */
 
 const express = require('express');

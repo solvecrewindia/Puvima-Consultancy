@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Member Workspace & Timeline Controller
+ * Puvima IT Service and Research Consultancy — Member Workspace & Timeline Controller
  * Powers Employee & Intern Project Dashboard and Timeline Interactions
  */
 

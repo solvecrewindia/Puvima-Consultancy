@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Common Portal Layout Controller
+ * Puvima IT Service and Research Consultancy — Common Portal Layout Controller
  * Handles sidebar, user session headers, and notifications
  */
 

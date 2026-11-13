@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Security Test Suite
+ * Puvima IT Service and Research Consultancy — Enterprise Security Test Suite
  * Validates password hashing, timing-safe tokens, rate limiters, SSRF guard, TOTP MFA, and audit logging.
  */
 

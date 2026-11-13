@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — HR Operations & Workforce Management Controller
+ * Puvima IT Service and Research Consultancy — HR Operations & Workforce Management Controller
  * Handles project creation wizard, employee assignments, and reviews
  */
 

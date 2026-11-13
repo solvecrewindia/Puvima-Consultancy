@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Auth & MFA API Routes
+ * Puvima IT Service and Research Consultancy — Auth & MFA API Routes
  */
 
 const express = require('express');

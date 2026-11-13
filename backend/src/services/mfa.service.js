@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Enterprise Multi-Factor Authentication (MFA / TOTP) Service
+ * Puvima IT Service and Research Consultancy — Enterprise Multi-Factor Authentication (MFA / TOTP) Service
  * Implements RFC 6238 Time-Based One-Time Passwords (TOTP) compatible with
  * Google Authenticator, Microsoft Authenticator, and Authy.
  * Generates single-use hashed recovery codes and enforces server-side verification.
@@ -129,9 +129,9 @@ class MfaService {
   /**
    * Generates a new TOTP secret and enrollment URI
    * @param {string} userIdentifier (e.g. email or user_code)
-   * @param {string} issuer (PUVIMA Consultancy)
+   * @param {string} issuer (Puvima IT Service and Research Consultancy)
    */
-  generateEnrollment(userIdentifier, issuer = 'PUVIMA Consultancy') {
+  generateEnrollment(userIdentifier, issuer = 'Puvima IT Service and Research Consultancy') {
     const rawSecret = crypto.randomBytes(20);
     const secretBase32 = base32Encode(rawSecret);
 

@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — File Upload Security Architecture
+# Puvima IT Service and Research Consultancy — File Upload Security Architecture
 
 ## 1. Scope & Threat Context
 

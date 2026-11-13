@@ -1,8 +1,8 @@
-# PUVIMA Consultancy — Enterprise Security Architecture
+# Puvima IT Service and Research Consultancy — Enterprise Security Architecture
 
 ## 1. Executive Summary & Architecture Overview
 
-PUVIMA Consultancy (`puvima.com`) operates a multi-tier enterprise web platform delivering consultancy services, research prototyping, IT solutions, dedicated executive mail, and candidate recruitment workflows. 
+Puvima IT Service and Research Consultancy (`puvima.com`) operates a multi-tier enterprise web platform delivering consultancy services, research prototyping, IT solutions, dedicated executive mail, and candidate recruitment workflows. 
 
 This security architecture establishes a comprehensive, zero-trust defense-in-depth model protecting corporate assets, client consultations, applicant dossiers, administrator credentials, and server infrastructure.
 

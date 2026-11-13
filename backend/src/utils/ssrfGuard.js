@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Server-Side Request Forgery (SSRF) Guard
+ * Puvima IT Service and Research Consultancy — Server-Side Request Forgery (SSRF) Guard
  * Validates outgoing hostnames and IPs against private networks,
  * loopback, link-local, and cloud metadata endpoints (AWS, GCP, Azure, DigitalOcean).
  */

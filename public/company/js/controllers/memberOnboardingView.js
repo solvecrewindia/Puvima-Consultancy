@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Embedded Member Onboarding Module
+ * Puvima IT Service and Research Consultancy — Embedded Member Onboarding Module
  * Allows Employees and Interns to complete their full 8-step onboarding profile,
  * upload verification documents, and track HR verification status directly inside
  * their portal workspace without navigating away to another page.
@@ -719,7 +719,7 @@
                 <div class="review-sheet" id="e_reviewSheet">
                   <div class="review-sheet-header">
                     <div>
-                      <div class="review-company-title">PUVIMA IT SERVICES AND RESEARCH CONSULTANCY</div>
+                      <div class="review-company-title">PUVIMA IT SERVICE AND RESEARCH CONSULTANCY</div>
                       <div class="review-company-sub">OFFICIAL ONBOARDING &amp; VERIFICATION RECORD</div>
                     </div>
                     <div style="text-align: right;">
@@ -839,7 +839,7 @@
                     </label>
                     <label style="display: flex; gap: 8px; align-items: flex-start; cursor: pointer;">
                       <input type="checkbox" id="e_chkDecl2" required style="margin-top: 3px;">
-                      <span>I agree to abide by the policies and code of conduct of PUVIMA Consultancy.</span>
+                      <span>I agree to abide by the policies and code of conduct of Puvima IT Service and Research Consultancy.</span>
                     </label>
                     <label style="display: flex; gap: 8px; align-items: flex-start; cursor: pointer;">
                       <input type="checkbox" id="e_chkDecl3" required style="margin-top: 3px;">

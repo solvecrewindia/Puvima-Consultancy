@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Careers & Applications Controller
+ * Puvima IT Service and Research Consultancy — Careers & Applications Controller
  * Handles public job listings, candidate submissions, and administrative hiring workflows.
  */
 

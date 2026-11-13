@@ -1,8 +1,8 @@
-# PUVIMA Consultancy — Database Security Architecture
+# Puvima IT Service and Research Consultancy — Database Security Architecture
 
 ## 1. Overview & Dual-Database Strategy
 
-PUVIMA Consultancy employs a robust dual-database persistence strategy designed for high resilience and separation of concerns:
+Puvima IT Service and Research Consultancy employs a robust dual-database persistence strategy designed for high resilience and separation of concerns:
 
 1. **MySQL Database (`puvima_db`)**: Primary operational relational datastore managing candidate applications, recruitment workflows, portal user roles, site configurations, customer reviews, and security audit logs.
 2. **Supabase PostgreSQL (`jarrtmqdhfcijarbuntl`)**: Managed cloud persistence layer supporting real-time submissions, contact inquiries, consultation bookings, and cloud fallback storage.

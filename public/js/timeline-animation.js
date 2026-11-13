@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Universal Card Blur-Sequence Animation
+ * Puvima IT Service and Research Consultancy — Universal Card Blur-Sequence Animation
  * Faithful native implementation of Framer Motion / motion/react TimelineAnimation component.
  *
  * Motion Specification:

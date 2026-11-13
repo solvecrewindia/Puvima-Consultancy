@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — UI Toolkit & Component Helpers
+ * Puvima IT Service and Research Consultancy — UI Toolkit & Component Helpers
  * Toasts, Modals, Spinners, Badges, and Formatters
  */
 

@@ -1,7 +1,7 @@
 {
   "name": "puvima-consultancy",
   "version": "1.0.0",
-  "description": "PUVIMA Consultancy — Innovation. Research. Excellence. Full-Stack Technology and Research Consultancy Platform",
+  "description": "Puvima IT Service and Research Consultancy — Innovation. Research. Excellence. Full-Stack Technology and Research Consultancy Platform",
   "main": "index.js",
   "scripts": {
     "start": "node backend/src/server.js",
@@ -18,7 +18,7 @@
     "ai-ml",
     "research-solutions"
   ],
-  "author": "PUVIMA Consultancy",
+  "author": "Puvima IT Service and Research Consultancy",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

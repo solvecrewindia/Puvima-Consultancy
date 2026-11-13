@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Mail Controller
+ * Puvima IT Service and Research Consultancy — Mail Controller
  * Supports multi-account dynamic login (Gmail, PUVIMA, Custom IMAP/SMTP),
  * credentials testing, message retrieval, and outbound dispatch.
  */

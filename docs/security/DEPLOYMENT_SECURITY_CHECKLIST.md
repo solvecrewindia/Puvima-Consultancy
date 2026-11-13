@@ -1,4 +1,4 @@
-# PUVIMA Consultancy — Production Deployment Security Checklist
+# Puvima IT Service and Research Consultancy — Production Deployment Security Checklist
 
 ## 1. Pre-Deployment Configuration & Secrets Audit
 

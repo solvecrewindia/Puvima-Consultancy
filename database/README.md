@@ -1,6 +1,6 @@
-# PUVIMA Consultancy — Database Documentation
+# Puvima IT Service and Research Consultancy — Database Documentation
 
-This directory contains the SQL schemas and migrations for **PUVIMA Consultancy**.
+This directory contains the SQL schemas and migrations for **Puvima IT Service and Research Consultancy**.
 
 ## Database Overview
 - **Database Name**: `puvima_db`

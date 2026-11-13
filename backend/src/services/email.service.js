@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Email Notification Service
+ * Puvima IT Service and Research Consultancy — Email Notification Service
  * Supports standard SMTP transport via Nodemailer with graceful fallback when unconfigured.
  * Handles recruitment alerts, consultation booking confirmations, and contact inquiries.
  */
@@ -95,7 +95,7 @@ class EmailService {
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px; color: #1e293b;">
             <div style="border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 20px;">
-              <h2 style="margin: 0; color: #0f172a; font-size: 20px;">PUVIMA Consultancy — Talent Acquisition</h2>
+              <h2 style="margin: 0; color: #0f172a; font-size: 20px;">Puvima IT Service and Research Consultancy — Talent Acquisition</h2>
               <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">New Candidate Application Received</p>
             </div>
             
@@ -147,19 +147,19 @@ class EmailService {
       // 2. Send acknowledgment to applicant
       try {
         const applicantAckMail = {
-          from: `"PUVIMA Consultancy" <${this.fromEmail}>`,
+          from: `"Puvima IT Service and Research Consultancy" <${this.fromEmail}>`,
           to: application.applicant_email,
-          subject: `Application Received: ${position.title} — PUVIMA Consultancy`,
+          subject: `Application Received: ${position.title} — Puvima IT Service and Research Consultancy`,
           html: `
             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 580px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px; color: #1e293b;">
               <h2 style="color: #0f172a; margin-top: 0;">Thank You for Applying</h2>
               <p>Dear ${application.applicant_name},</p>
-              <p>We have received your application for the <strong>${position.title}</strong> role at PUVIMA Consultancy.</p>
+              <p>We have received your application for the <strong>${position.title}</strong> role at Puvima IT Service and Research Consultancy.</p>
               <p>Your unique application tracking reference is: <strong style="font-family: monospace; color: #0284c7;">${application.reference_id}</strong></p>
               <p>Our talent acquisition team will evaluate your profile against the technical requirements of the role. Should your qualifications align with our current focus areas, a recruiter will reach out regarding next steps.</p>
               <br>
               <p style="margin: 0;">Warm regards,</p>
-              <p style="margin: 4px 0 0; font-weight: 600;">PUVIMA Consultancy Talent Acquisition Desk</p>
+              <p style="margin: 4px 0 0; font-weight: 600;">Puvima IT Service and Research Consultancy Talent Acquisition Desk</p>
               <p style="margin: 0; color: #64748b; font-size: 13px;">Innovation. Research. Excellence.</p>
             </div>
           `

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Google Drive Resume Storage Service
+ * Puvima IT Service and Research Consultancy — Google Drive Resume Storage Service
  * Handles server-side upload of candidate resumes directly to PUVIMA's
  * designated private Google Drive recruitment folder via the official Google Drive API v3.
  * 
@@ -140,7 +140,7 @@ class GoogleDriveService {
       const requestBody = {
         name: filename,
         parents: [this.folderId],
-        description: `PUVIMA Consultancy Internship Application Resume — Reference: ${referenceId}`
+        description: `Puvima IT Service and Research Consultancy Internship Application Resume — Reference: ${referenceId}`
       };
 
       const response = await drive.files.create({

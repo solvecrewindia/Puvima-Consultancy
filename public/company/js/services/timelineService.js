@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Project Timeline & Discussion Service
+ * Puvima IT Service and Research Consultancy — Project Timeline & Discussion Service
  * Threaded entries, attachments, and staff-only notes
  */
 

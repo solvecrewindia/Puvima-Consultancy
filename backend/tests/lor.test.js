@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Letter of Recommendation (LOR) Automated Test Suite
+ * Puvima IT Service and Research Consultancy — Letter of Recommendation (LOR) Automated Test Suite
  * Validates intern LOR submission, professor email generation, token verification,
  * professor endorsement confirmation, HR approval, and PDF generation.
  */

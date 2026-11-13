@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Supabase Client Initializer & State Provider
+ * Puvima IT Service and Research Consultancy — Supabase Client Initializer & State Provider
  * Connects to Supabase backend or transparently provisions cached data
  */
 

@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Admin Authentication Middleware
+ * Puvima IT Service and Research Consultancy — Admin Authentication Middleware
  */
 
 const { verifyToken } = require('../utils/token');

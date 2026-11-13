@@ -1,5 +1,5 @@
 /**
- * PUVIMA Consultancy — Member LOR (Letter of Recommendation) View Controller
+ * Puvima IT Service and Research Consultancy — Member LOR (Letter of Recommendation) View Controller
  * Powers Intern LOR Application, Automated Professor Email Dispatch,
  * Professor Endorsement Tracking, and Official LOR PDF Download.
  */
