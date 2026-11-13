@@ -336,7 +336,7 @@ a {
   left: 0;
   right: 0;
   z-index: 1000;
-  height: 72px;
+  height: 60px;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -359,7 +359,7 @@ a {
 
 
 .brand-logo-img {
-  height: 40px;
+  height: 32px;
   width: auto;
   max-width: 220px;
   object-fit: contain;
@@ -427,12 +427,12 @@ a {
 }
 
 .nav-link {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-secondary);
   transition: color var(--duration-fast);
   position: relative;
-  padding: 6px 0;
+  padding: 4px 0;
 }
 
 .nav-link:hover,
@@ -495,7 +495,7 @@ main {
 }
 
 .section-hero {
-  padding-top: clamp(130px, 16vh, 180px);
+  padding-top: clamp(78px, 9vh, 96px);
   padding-bottom: 0;
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
@@ -568,8 +568,8 @@ main {
 
 
 .page-hero {
-  padding-top: clamp(90px, 12vh, 120px);
-  padding-bottom: clamp(28px, 4vh, 44px);
+  padding-top: clamp(76px, 8.5vh, 92px);
+  padding-bottom: clamp(22px, 3.5vh, 34px);
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 114, 206, 0.06), transparent 70%), #F8FAFC;
