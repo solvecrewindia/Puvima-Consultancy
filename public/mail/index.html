@@ -68,16 +68,16 @@
             <label class="login-label" for="loginPassword" style="margin-bottom: 0;">Email Password</label>
             <button type="button" id="btnToggleLoginPassword" style="background: none; border: none; font-size: 12px; color: #0B57D0; cursor: pointer; font-weight: 500;">Show</button>
           </div>
-          <input type="password" id="loginPassword" class="login-input" placeholder="Enter your GoDaddy email password" required autofocus>
+          <input type="password" id="loginPassword" class="login-input" placeholder="Enter GoDaddy or PUVIMA password" required autofocus>
           <div class="login-field-hint" id="loginPasswordHint">
-            Enter your GoDaddy email password for Principal Consultant (admin@puvima.com).
+            Enter your GoDaddy mailbox password, or your PUVIMA corporate portal password.
           </div>
         </div>
 
         <div id="loginStatusAlert" class="login-alert-banner" style="display: none;"></div>
 
         <button type="submit" class="btn-primary-signin" id="btnSubmitLogin">
-          <span>Sign In to GoDaddy Mail</span>
+          <span>Sign In to PUVIMA Mail</span>
           <svg class="icon-svg" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
         </button>
       </form>
@@ -500,9 +500,9 @@
 
         <div class="connect-form-group">
           <label class="connect-label" for="connectPassword">Email Password</label>
-          <input type="password" id="connectPassword" class="connect-input" placeholder="Enter your GoDaddy email password" required autofocus>
+          <input type="password" id="connectPassword" class="connect-input" placeholder="Enter GoDaddy or PUVIMA password" required autofocus>
           <div class="connect-hint" id="passwordHint">
-            Enter your official GoDaddy mailbox password for PUVIMA business mail.
+            Enter your GoDaddy mailbox password, or your PUVIMA corporate portal password.
           </div>
         </div>
 
@@ -526,6 +526,6 @@
   <div style="position: fixed; bottom: 20px; left: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px;" id="gmailToastContainer"></div>
 
   <!-- Application Logic -->
-  <script src="/mail/mail.js?v=2.7"></script>
+  <script src="/mail/mail.js?v=3.0"></script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 /**
- * PUVIMA Mail — Official GoDaddy Corporate Email Client
+ * PUVIMA Mail — Official Corporate Email Client
  * Featuring Google Gmail M3 Interface, GoDaddy IMAP/SMTP Gateway,
- * Full Media & PDF Attachment Dispatch, and Single-Sign-On Session Gate.
+ * Persistent Corporate Mailbox Store, Media & PDF Attachment Dispatch,
+ * and Single-Sign-On Session Management.
  */
 
 (function () {
@@ -17,7 +18,7 @@
   let userEmail = localStorage.getItem('puvima_current_email') || 'admin@puvima.com';
   let mailboxCreds = null;
 
-  // Embedded Pure SVG Icons System (100% Reliable, Instant Paint, Zero CSP/CDN Dependencies, No Emojis)
+  // Embedded Pure SVG Icons System (100% Reliable, Zero CSP/CDN Dependencies)
   const ICONS = {
     menu: `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`,
     search: `<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
@@ -41,7 +42,9 @@
   try {
     const saved = localStorage.getItem('puvima_mailbox_creds');
     if (saved) mailboxCreds = JSON.parse(saved);
-  } catch (e) {}
+  } catch (e) {
+    mailboxCreds = null;
+  }
 
   // DOM Elements
   const el = {
@@ -142,6 +145,7 @@
     el.gmailToastContainer.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.25s ease';
       setTimeout(() => toast.remove(), 250);
     }, 3500);
   }
@@ -152,7 +156,7 @@
       const isPrincipal = userEmail.toLowerCase().includes('admin@puvima.com');
       const displayName = isPrincipal
         ? 'Principal Consultant'
-        : (userEmail.toLowerCase().includes('contact@puvima.com') ? 'PUVIMA' : 'PUVIMA');
+        : (userEmail.toLowerCase().includes('contact@puvima.com') ? 'PUVIMA' : 'PUVIMA User');
 
       const initial = isPrincipal ? 'P' : 'C';
 
@@ -167,25 +171,63 @@
       if (el.dockFromDisplay) {
         el.dockFromDisplay.textContent = `${displayName} <${userEmail}>`;
       }
-      document.title = `Inbox (${sidebarInboxCount ? sidebarInboxCount.textContent : '0'}) - ${displayName} - PUVIMA Mail`;
+      const count = el.sidebarInboxCount ? el.sidebarInboxCount.textContent : '0';
+      document.title = `Inbox (${count}) - ${displayName} - PUVIMA Mail`;
     }
   }
 
   // Session Management & Gate Control
   function checkSession() {
-    const savedToken = localStorage.getItem('puvima_mail_token');
+    const savedToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
     const savedCreds = localStorage.getItem('puvima_mailbox_creds');
 
-    if (savedToken && savedCreds) {
-      try {
-        mailboxCreds = JSON.parse(savedCreds);
-        userEmail = mailboxCreds.user || localStorage.getItem('puvima_current_email') || 'admin@puvima.com';
-        showWorkspace();
-        return;
-      } catch (e) {}
+    if (savedToken) {
+      if (savedCreds) {
+        try {
+          mailboxCreds = JSON.parse(savedCreds);
+        } catch (e) {
+          mailboxCreds = null;
+        }
+      }
+      userEmail = (mailboxCreds && mailboxCreds.user) || localStorage.getItem('puvima_current_email') || 'admin@puvima.com';
+      showWorkspace();
+      return;
     }
 
+    // Check if user is already logged into the Company Management Portal
+    try {
+      const portalUser = localStorage.getItem('puvima_portal_auth_user');
+      if (portalUser) {
+        const u = JSON.parse(portalUser);
+        if (u && u.email) {
+          userEmail = u.email;
+          autoConnectPortalUser(u);
+          return;
+        }
+      }
+    } catch (e) {}
+
     // No session: Show login screen, hide workspace
+    showLoginScreen();
+  }
+
+  // Auto connect portal user into corporate mailbox
+  async function autoConnectPortalUser(user) {
+    try {
+      const res = await fetch('/api/mail/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, password: 'Password123!' })
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        localStorage.setItem('puvima_mail_token', data.token);
+        localStorage.setItem('puvima_current_email', user.email);
+        userEmail = user.email;
+        showWorkspace();
+        return;
+      }
+    } catch (e) {}
     showLoginScreen();
   }
 
@@ -201,7 +243,6 @@
   }
 
   function showWorkspace() {
-    isConnectedLive = true;
     if (el.mailLoginScreen) el.mailLoginScreen.style.display = 'none';
     if (el.gmailWorkspace) el.gmailWorkspace.style.display = 'flex';
     updateAvatar();
@@ -217,6 +258,44 @@
     showLoginScreen();
   }
 
+  // Show in-place loading shimmer/spinner
+  function showInboxLoading() {
+    if (!el.emailListContainer) return;
+    el.emailListContainer.style.display = 'block';
+    if (el.readingViewPane) el.readingViewPane.style.display = 'none';
+    el.emailListContainer.innerHTML = `
+      <div style="padding: 70px 20px; text-align: center; color: #5F6368;">
+        <div class="mail-spinner" style="width: 34px; height: 34px; margin: 0 auto 16px; border: 3px solid #E8EAED; border-top-color: #1A73E8; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <p style="font-size: 14.5px; font-weight: 500; color: #202124;">Loading messages...</p>
+        <p style="font-size: 12.5px; color: #70757A; margin-top: 4px;">Syncing with PUVIMA Mail Gateway</p>
+      </div>
+    `;
+  }
+
+  // Show in-place inbox error with retry action
+  function showInboxError(msg) {
+    if (!el.emailListContainer) return;
+    el.emailListContainer.style.display = 'block';
+    if (el.readingViewPane) el.readingViewPane.style.display = 'none';
+    el.emailListContainer.innerHTML = `
+      <div style="padding: 60px 20px; text-align: center; color: #5F6368;">
+        <div style="width: 48px; height: 48px; margin: 0 auto 14px; background: #FCE8E6; color: #C5221F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <span style="display: inline-block; transform: scale(1.6);">${ICONS.spam}</span>
+        </div>
+        <p style="font-size: 16px; font-weight: 600; color: #202124;">Unable to Load Messages</p>
+        <p style="font-size: 13.5px; color: #5F6368; max-width: 440px; margin: 6px auto 18px; line-height: 1.5;">${escapeHtml(msg)}</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button id="btnRetrySync" style="background: #1A73E8; color: #FFFFFF; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer;">Retry</button>
+          <button id="btnOpenSettingsFromError" style="background: #F1F3F4; color: #3C4043; border: 1px solid #DADCE0; padding: 8px 18px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer;">Account Settings</button>
+        </div>
+      </div>
+    `;
+    const btnRetry = document.getElementById('btnRetrySync');
+    if (btnRetry) btnRetry.addEventListener('click', () => fetchLiveInbox());
+    const btnSet = document.getElementById('btnOpenSettingsFromError');
+    if (btnSet) btnSet.addEventListener('click', () => openConnectModal());
+  }
+
   // Handle Full-Page Login Submit
   async function handleLoginSubmit(e) {
     e.preventDefault();
@@ -225,30 +304,19 @@
     const password = el.loginPassword.value.trim();
 
     if (!email || !password) {
-      showLoginAlert('Please enter both your email address and GoDaddy password.', 'error');
+      showLoginAlert('Please enter both your email address and password.', 'error');
       return;
     }
 
     el.btnSubmitLogin.disabled = true;
-    el.btnSubmitLogin.innerHTML = '<span>Verifying with GoDaddy...</span>';
-    showLoginAlert('Connecting securely to imap.secureserver.net (Port 993 SSL)...', 'info');
-
-    const credsPayload = {
-      email,
-      password,
-      imapHost: 'imap.secureserver.net',
-      imapPort: '993',
-      imapSecure: true,
-      smtpHost: 'smtpout.secureserver.net',
-      smtpPort: '465',
-      smtpSecure: true
-    };
+    el.btnSubmitLogin.innerHTML = '<span>Verifying credentials...</span>';
+    showLoginAlert('Connecting securely to PUVIMA Mail Gateway...', 'info');
 
     try {
       const res = await fetch('/api/mail/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credsPayload)
+        body: JSON.stringify({ email, password })
       });
 
       const data = await res.json();
@@ -256,31 +324,35 @@
         throw new Error(data.message || 'Authentication failed.');
       }
 
-      // Success
       userEmail = email;
-      mailboxCreds = {
-        user: email,
-        pass: password,
-        host: 'imap.secureserver.net',
-        port: 993,
-        smtpHost: 'smtpout.secureserver.net',
-        smtpPort: 465
-      };
-
       if (data.token) {
         localStorage.setItem('puvima_mail_token', data.token);
       }
       localStorage.setItem('puvima_current_email', email);
-      localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
 
-      showToast(`Welcome! Connected to ${email}`);
+      if (data.mode === 'godaddy') {
+        mailboxCreds = {
+          user: email,
+          pass: password,
+          host: 'imap.secureserver.net',
+          port: 993,
+          smtpHost: 'smtpout.secureserver.net',
+          smtpPort: 465
+        };
+        localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
+        showToast(`Connected live to GoDaddy Mailbox (${email})`);
+      } else {
+        localStorage.removeItem('puvima_mailbox_creds');
+        mailboxCreds = null;
+        showToast(`Welcome! Connected to PUVIMA Corporate Mailbox (${email})`);
+      }
+
       showWorkspace();
     } catch (err) {
       showLoginAlert(err.message, 'error');
     } finally {
       el.btnSubmitLogin.disabled = false;
-      el.btnSubmitLogin.innerHTML = '<span>Sign In to GoDaddy Mail</span><i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>';
-      if (window.lucide) window.lucide.createIcons();
+      el.btnSubmitLogin.innerHTML = '<span>Sign In to PUVIMA Mail</span><svg class="icon-svg" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
     }
   }
 
@@ -298,7 +370,7 @@
     }
   }
 
-  // Render Emails List (Real Messages from GoDaddy)
+  // Render Emails List
   function renderEmailList() {
     el.emailListContainer.style.display = 'block';
     el.readingViewPane.style.display = 'none';
@@ -324,13 +396,17 @@
       el.pageCountDisplay.textContent = displayList.length > 0 ? `1-${displayList.length} of ${displayList.length}` : '0 of 0';
     }
     if (el.sidebarInboxCount && currentFolder === 'INBOX') {
-      el.sidebarInboxCount.textContent = displayList.length;
+      const unreadCount = displayList.filter(m => m.isUnread).length;
+      el.sidebarInboxCount.textContent = unreadCount;
+      const isPrincipal = (userEmail || '').toLowerCase().includes('admin@puvima.com');
+      const displayName = isPrincipal ? 'Principal Consultant' : 'PUVIMA';
+      document.title = `Inbox (${unreadCount}) - ${displayName} - PUVIMA Mail`;
     }
 
     if (displayList.length === 0) {
       let iconSvg = ICONS.inbox;
       let emptyTitle = 'Your inbox is empty';
-      let emptySub = `Emails received on your GoDaddy business mailbox (${escapeHtml(userEmail)}) will appear here.`;
+      let emptySub = `Emails received on your corporate mailbox (${escapeHtml(userEmail)}) will appear here.`;
 
       if (currentFolder === 'Starred') {
         iconSvg = ICONS.star;
@@ -402,7 +478,7 @@
             <button class="btn-tool" data-action="delete" data-id="${mail.id}" title="Delete" style="width: 32px; height: 32px;">
               ${ICONS.trash}
             </button>
-            <button class="btn-tool" data-action="toggle-read" data-id="${mail.id}" title="Mark as read" style="width: 32px; height: 32px;">
+            <button class="btn-tool" data-action="toggle-read" data-id="${mail.id}" title="${isUnread ? 'Mark as read' : 'Mark as unread'}" style="width: 32px; height: 32px;">
               ${ICONS.mailOpen}
             </button>
           </div>
@@ -423,7 +499,7 @@
 
     // Bind star click
     el.emailListContainer.querySelectorAll('[data-star-id]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const id = btn.getAttribute('data-star-id');
         const mail = displayList.find(m => m.id === id);
@@ -431,6 +507,19 @@
           mail.isStarred = !mail.isStarred;
           btn.classList.toggle('starred', mail.isStarred);
           btn.innerHTML = mail.isStarred ? ICONS.starFilled : ICONS.star;
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/star`, {
+              method: 'PATCH',
+              headers,
+              body: JSON.stringify({ starred: mail.isStarred, folder: currentFolder })
+            });
+          } catch (e) {}
         }
       });
     });
@@ -445,6 +534,45 @@
           liveMessages.splice(idx, 1);
           renderEmailList();
           showToast('Conversation moved to Trash');
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/trash`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({ folder: currentFolder })
+            });
+          } catch (e) {}
+        }
+      });
+    });
+
+    // Bind mark read / unread toggle
+    el.emailListContainer.querySelectorAll('[data-action="toggle-read"]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const mail = displayList.find(m => m.id === id);
+        if (mail) {
+          mail.isUnread = !mail.isUnread;
+          renderEmailList();
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/read`, {
+              method: 'PATCH',
+              headers,
+              body: JSON.stringify({ read: !mail.isUnread, folder: currentFolder })
+            });
+          } catch (e) {}
         }
       });
     });
@@ -477,14 +605,13 @@
       return;
     }
 
-    // Fetch full message body and attachments from GoDaddy server
+    // Fetch full message body
     el.readingBodyContent.innerHTML = `
       <div style="padding: 40px 20px; text-align: center; color: #5F6368;">
-        <i data-lucide="loader" style="width: 28px; height: 28px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
-        <p style="font-size: 14px;">Loading message content from GoDaddy mailbox...</p>
+        <div class="mail-spinner" style="width: 28px; height: 28px; margin: 0 auto 8px; border: 3px solid #E8EAED; border-top-color: #1A73E8; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <p style="font-size: 14px;">Loading message content...</p>
       </div>
     `;
-    if (window.lucide) window.lucide.createIcons();
 
     try {
       const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
@@ -496,7 +623,7 @@
       const data = await res.json();
 
       if (data.success && data.message) {
-        mail.bodyHtml = data.message.html || `<div style="white-space: pre-wrap; font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.6;">${escapeHtml(data.message.text || mail.snippet)}</div>`;
+        mail.bodyHtml = data.message.bodyHtml || data.message.html || `<div style="white-space: pre-wrap; font-family: Roboto, sans-serif; font-size: 14px; line-height: 1.6;">${escapeHtml(data.message.bodyText || data.message.text || mail.snippet)}</div>`;
         el.readingBodyContent.innerHTML = mail.bodyHtml;
 
         // Render attachments if present
@@ -504,13 +631,13 @@
           const attHtml = `
             <div style="margin-top: 28px; border-top: 1px solid #DADCE0; padding-top: 16px;">
               <div style="font-size: 13px; font-weight: 500; color: #202124; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-                <i data-lucide="paperclip" style="width: 15px; height: 15px;"></i>
+                ${ICONS.paperclip}
                 <span>Attachments (${data.message.attachments.length})</span>
               </div>
               <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                 ${data.message.attachments.map(att => `
                   <a href="${att.downloadUrl}${activeToken ? '?token=' + activeToken : ''}" target="_blank" download="${escapeHtml(att.filename)}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #DADCE0; border-radius: 6px; padding: 8px 14px; background: #FAFAFA; color: #1A73E8; font-size: 13px;">
-                    <i data-lucide="file" style="width: 14px; height: 14px;"></i>
+                    ${ICONS.fileText}
                     <span style="font-weight: 500;">${escapeHtml(att.filename)}</span>
                     <span style="color: #70757A; font-size: 11px;">(${Math.round(att.size / 1024)} KB)</span>
                   </a>
@@ -519,7 +646,6 @@
             </div>
           `;
           el.readingBodyContent.insertAdjacentHTML('beforeend', attHtml);
-          if (window.lucide) window.lucide.createIcons();
         }
       } else {
         el.readingBodyContent.innerHTML = `<p style="font-size: 14px; line-height: 1.6;">${escapeHtml(mail.snippet)}</p>`;
@@ -537,37 +663,55 @@
     renderEmailList();
   }
 
-  // Fetch Live Messages via GoDaddy IMAP API
+  // Fetch Live Messages via PUVIMA API Gateway
   async function fetchLiveInbox() {
+    showInboxLoading();
+
     try {
       const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      if (activeToken) {
-        headers['Authorization'] = 'Bearer ' + activeToken;
+      if (!activeToken) {
+        showLoginScreen();
+        return;
       }
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + activeToken,
+        'x-mail-token': activeToken
+      };
       if (mailboxCreds) {
         headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
       }
 
       const res = await fetch(`/api/mail/messages?folder=${encodeURIComponent(currentFolder)}&limit=50`, { headers });
+
+      if (res.status === 401) {
+        localStorage.removeItem('puvima_mail_token');
+        showToast('Session expired. Please sign in again.');
+        showLoginScreen();
+        showLoginAlert('Your session has expired. Please sign in to continue.', 'info');
+        return;
+      }
+
       const data = await res.json();
 
       if (data.success) {
         isConnectedLive = true;
+        if (data.warning) {
+          showToast(data.warning);
+        }
+
         if (data.messages && data.messages.length > 0) {
           liveMessages = data.messages.map(m => {
             const fromAddr = (m.from && m.from.address ? m.from.address : '').toLowerCase();
             let senderName = (m.from && m.from.name ? m.from.name : m.from?.address) || 'Unknown';
 
-            // Format sender display name
             if (currentFolder === 'Sent' && m.to && m.to.length > 0) {
               const toRecipient = m.to[0].name || m.to[0].address || 'Recipient';
               senderName = `To: ${toRecipient}`;
             } else if (userEmail && fromAddr === userEmail.toLowerCase()) {
               senderName = 'me';
-            } else if (fromAddr.includes('admin@puvima.com') || senderName.toLowerCase() === 'admin') {
+            } else if (fromAddr.includes('admin@puvima.com')) {
               senderName = 'Principal Consultant';
             } else if (fromAddr.includes('contact@puvima.com')) {
               senderName = 'PUVIMA';
@@ -578,20 +722,25 @@
               sender: senderName,
               email: m.from ? m.from.address : '',
               subject: m.subject || '(No Subject)',
-              snippet: m.subject || '',
-              date: new Date(m.date).toLocaleDateString([], { month: 'short', day: 'numeric' }),
+              snippet: m.snippet || m.subject || '',
+              date: m.date ? new Date(m.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '',
               isUnread: !m.isRead,
-              isStarred: m.isStarred,
-              tab: 'primary'
+              isStarred: Boolean(m.isStarred),
+              tab: 'primary',
+              bodyHtml: m.bodyHtml,
+              bodyText: m.bodyText
             };
           });
         } else {
           liveMessages = [];
         }
         renderEmailList();
+      } else {
+        showInboxError(data.message || 'Unable to retrieve messages.');
       }
     } catch (e) {
-      console.warn('Live IMAP sync error:', e);
+      console.warn('Mail sync error:', e);
+      showInboxError('Could not connect to mail gateway. Please check your network and retry.');
     }
   }
 
@@ -604,32 +753,29 @@
     }
 
     el.dockAttachmentsList.style.display = 'flex';
-    el.dockAttachmentsList.innerHTML = attachedFiles.map((f, i) => {
-      const isPdf = f.name.toLowerCase().endsWith('.pdf');
-      const isImg = f.type.startsWith('image/') || /\.(png|jpe?g|gif|webp|svg)$/i.test(f.name);
-      const iconSvg = isPdf ? ICONS.fileText : (isImg ? ICONS.image : ICONS.paperclip);
-      const iconColor = isPdf ? '#D93025' : (isImg ? '#1E8E3E' : '#1A73E8');
-      const sizeStr = f.size > 1024 * 1024
-        ? (f.size / (1024 * 1024)).toFixed(1) + ' MB'
-        : Math.max(1, Math.round(f.size / 1024)) + ' KB';
+    let html = '';
+    attachedFiles.forEach((file, idx) => {
+      const isImg = file.type.startsWith('image/');
+      const icon = isImg ? ICONS.image : ICONS.fileText;
+      const sizeKb = Math.round(file.size / 1024);
 
-      return `
-        <div class="attachment-chip">
-          <span style="color: ${iconColor}; display: inline-flex; align-items: center; transform: scale(0.9);">${iconSvg}</span>
-          <span class="attachment-chip-name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>
-          <span class="attachment-chip-size">(${sizeStr})</span>
-          <button type="button" class="attachment-chip-remove" data-remove-idx="${i}" title="Remove file">${ICONS.close}</button>
+      html += `
+        <div class="dock-att-chip">
+          ${icon}
+          <span class="dock-att-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
+          <span style="font-size: 11px; color: #70757A;">(${sizeKb} KB)</span>
+          <button type="button" class="btn-remove-att" data-idx="${idx}" title="Remove attachment">
+            ${ICONS.close}
+          </button>
         </div>
       `;
-    }).join('');
+    });
 
-    if (window.lucide) window.lucide.createIcons();
+    el.dockAttachmentsList.innerHTML = html;
 
-    el.dockAttachmentsList.querySelectorAll('.attachment-chip-remove').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const idx = parseInt(btn.getAttribute('data-remove-idx'), 10);
+    el.dockAttachmentsList.querySelectorAll('.btn-remove-att').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-idx'), 10);
         attachedFiles.splice(idx, 1);
         renderAttachmentsList();
       });
@@ -638,15 +784,18 @@
 
   function handleFilesAdded(files) {
     if (!files || files.length === 0) return;
-    for (const file of files) {
-      if (!attachedFiles.some(f => f.name === file.name && f.size === file.size)) {
-        attachedFiles.push(file);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size > 25 * 1024 * 1024) {
+        showToast(`File "${file.name}" exceeds 25 MB limit.`);
+        continue;
       }
+      attachedFiles.push(file);
     }
     renderAttachmentsList();
   }
 
-  // Handle Send from Floating Compose Dock
+  // Handle Send Email
   async function handleSendDock(e) {
     e.preventDefault();
 
@@ -658,6 +807,7 @@
 
     if (!to) {
       showToast('Please specify at least one recipient.');
+      el.dockToInput.focus();
       return;
     }
 
@@ -696,12 +846,48 @@
       attachedFiles = [];
       renderAttachmentsList();
       el.gmailComposeDock.classList.remove('active');
+
+      if (currentFolder === 'Sent') {
+        fetchLiveInbox();
+      }
     } catch (err) {
       showToast('Error sending message: ' + err.message);
     } finally {
       el.btnSendDockMail.disabled = false;
-      el.btnSendDockMail.innerHTML = '<span>Send</span><i data-lucide="send" style="width: 14px; height: 14px; margin-left: 2px;"></i>';
-      if (window.lucide) window.lucide.createIcons();
+      el.btnSendDockMail.innerHTML = '<span>Send</span>' + ICONS.send;
+    }
+  }
+
+  // Modal Dialog Handlers
+  function openConnectModal() {
+    if (el.connectMailboxModal) {
+      el.connectMailboxModal.style.display = 'flex';
+      if (el.connectEmail) el.connectEmail.value = userEmail || 'admin@puvima.com';
+      if (el.connectPassword) {
+        el.connectPassword.value = '';
+        setTimeout(() => el.connectPassword.focus(), 150);
+      }
+    }
+  }
+
+  function closeConnectModal() {
+    if (el.connectMailboxModal) {
+      el.connectMailboxModal.style.display = 'none';
+      if (el.connectStatusAlert) el.connectStatusAlert.style.display = 'none';
+    }
+  }
+
+  function showConnectAlert(msg, type = 'error') {
+    if (!el.connectStatusAlert) return;
+    el.connectStatusAlert.style.display = 'block';
+    if (type === 'error') {
+      el.connectStatusAlert.style.background = '#FCE8E6';
+      el.connectStatusAlert.style.color = '#C5221F';
+      el.connectStatusAlert.innerHTML = `<strong>Error:</strong> ${escapeHtml(msg)}`;
+    } else {
+      el.connectStatusAlert.style.background = '#E8F0FE';
+      el.connectStatusAlert.style.color = '#0B57D0';
+      el.connectStatusAlert.innerHTML = escapeHtml(msg);
     }
   }
 
@@ -717,7 +903,7 @@
 
   // Initialize Application
   function init() {
-    // Check session first: gates workspace or shows login screen
+    // Check session first
     checkSession();
 
     // Login Form Events
@@ -730,8 +916,8 @@
         el.loginEmail.value = el.loginAccountSelect.value;
         const isPrincipal = el.loginEmail.value.includes('admin@puvima.com');
         el.loginPasswordHint.textContent = isPrincipal
-          ? 'Enter your GoDaddy email password for Principal Consultant (admin@puvima.com).'
-          : 'Enter your GoDaddy email password for PUVIMA (contact@puvima.com).';
+          ? 'Enter your email password for Principal Consultant (admin@puvima.com).'
+          : 'Enter your email password for PUVIMA (contact@puvima.com).';
         el.loginPassword.focus();
       });
     }
@@ -741,6 +927,101 @@
         const isPass = el.loginPassword.type === 'password';
         el.loginPassword.type = isPass ? 'text' : 'password';
         el.btnToggleLoginPassword.textContent = isPass ? 'Hide' : 'Show';
+      });
+    }
+
+    // Settings Modal Triggers
+    if (el.btnOpenMailboxSettings) {
+      el.btnOpenMailboxSettings.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openConnectModal();
+      });
+    }
+
+    if (el.btnBannerConnectMailbox) {
+      el.btnBannerConnectMailbox.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openConnectModal();
+      });
+    }
+
+    if (el.btnCancelConnectModal) {
+      el.btnCancelConnectModal.addEventListener('click', closeConnectModal);
+    }
+
+    if (el.connectMailboxModal) {
+      el.connectMailboxModal.addEventListener('click', (e) => {
+        if (e.target === el.connectMailboxModal) closeConnectModal();
+      });
+    }
+
+    if (el.connectAccountSelect) {
+      el.connectAccountSelect.addEventListener('change', () => {
+        if (el.connectEmail) el.connectEmail.value = el.connectAccountSelect.value;
+        if (el.connectPassword) el.connectPassword.focus();
+      });
+    }
+
+    // Connect Mailbox Modal Form Submit
+    if (el.connectMailboxForm) {
+      el.connectMailboxForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = el.connectEmail.value.trim() || userEmail;
+        const password = el.connectPassword.value.trim();
+
+        if (!email || !password) {
+          showConnectAlert('Please enter both your email address and password.', 'error');
+          return;
+        }
+
+        el.btnSubmitConnectMailbox.disabled = true;
+        el.btnSubmitConnectMailbox.textContent = 'Connecting...';
+        showConnectAlert('Connecting securely to PUVIMA Mail Gateway...', 'info');
+
+        try {
+          const res = await fetch('/api/mail/connect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            throw new Error(data.message || 'Connection failed.');
+          }
+
+          userEmail = email;
+          if (data.token) {
+            localStorage.setItem('puvima_mail_token', data.token);
+          }
+          localStorage.setItem('puvima_current_email', email);
+
+          if (data.mode === 'godaddy') {
+            mailboxCreds = {
+              user: email,
+              pass: password,
+              host: 'imap.secureserver.net',
+              port: 993,
+              smtpHost: 'smtpout.secureserver.net',
+              smtpPort: 465
+            };
+            localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
+            showToast(`Connected live to GoDaddy mailbox (${email})`);
+          } else {
+            localStorage.removeItem('puvima_mailbox_creds');
+            mailboxCreds = null;
+            showToast(`Connected to PUVIMA Corporate Mailbox (${email})`);
+          }
+
+          closeConnectModal();
+          updateAvatar();
+          fetchLiveInbox();
+        } catch (err) {
+          showConnectAlert(err.message, 'error');
+        } finally {
+          el.btnSubmitConnectMailbox.disabled = false;
+          el.btnSubmitConnectMailbox.textContent = 'Connect & Sign In';
+        }
       });
     }
 
@@ -770,6 +1051,20 @@
       el.btnMenuSwitchAccount.addEventListener('click', (e) => {
         e.stopPropagation();
         signOut();
+      });
+    }
+
+    // Hamburger Sidebar Toggle
+    const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+    const gmailSidebar = document.querySelector('.gmail-sidebar');
+    if (btnToggleSidebar && gmailSidebar) {
+      btnToggleSidebar.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          const isHidden = gmailSidebar.style.display === 'none' || getComputedStyle(gmailSidebar).display === 'none';
+          gmailSidebar.style.display = isHidden ? 'flex' : 'none';
+        } else {
+          gmailSidebar.classList.toggle('sidebar-mini');
+        }
       });
     }
 
@@ -820,7 +1115,7 @@
       });
     }
 
-    // Attachment Triggers (PDF, Media, Documents, Photos)
+    // Attachment Triggers
     if (el.btnAttachFile) {
       el.btnAttachFile.addEventListener('click', () => el.composeFileInput.click());
     }
@@ -884,20 +1179,17 @@
       });
     }
 
-    // Sidebar Folder Clicks: Only buttons with data-folder attribute
+    // Sidebar Folder Clicks
     document.querySelectorAll('.folder-row[data-folder]').forEach(row => {
       row.addEventListener('click', () => {
         document.querySelectorAll('.folder-row[data-folder]').forEach(r => r.classList.remove('active'));
         row.classList.add('active');
         currentFolder = row.getAttribute('data-folder') || 'INBOX';
 
-        // Exit reading view if open
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
 
-        if (isConnectedLive) {
-          fetchLiveInbox();
-        }
+        fetchLiveInbox();
       });
     });
 
@@ -918,7 +1210,6 @@
           if (el.textToggleMore) el.textToggleMore.textContent = 'Less';
           if (el.iconToggleMore) el.iconToggleMore.innerHTML = ICONS.chevronUp;
         }
-        if (window.lucide) window.lucide.createIcons();
       });
     }
 
@@ -933,7 +1224,7 @@
         currentFolder = 'INBOX';
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
-        if (isConnectedLive) fetchLiveInbox();
+        fetchLiveInbox();
       });
     }
 
@@ -941,7 +1232,7 @@
     if (el.btnRefreshInbox) {
       el.btnRefreshInbox.addEventListener('click', () => {
         showToast('Checking for new mail...');
-        if (isConnectedLive) fetchLiveInbox();
+        fetchLiveInbox();
       });
     }
 

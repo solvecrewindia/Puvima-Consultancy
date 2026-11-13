@@ -1,0 +1,146 @@
+[
+  {
+    "uid": "sent-1794593781587",
+    "seq": 6,
+    "folder": "Sent",
+    "subject": "Test Project Brief",
+    "from": {
+      "name": "Principal Consultant",
+      "address": "admin@puvima.com"
+    },
+    "to": [
+      {
+        "name": "client@innovatetech.io",
+        "address": "client@innovatetech.io"
+      }
+    ],
+    "date": "2026-11-13T18:16:21.587Z",
+    "size": 2079,
+    "isRead": true,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "Hello from PUVIMA Mail Gateway.",
+    "bodyHtml": "<div style=\"font-family: Roboto, sans-serif; white-space: pre-wrap;\">Hello from PUVIMA Mail Gateway.</div>",
+    "bodyText": "Hello from PUVIMA Mail Gateway."
+  },
+  {
+    "uid": "msg-101",
+    "seq": 1,
+    "folder": "INBOX",
+    "subject": "Welcome to PUVIMA Corporate Mail Gateway",
+    "from": {
+      "name": "PUVIMA Executive Board",
+      "address": "board@puvima.com"
+    },
+    "to": [
+      {
+        "name": "Principal Consultant",
+        "address": "admin@puvima.com"
+      }
+    ],
+    "date": "2026-11-13T17:41:28.557Z",
+    "size": 14200,
+    "isRead": true,
+    "isStarred": true,
+    "hasAttachments": false,
+    "snippet": "Welcome to the official PUVIMA IT Service and Research Consultancy corporate mail system. All client correspondence, proposals, and notifications are routed here.",
+    "bodyHtml": "\n          <div style=\"font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #202124; line-height: 1.6; max-width: 680px;\">\n            <div style=\"border-bottom: 2px solid #1A73E8; padding-bottom: 16px; margin-bottom: 20px;\">\n              <h2 style=\"color: #0B57D0; margin: 0 0 6px 0; font-size: 20px;\">PUVIMA IT Service and Research Consultancy</h2>\n              <span style=\"font-size: 12px; color: #5F6368; letter-spacing: 0.5px; text-transform: uppercase;\">Official Corporate Communications</span>\n            </div>\n            <p>Welcome to <strong>PUVIMA Mail</strong> &mdash; the unified email client for Puvima IT Service and Research Consultancy.</p>\n            <p>Your mailbox provides access to all corporate communications across our enterprise divisions:</p>\n            <ul style=\"padding-left: 20px; line-height: 1.8;\">\n              <li><strong>Client Inquiries &amp; RFPs:</strong> Direct synchronization with website contact requests.</li>\n              <li><strong>Research &amp; Technical Consulting:</strong> Academic and industry collaboration proposals.</li>\n              <li><strong>GoDaddy Gateway:</strong> Live IMAP (<code>imap.secureserver.net:993</code>) &amp; SMTP (<code>smtpout.secureserver.net:465</code>) connectivity.</li>\n              <li><strong>Talent &amp; Internship Pipeline:</strong> Real-time notifications for candidate submissions.</li>\n            </ul>\n            <div style=\"background: #F8F9FA; border-left: 4px solid #1A73E8; padding: 12px 16px; border-radius: 4px; margin: 20px 0;\">\n              <strong style=\"color: #1A73E8; display: block; margin-bottom: 4px;\">Security Notice:</strong>\n              <span style=\"font-size: 13px; color: #3C4043;\">All transmissions are encrypted via 256-bit TLS 1.3. For questions or technical support, contact the IT administration team.</span>\n            </div>\n            <p style=\"margin-top: 24px; color: #5F6368; font-size: 13px;\">Warm regards,<br><strong>Executive Board</strong><br>Puvima IT Service and Research Consultancy</p>\n          </div>\n        ",
+    "bodyText": "Welcome to PUVIMA Corporate Mail Gateway.\n\nAll client correspondence, proposals, and system alerts are securely routed through this client."
+  },
+  {
+    "uid": "msg-102",
+    "seq": 2,
+    "folder": "INBOX",
+    "subject": "Client RFP: Enterprise Predictive Analytics & Automated Pipeline",
+    "from": {
+      "name": "Dr. Rajiv Menon",
+      "address": "rajiv.menon@nexussolutions.com"
+    },
+    "to": [
+      {
+        "name": "PUVIMA IT Solutions",
+        "address": "contact@puvima.com"
+      }
+    ],
+    "date": "2026-11-13T15:11:28.557Z",
+    "size": 24800,
+    "isRead": false,
+    "isStarred": true,
+    "hasAttachments": false,
+    "snippet": "We reviewed PUVIMA IT Service and Research Consultancy's technical portfolio and would like to invite your team to submit a proposal for our upcoming cloud pipeline...",
+    "bodyHtml": "\n          <div style=\"font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #202124; line-height: 1.6; max-width: 680px;\">\n            <p>Dear Principal Consultant &amp; Technical Team,</p>\n            <p>We recently reviewed your research portfolio in predictive analytics and automated systems architecture. We are currently evaluating partners for our Q1 2027 enterprise data modernization initiative.</p>\n            <p><strong>Key Requirements:</strong></p>\n            <ol style=\"padding-left: 20px; line-height: 1.8;\">\n              <li>High-throughput real-time data ingestion architecture.</li>\n              <li>AI/ML predictive model deployment pipeline with sub-50ms inference.</li>\n              <li>Comprehensive cloud security compliance and disaster recovery.</li>\n            </ol>\n            <p>Could we schedule a 30-minute discovery call this Thursday at 14:00 IST to discuss scope and timelines?</p>\n            <p style=\"margin-top: 20px;\">Sincerely,<br><strong>Dr. Rajiv Menon</strong><br>VP of Technology, Nexus Solutions Global</p>\n          </div>\n        ",
+    "bodyText": "Dear Principal Consultant,\n\nWe would like to invite your team to submit a proposal for our enterprise data pipeline.\n\nPlease let us know your availability for a discovery call."
+  },
+  {
+    "uid": "msg-103",
+    "seq": 3,
+    "folder": "INBOX",
+    "subject": "Joint Research Proposal: Autonomous Robotics Navigation Architecture",
+    "from": {
+      "name": "Prof. K. Venkatesh",
+      "address": "k.venkatesh@iitm.ac.in"
+    },
+    "to": [
+      {
+        "name": "Research Advisory Board",
+        "address": "admin@puvima.com"
+      }
+    ],
+    "date": "2026-11-13T00:11:28.557Z",
+    "size": 18500,
+    "isRead": false,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "Following our discussion at the IEEE symposium, we are sharing the draft application for collaborative research in autonomous path planning and sensor fusion...",
+    "bodyHtml": "\n          <div style=\"font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #202124; line-height: 1.6; max-width: 680px;\">\n            <p>Dear Dr. Sundaram &amp; Research Colleagues,</p>\n            <p>Following our productive discussion regarding autonomous navigation algorithms, our department has finalized the preliminary draft for the joint grant application under the Robotics &amp; AI Research Framework.</p>\n            <p>The proposed study will investigate robust sensor fusion across LiDAR and optical vision systems under degraded environmental conditions.</p>\n            <p>Please review the enclosed milestones and let us know your team's feedback so we can incorporate them prior to final submission.</p>\n            <p style=\"margin-top: 20px;\">With regards,<br><strong>Prof. K. Venkatesh</strong><br>Department of Engineering &amp; Robotics Research</p>\n          </div>\n        ",
+    "bodyText": "Dear Colleagues,\n\nFollowing our discussion, we have finalized the preliminary draft for the joint grant application in autonomous robotics navigation."
+  },
+  {
+    "uid": "msg-104",
+    "seq": 4,
+    "folder": "INBOX",
+    "subject": "Weekly Candidate Shortlist: 7 Research Internship Applications Pending Review",
+    "from": {
+      "name": "PUVIMA HR Operations",
+      "address": "hr@puvima.com"
+    },
+    "to": [
+      {
+        "name": "SuperAdmin",
+        "address": "admin@puvima.com"
+      }
+    ],
+    "date": "2026-11-12T00:11:28.557Z",
+    "size": 12100,
+    "isRead": true,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "The candidate screening for the Summer 2026 AI/ML Research Internship cohort has been completed. 7 shortlisted candidates are queued in the Onboarding portal...",
+    "bodyHtml": "\n          <div style=\"font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #202124; line-height: 1.6; max-width: 680px;\">\n            <p>Hello Leadership Team,</p>\n            <p>HR Operations has concluded the technical pre-screening for the latest batch of internship applicants. A total of <strong>7 candidates</strong> have met all domain prerequisites across AI/ML, Robotics, and Web Development.</p>\n            <div style=\"background: #E8F0FE; border-radius: 8px; padding: 14px 18px; margin: 16px 0;\">\n              <span style=\"font-weight: 600; color: #0B57D0;\">Action Required:</span>\n              <p style=\"margin: 4px 0 0 0; font-size: 13.5px; color: #1F1F1F;\">Please review candidate profiles in the <strong>Company HR Portal &rarr; Internship Applications</strong> to finalize interview schedules.</p>\n            </div>\n            <p style=\"color: #5F6368; font-size: 13px;\">Best regards,<br><strong>Ananya Sharma</strong><br>HR Operations | Puvima IT Service and Research Consultancy</p>\n          </div>\n        ",
+    "bodyText": "Hello Leadership Team,\n\nHR Operations has screened 7 candidates for the Research Internship. Profiles are ready in the HR portal."
+  },
+  {
+    "uid": "msg-105",
+    "seq": 5,
+    "folder": "INBOX",
+    "subject": "System Status: Cloud Infrastructure & Supabase Services Operational",
+    "from": {
+      "name": "PUVIMA System Monitor",
+      "address": "noreply@puvima.com"
+    },
+    "to": [
+      {
+        "name": "Principal Consultant",
+        "address": "admin@puvima.com"
+      }
+    ],
+    "date": "2026-11-10T18:11:28.557Z",
+    "size": 9800,
+    "isRead": true,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "All microservices, databases, and SSL endpoints are running at 99.98% uptime. Supabase connection verified and healthy.",
+    "bodyHtml": "\n          <div style=\"font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #202124; line-height: 1.6; max-width: 680px;\">\n            <p><strong>System Health Audit &mdash; All Services Nominal</strong></p>\n            <table style=\"width: 100%; border-collapse: collapse; font-size: 13px; margin: 16px 0;\">\n              <thead>\n                <tr style=\"border-bottom: 2px solid #DADCE0; text-align: left; color: #5F6368;\">\n                  <th style=\"padding: 8px 12px;\">Component</th>\n                  <th style=\"padding: 8px 12px;\">Status</th>\n                  <th style=\"padding: 8px 12px;\">Latency</th>\n                </tr>\n              </thead>\n              <tbody>\n                <tr style=\"border-bottom: 1px solid #F1F3F4;\">\n                  <td style=\"padding: 8px 12px;\">Main Web App (Port 5000)</td>\n                  <td style=\"padding: 8px 12px; color: #188038; font-weight: 600;\">ACTIVE</td>\n                  <td style=\"padding: 8px 12px;\">8 ms</td>\n                </tr>\n                <tr style=\"border-bottom: 1px solid #F1F3F4;\">\n                  <td style=\"padding: 8px 12px;\">Supabase Cloud Database</td>\n                  <td style=\"padding: 8px 12px; color: #188038; font-weight: 600;\">CONNECTED</td>\n                  <td style=\"padding: 8px 12px;\">42 ms</td>\n                </tr>\n                <tr style=\"border-bottom: 1px solid #F1F3F4;\">\n                  <td style=\"padding: 8px 12px;\">GoDaddy Gateway Dispatch</td>\n                  <td style=\"padding: 8px 12px; color: #188038; font-weight: 600;\">READY</td>\n                  <td style=\"padding: 8px 12px;\">120 ms</td>\n                </tr>\n              </tbody>\n            </table>\n            <p style=\"font-size: 12px; color: #70757A;\">Generated automatically by PUVIMA Enterprise Monitoring Agent.</p>\n          </div>\n        ",
+    "bodyText": "System Health Audit: All services operational. Main Web App: ACTIVE. Supabase Cloud Database: CONNECTED."
+  }
+]

@@ -24,6 +24,7 @@ function mailAuth(req, res, next) {
   if (!token) {
     return res.status(401).json({
       success: false,
+      code: 'AUTH_REQUIRED',
       message: 'Access denied: Authentication required to access PUVIMA Mail.'
     });
   }
@@ -32,6 +33,7 @@ function mailAuth(req, res, next) {
   if (!payload) {
     return res.status(401).json({
       success: false,
+      code: 'SESSION_EXPIRED',
       message: 'Access denied: Invalid or expired session. Please log in to PUVIMA.'
     });
   }

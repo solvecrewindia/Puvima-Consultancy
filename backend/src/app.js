@@ -101,7 +101,7 @@ app.use(
       return callback(null, false);
     },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token', 'x-mail-token', 'x-portal-user-role', 'x-portal-user-id', 'x-portal-user-name'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token', 'x-mail-token', 'x-mailbox-auth', 'x-portal-user-role', 'x-portal-user-id', 'x-portal-user-name'],
     credentials: true
   })
 );
