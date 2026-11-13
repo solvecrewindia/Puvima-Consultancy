@@ -352,7 +352,8 @@ class MailController {
       // 1. Try Live IMAP if configured
       if (imapService.isConfigured(creds)) {
         try {
-          const data = await imapService.getMessages(folder, { page, limit, search, filter }, creds);
+          const refresh = req.query.refresh === 'true';
+          const data = await imapService.getMessages(folder, { page, limit, search, filter, refresh }, creds);
           return res.json({
             success: true,
             configured: true,

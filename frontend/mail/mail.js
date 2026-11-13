@@ -663,9 +663,32 @@
     renderEmailList();
   }
 
-  // Fetch Live Messages via PUVIMA API Gateway
-  async function fetchLiveInbox() {
-    showInboxLoading();
+  // Fetch Live Messages via PUVIMA API Gateway with Stale-While-Revalidate caching
+  async function fetchLiveInbox(forceRefresh = false) {
+    const cacheKey = `puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`;
+
+    // 1. Instant Cache Paint (0ms) if not forcing refresh
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached && (!liveMessages || liveMessages.length === 0)) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            liveMessages = parsed;
+            renderEmailList(); // Instant UI paint!
+          }
+        } catch (e) {}
+      }
+    }
+
+    // Only show full loading spinner if we don't have cached messages on screen
+    if (!liveMessages || liveMessages.length === 0) {
+      showInboxLoading();
+    }
+
+    if (el.btnRefreshInbox) {
+      el.btnRefreshInbox.classList.add('spinning');
+    }
 
     try {
       const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
@@ -683,7 +706,8 @@
         headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
       }
 
-      const res = await fetch(`/api/mail/messages?folder=${encodeURIComponent(currentFolder)}&limit=50`, { headers });
+      const refreshParam = forceRefresh ? '&refresh=true' : '';
+      const res = await fetch(`/api/mail/messages?folder=${encodeURIComponent(currentFolder)}&limit=50${refreshParam}`, { headers });
 
       if (res.status === 401) {
         localStorage.removeItem('puvima_mail_token');
@@ -731,16 +755,35 @@
               bodyText: m.bodyText
             };
           });
+
+          // Cache in localStorage for instant paint on next visit
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(liveMessages));
+          } catch (e) {}
         } else {
           liveMessages = [];
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify([]));
+          } catch (e) {}
         }
         renderEmailList();
+        if (forceRefresh) {
+          showToast('Mailbox is up to date.');
+        }
       } else {
-        showInboxError(data.message || 'Unable to retrieve messages.');
+        if (!liveMessages || liveMessages.length === 0) {
+          showInboxError(data.message || 'Unable to retrieve messages.');
+        }
       }
     } catch (e) {
       console.warn('Mail sync error:', e);
-      showInboxError('Could not connect to mail gateway. Please check your network and retry.');
+      if (!liveMessages || liveMessages.length === 0) {
+        showInboxError('Could not connect to mail gateway. Please check your network and retry.');
+      }
+    } finally {
+      if (el.btnRefreshInbox) {
+        el.btnRefreshInbox.classList.remove('spinning');
+      }
     }
   }
 
@@ -1189,6 +1232,20 @@
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
 
+        // Instant paint from cache for this folder (0ms)
+        const folderCacheKey = `puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`;
+        const cached = localStorage.getItem(folderCacheKey);
+        if (cached) {
+          try {
+            liveMessages = JSON.parse(cached);
+            renderEmailList();
+          } catch (e) {
+            liveMessages = [];
+          }
+        } else {
+          liveMessages = [];
+        }
+
         fetchLiveInbox();
       });
     });
@@ -1231,8 +1288,8 @@
     // Refresh button
     if (el.btnRefreshInbox) {
       el.btnRefreshInbox.addEventListener('click', () => {
-        showToast('Checking for new mail...');
-        fetchLiveInbox();
+        showToast('Refreshing mail...');
+        fetchLiveInbox(true);
       });
     }
 
