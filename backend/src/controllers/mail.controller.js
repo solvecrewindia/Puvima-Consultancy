@@ -168,67 +168,15 @@ class MailController {
         });
       }
 
-      // 2. Check if credentials match PUVIMA corporate portal accounts
-      const isPortalAdmin = (cleanEmail === 'admin@puvima.com' && (pass === 'admin123' || pass === 'Password123!'));
-      const isPortalCorporate = (
-        (cleanEmail === 'contact@puvima.com' || cleanEmail === 'hr@puvima.com' || cleanEmail.endsWith('@puvima.com')) &&
-        (pass === 'Password123!' || pass === 'admin123')
-      );
-
-      let isProfileMatch = false;
-      try {
-        const profCandidates = [
-          path.resolve(__dirname, '../../data/company-profiles.json'),
-          path.resolve(__dirname, '../../../backend/data/company-profiles.json')
-        ];
-        for (const profPath of profCandidates) {
-          if (fs.existsSync(profPath)) {
-            const profData = JSON.parse(fs.readFileSync(profPath, 'utf8'));
-            const list = profData.profiles || profData || [];
-            isProfileMatch = list.some(p => 
-              ((p.email && p.email.toLowerCase() === cleanEmail) || 
-               (p.user_code && p.user_code.toLowerCase() === cleanEmail)) &&
-              (pass === 'Password123!' || pass === 'admin123')
-            );
-            if (isProfileMatch) break;
-          }
-        }
-      } catch (e) {}
-
-      if (isPortalAdmin || isPortalCorporate || isProfileMatch) {
-        // Successfully authenticated to PUVIMA Corporate Mailbox
-        const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
-        const mailboxData = {
-          user: cleanEmail,
-          mode: 'corporate',
-          name: displayName,
-          from: `"${displayName}" <${cleanEmail}>`
-        };
-        connectedMailboxes.set(mailToken, mailboxData);
-
-        return res.json({
-          success: true,
-          mode: 'corporate',
-          message: 'Signed in to PUVIMA Corporate Mailbox.',
-          token: mailToken,
-          account: {
-            email: cleanEmail,
-            provider: 'puvima',
-            mode: 'corporate',
-            imapHost: 'PUVIMA Corporate Gateway',
-            smtpHost: 'PUVIMA Corporate Gateway'
-          }
-        });
-      }
-
-      // 3. Neither matched — return descriptive error
+      // 2. IMAP connection rejected credentials
       const errDetail = imapTest.message || '';
-      let userMessage = `Authentication failed: The password for "${cleanEmail}" was rejected by GoDaddy mail and does not match your PUVIMA corporate credentials.`;
-      if (/command failed/i.test(errDetail) || /authentication/i.test(errDetail) || /login/i.test(errDetail)) {
-        userMessage = `Authentication failed: Password rejected. Please enter your GoDaddy mailbox password, or sign in using your PUVIMA corporate credentials.`;
+      let userMessage = `Authentication failed: The password for "${cleanEmail}" was rejected by the mail server. Please verify your email and password.`;
+      if (/command failed/i.test(errDetail) || /authentication/i.test(errDetail) || /login/i.test(errDetail) || /rejected/i.test(errDetail)) {
+        userMessage = `Authentication failed: Incorrect email or password. Please verify your credentials and try again.`;
       }
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
+        authFailed: true,
         message: userMessage,
         details: imapTest.message
       });
@@ -305,22 +253,29 @@ class MailController {
   async getFolders(req, res) {
     try {
       const creds = extractCredentials(req);
+      if (!creds || !creds.user || !creds.pass) {
+        return res.status(401).json({
+          success: false,
+          authRequired: true,
+          message: 'Authentication required. Please sign in.'
+        });
+      }
+
       if (imapService.isConfigured(creds)) {
         try {
           const folders = await imapService.listFolders(creds);
           return res.json({ success: true, configured: true, live: true, folders });
-        } catch (e) {}
+        } catch (e) {
+          console.warn('[MailController] IMAP listFolders error:', e.message);
+        }
       }
-
-      const all = mailStoreService.readAll();
-      const inboxUnread = all.filter(m => (m.folder || 'INBOX').toUpperCase() === 'INBOX' && !m.isRead).length;
 
       return res.json({
         success: true,
         configured: true,
-        live: false,
+        live: true,
         folders: [
-          { name: 'Inbox', path: 'INBOX', role: 'inbox', unreadCount: inboxUnread },
+          { name: 'Inbox', path: 'INBOX', role: 'inbox', unreadCount: 0 },
           { name: 'Starred', path: 'Starred', role: 'starred', unreadCount: 0 },
           { name: 'Sent', path: 'Sent', role: 'sent', unreadCount: 0 },
           { name: 'Spam', path: 'Spam', role: 'spam', unreadCount: 0 },
@@ -347,9 +302,17 @@ class MailController {
       const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50));
       const search = req.query.search || '';
       const filter = req.query.filter || 'all';
-      const userEmail = (creds && creds.user) || (req.user && req.user.email) || 'admin@puvima.com';
 
-      // 1. Try Live IMAP if configured
+      // Require real mailbox credentials
+      if (!creds || !creds.user || !creds.pass) {
+        return res.status(401).json({
+          success: false,
+          authRequired: true,
+          message: 'Authentication required. Please sign in to access your mailbox.'
+        });
+      }
+
+      // Fetch from Live IMAP Gateway
       if (imapService.isConfigured(creds)) {
         try {
           const refresh = req.query.refresh === 'true';
@@ -361,37 +324,41 @@ class MailController {
             ...data
           });
         } catch (err) {
-          console.warn('[MailController] Live IMAP fetch failed, falling back to corporate store:', err.message);
-          const storeData = mailStoreService.getMessages(folder, { page, limit, search, filter }, userEmail);
-          return res.json({
-            success: true,
-            configured: true,
+          console.warn('[MailController] Live IMAP fetch failed:', err.message);
+          const msgLower = (err.message || '').toLowerCase();
+          const isAuthError = msgLower.includes('authentication') ||
+                              msgLower.includes('login') ||
+                              msgLower.includes('credential') ||
+                              msgLower.includes('user or password') ||
+                              msgLower.includes('command failed');
+
+          if (isAuthError) {
+            return res.status(401).json({
+              success: false,
+              authRequired: true,
+              message: 'Mailbox credentials rejected. Please sign in again with your email password.'
+            });
+          }
+
+          return res.status(503).json({
+            success: false,
             live: false,
-            warning: `Live GoDaddy sync offline (${err.message}). Showing PUVIMA Corporate Mailbox.`,
-            ...storeData
+            error: err.message,
+            message: `Unable to connect to mail server (${err.message}). Click retry to reload.`
           });
         }
       }
 
-      // 2. Local PUVIMA Corporate Mailbox fallback
-      const storeData = mailStoreService.getMessages(folder, { page, limit, search, filter }, userEmail);
-      return res.json({
-        success: true,
-        configured: true,
-        live: false,
-        ...storeData
+      return res.status(401).json({
+        success: false,
+        authRequired: true,
+        message: 'Mailbox not configured or session invalid. Please sign in.'
       });
     } catch (err) {
       console.error('[MailController] getMessages error:', err);
-      return res.json({
-        success: true,
-        configured: false,
-        messages: [],
-        total: 0,
-        page: 1,
-        limit: 50,
-        unreadCount: 0,
-        warning: 'Mailbox syncing. Please refresh.'
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch messages: ' + err.message
       });
     }
   }
@@ -403,7 +370,14 @@ class MailController {
       const uid = req.params.uid;
       const folder = req.query.folder || 'INBOX';
       const markAsRead = req.query.markAsRead !== 'false';
-      const userEmail = (creds && creds.user) || (req.user && req.user.email) || 'admin@puvima.com';
+
+      if (!creds || !creds.user || !creds.pass) {
+        return res.status(401).json({
+          success: false,
+          authRequired: true,
+          message: 'Authentication required. Please sign in.'
+        });
+      }
 
       if (imapService.isConfigured(creds)) {
         try {
@@ -412,16 +386,11 @@ class MailController {
             return res.json({ success: true, message });
           }
         } catch (e) {
-          console.warn('[MailController] IMAP getMessage fallback:', e.message);
+          console.warn('[MailController] IMAP getMessage error:', e.message);
         }
       }
 
-      const storeMsg = mailStoreService.getMessage(folder, uid, markAsRead, userEmail);
-      if (storeMsg) {
-        return res.json({ success: true, message: storeMsg });
-      }
-
-      return res.status(404).json({ success: false, message: 'Message not found.' });
+      return res.status(404).json({ success: false, message: 'Message not found on mail server.' });
     } catch (err) {
       return res.status(500).json({
         success: false,

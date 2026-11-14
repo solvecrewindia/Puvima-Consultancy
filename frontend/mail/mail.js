@@ -178,67 +178,47 @@
 
   // Session Management & Gate Control
   function checkSession() {
-    const savedToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
-    const savedCreds = localStorage.getItem('puvima_mailbox_creds');
-
-    if (savedToken) {
-      if (savedCreds) {
-        try {
-          mailboxCreds = JSON.parse(savedCreds);
-        } catch (e) {
-          mailboxCreds = null;
-        }
-      }
-      userEmail = (mailboxCreds && mailboxCreds.user) || localStorage.getItem('puvima_current_email') || 'admin@puvima.com';
-      showWorkspace();
+    const isLoggedOut = localStorage.getItem('puvima_mail_logged_out');
+    if (isLoggedOut === 'true') {
+      showLoginScreen();
       return;
     }
 
-    // Check if user is already logged into the Company Management Portal
-    try {
-      const portalUser = localStorage.getItem('puvima_portal_auth_user');
-      if (portalUser) {
-        const u = JSON.parse(portalUser);
-        if (u && u.email) {
-          userEmail = u.email;
-          autoConnectPortalUser(u);
+    const savedToken = localStorage.getItem('puvima_mail_token');
+    const savedCreds = localStorage.getItem('puvima_mailbox_creds');
+
+    if (savedToken && savedCreds) {
+      try {
+        mailboxCreds = JSON.parse(savedCreds);
+        if (mailboxCreds && mailboxCreds.user && mailboxCreds.pass) {
+          userEmail = mailboxCreds.user;
+          showWorkspace();
           return;
         }
+      } catch (e) {
+        mailboxCreds = null;
       }
-    } catch (e) {}
+    }
 
-    // No session: Show login screen, hide workspace
+    // No verified active session: Show login screen, hide workspace
     showLoginScreen();
   }
 
-  // Auto connect portal user into corporate mailbox
-  async function autoConnectPortalUser(user) {
-    try {
-      const res = await fetch('/api/mail/connect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user.email, password: 'Password123!' })
-      });
-      const data = await res.json();
-      if (data.success && data.token) {
-        localStorage.setItem('puvima_mail_token', data.token);
-        localStorage.setItem('puvima_current_email', user.email);
-        userEmail = user.email;
-        showWorkspace();
-        return;
-      }
-    } catch (e) {}
-    showLoginScreen();
-  }
-
-  function showLoginScreen() {
+  function showLoginScreen(alertMsg = null, alertType = 'info') {
     isConnectedLive = false;
     liveMessages = [];
+    if (el.emailListContainer) el.emailListContainer.innerHTML = '';
+    if (el.readingViewPane) el.readingViewPane.style.display = 'none';
     if (el.gmailWorkspace) el.gmailWorkspace.style.display = 'none';
     if (el.mailLoginScreen) el.mailLoginScreen.style.display = 'flex';
     if (el.loginPassword) {
       el.loginPassword.value = '';
       setTimeout(() => el.loginPassword.focus(), 150);
+    }
+    if (alertMsg) {
+      showLoginAlert(alertMsg, alertType);
+    } else {
+      hideLoginAlert();
     }
   }
 
@@ -252,10 +232,30 @@
   function signOut() {
     localStorage.removeItem('puvima_mail_token');
     localStorage.removeItem('puvima_mailbox_creds');
+    localStorage.setItem('puvima_mail_logged_out', 'true');
     mailboxCreds = null;
+    isConnectedLive = false;
+    liveMessages = [];
+
+    // Clear all cached emails from localStorage
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('puvima_mail_cache_')) {
+          keys.push(k);
+        }
+      }
+      keys.forEach(k => localStorage.removeItem(k));
+    } catch (e) {}
+
+    // Clear UI state completely
+    if (el.emailListContainer) el.emailListContainer.innerHTML = '';
+    if (el.readingViewPane) el.readingViewPane.style.display = 'none';
     if (el.avatarDropdownMenu) el.avatarDropdownMenu.style.display = 'none';
+
     showToast('Signed out of PUVIMA Mail.');
-    showLoginScreen();
+    showLoginScreen('You have been signed out. Please sign in to access your mailbox.', 'info');
   }
 
   // Show in-place loading shimmer/spinner
@@ -286,14 +286,14 @@
         <p style="font-size: 13.5px; color: #5F6368; max-width: 440px; margin: 6px auto 18px; line-height: 1.5;">${escapeHtml(msg)}</p>
         <div style="display: flex; gap: 10px; justify-content: center;">
           <button id="btnRetrySync" style="background: #1A73E8; color: #FFFFFF; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer;">Retry</button>
-          <button id="btnOpenSettingsFromError" style="background: #F1F3F4; color: #3C4043; border: 1px solid #DADCE0; padding: 8px 18px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer;">Account Settings</button>
+          <button id="btnOpenSettingsFromError" style="background: #F1F3F4; color: #3C4043; border: 1px solid #DADCE0; padding: 8px 18px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer;">Sign In Again</button>
         </div>
       </div>
     `;
     const btnRetry = document.getElementById('btnRetrySync');
-    if (btnRetry) btnRetry.addEventListener('click', () => fetchLiveInbox());
+    if (btnRetry) btnRetry.addEventListener('click', () => fetchLiveInbox(true));
     const btnSet = document.getElementById('btnOpenSettingsFromError');
-    if (btnSet) btnSet.addEventListener('click', () => openConnectModal());
+    if (btnSet) btnSet.addEventListener('click', () => showLoginScreen());
   }
 
   // Handle Full-Page Login Submit
@@ -321,7 +321,7 @@
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.message || 'Authentication failed.');
+        throw new Error(data.message || 'Authentication failed. Please verify your password.');
       }
 
       userEmail = email;
@@ -329,24 +329,21 @@
         localStorage.setItem('puvima_mail_token', data.token);
       }
       localStorage.setItem('puvima_current_email', email);
+      localStorage.removeItem('puvima_mail_logged_out');
 
-      if (data.mode === 'godaddy') {
-        mailboxCreds = {
-          user: email,
-          pass: password,
-          host: 'imap.secureserver.net',
-          port: 993,
-          smtpHost: 'smtpout.secureserver.net',
-          smtpPort: 465
-        };
-        localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
-        showToast(`Connected live to mailbox (${email})`);
-      } else {
-        localStorage.removeItem('puvima_mailbox_creds');
-        mailboxCreds = null;
-        showToast(`Welcome! Connected to PUVIMA Corporate Mailbox (${email})`);
-      }
+      mailboxCreds = {
+        user: email,
+        pass: password,
+        host: 'imap.secureserver.net',
+        port: 993,
+        secure: true,
+        smtpHost: 'smtpout.secureserver.net',
+        smtpPort: 465
+      };
+      localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
+      showToast(`Connected live to mailbox (${email})`);
 
+      hideLoginAlert();
       showWorkspace();
     } catch (err) {
       showLoginAlert(err.message, 'error');
@@ -663,37 +660,21 @@
     renderEmailList();
   }
 
-  // Fetch Live Messages via PUVIMA API Gateway with Stale-While-Revalidate caching
+  // Fetch Live Messages via PUVIMA API Gateway
   async function fetchLiveInbox(forceRefresh = false) {
     const cacheKey = `puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`;
 
-    // 1. Instant Cache Paint (0ms) if not forcing refresh
-    if (!forceRefresh) {
-      const cached = localStorage.getItem(cacheKey);
-      if (cached && (!liveMessages || liveMessages.length === 0)) {
-        try {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            liveMessages = parsed;
-            renderEmailList(); // Instant UI paint!
-          }
-        } catch (e) {}
-      }
-    }
-
-    // Only show full loading spinner if we don't have cached messages on screen
-    if (!liveMessages || liveMessages.length === 0) {
-      showInboxLoading();
-    }
+    // Always show loading spinner while syncing / reloading
+    showInboxLoading();
 
     if (el.btnRefreshInbox) {
       el.btnRefreshInbox.classList.add('spinning');
     }
 
     try {
-      const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
-      if (!activeToken) {
-        showLoginScreen();
+      const activeToken = localStorage.getItem('puvima_mail_token');
+      if (!activeToken || !mailboxCreds) {
+        showLoginScreen('Please sign in to access your mailbox.', 'info');
         return;
       }
 
@@ -711,75 +692,68 @@
 
       if (res.status === 401) {
         localStorage.removeItem('puvima_mail_token');
-        showToast('Session expired. Please sign in again.');
-        showLoginScreen();
-        showLoginAlert('Your session has expired. Please sign in to continue.', 'info');
+        localStorage.removeItem('puvima_mailbox_creds');
+        mailboxCreds = null;
+        liveMessages = [];
+        showLoginScreen('Your session has expired or credentials were rejected. Please sign in again.', 'error');
         return;
       }
 
       const data = await res.json();
 
-      if (data.success) {
-        isConnectedLive = true;
-        if (data.warning) {
-          showToast(data.warning);
-        }
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Unable to retrieve messages.');
+      }
 
-        if (data.messages && data.messages.length > 0) {
-          liveMessages = data.messages.map(m => {
-            const fromAddr = (m.from && m.from.address ? m.from.address : '').toLowerCase();
-            let senderName = (m.from && m.from.name ? m.from.name : m.from?.address) || 'Unknown';
+      isConnectedLive = true;
 
-            if (currentFolder === 'Sent' && m.to && m.to.length > 0) {
-              const toRecipient = m.to[0].name || m.to[0].address || 'Recipient';
-              senderName = `To: ${toRecipient}`;
-            } else if (userEmail && fromAddr === userEmail.toLowerCase()) {
-              senderName = 'me';
-            } else if (fromAddr.includes('admin@puvima.com')) {
-              senderName = 'Principal Consultant';
-            } else if (fromAddr.includes('contact@puvima.com')) {
-              senderName = 'PUVIMA';
-            }
+      if (data.messages && data.messages.length > 0) {
+        liveMessages = data.messages.map(m => {
+          const fromAddr = (m.from && m.from.address ? m.from.address : '').toLowerCase();
+          let senderName = (m.from && m.from.name ? m.from.name : m.from?.address) || 'Unknown';
 
-            return {
-              id: String(m.uid),
-              sender: senderName,
-              email: m.from ? m.from.address : '',
-              subject: m.subject || '(No Subject)',
-              snippet: m.snippet || m.subject || '',
-              date: m.date ? new Date(m.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '',
-              isUnread: !m.isRead,
-              isStarred: Boolean(m.isStarred),
-              tab: 'primary',
-              bodyHtml: m.bodyHtml,
-              bodyText: m.bodyText
-            };
-          });
+          if (currentFolder === 'Sent' && m.to && m.to.length > 0) {
+            const toRecipient = m.to[0].name || m.to[0].address || 'Recipient';
+            senderName = `To: ${toRecipient}`;
+          } else if (userEmail && fromAddr === userEmail.toLowerCase()) {
+            senderName = 'me';
+          } else if (fromAddr.includes('admin@puvima.com')) {
+            senderName = 'Principal Consultant';
+          } else if (fromAddr.includes('contact@puvima.com')) {
+            senderName = 'PUVIMA';
+          }
 
-          // Cache in localStorage for instant paint on next visit
-          try {
-            localStorage.setItem(cacheKey, JSON.stringify(liveMessages));
-          } catch (e) {}
-        } else {
-          liveMessages = [];
-          try {
-            localStorage.setItem(cacheKey, JSON.stringify([]));
-          } catch (e) {}
-        }
-        renderEmailList();
-        if (forceRefresh) {
-          showToast('Mailbox is up to date.');
-        }
+          return {
+            id: String(m.uid),
+            sender: senderName,
+            email: m.from ? m.from.address : '',
+            subject: m.subject || '(No Subject)',
+            snippet: m.snippet || m.subject || '',
+            date: m.date ? new Date(m.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '',
+            isUnread: !m.isRead,
+            isStarred: Boolean(m.isStarred),
+            tab: 'primary',
+            bodyHtml: m.bodyHtml,
+            bodyText: m.bodyText
+          };
+        });
+
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(liveMessages));
+        } catch (e) {}
       } else {
-        if (!liveMessages || liveMessages.length === 0) {
-          showInboxError(data.message || 'Unable to retrieve messages.');
-        }
+        liveMessages = [];
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify([]));
+        } catch (e) {}
       }
-    } catch (e) {
-      console.warn('Mail sync error:', e);
-      if (!liveMessages || liveMessages.length === 0) {
-        showInboxError('Could not connect to mail gateway. Please check your network and retry.');
+      renderEmailList();
+      if (forceRefresh) {
+        showToast('Mailbox is up to date.');
       }
+    } catch (err) {
+      console.warn('[Mail] Fetch inbox error:', err.message);
+      showInboxError(err.message || 'Unable to sync messages with mail server.');
     } finally {
       if (el.btnRefreshInbox) {
         el.btnRefreshInbox.classList.remove('spinning');
@@ -1232,20 +1206,8 @@
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
 
-        // Instant paint from cache for this folder (0ms)
-        const folderCacheKey = `puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`;
-        const cached = localStorage.getItem(folderCacheKey);
-        if (cached) {
-          try {
-            liveMessages = JSON.parse(cached);
-            renderEmailList();
-          } catch (e) {
-            liveMessages = [];
-          }
-        } else {
-          liveMessages = [];
-        }
-
+        liveMessages = [];
+        showInboxLoading();
         fetchLiveInbox();
       });
     });
