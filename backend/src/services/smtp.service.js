@@ -134,8 +134,12 @@ class SmtpService {
 
     const formatRecipients = (val) => {
       if (!val) return undefined;
-      if (Array.isArray(val)) return val.map(r => r.trim()).filter(Boolean).join(', ');
-      return String(val).trim();
+      if (Array.isArray(val)) return val.map(r => String(r).trim()).filter(Boolean).join(', ');
+      return String(val)
+        .split(/[,;\n\r]+/)
+        .map(r => r.trim())
+        .filter(Boolean)
+        .join(', ');
     };
 
     const mailOptions = {

@@ -381,13 +381,31 @@ class MailStoreService {
     const isPrincipal = (userEmail || '').toLowerCase().includes('admin@puvima.com');
     const senderName = isPrincipal ? 'Principal Consultant' : 'PUVIMA';
 
+    const normalizeRecipientList = (input) => {
+      if (!input) return [];
+      if (Array.isArray(input)) {
+        return input.map(r => (typeof r === 'string' ? { name: r.trim(), address: r.trim() } : r));
+      }
+      return String(input)
+        .split(/[,;\n\r]+/)
+        .map(e => e.trim())
+        .filter(Boolean)
+        .map(e => ({ name: e, address: e }));
+    };
+
+    const toRecipients = normalizeRecipientList(data.to);
+    const ccRecipients = normalizeRecipientList(data.cc);
+    const bccRecipients = normalizeRecipientList(data.bcc);
+
     const newMsg = {
       uid: `sent-${Date.now()}`,
       seq: all.length + 1,
       folder: 'Sent',
       subject: data.subject || '(No Subject)',
       from: { name: senderName, address: userEmail },
-      to: Array.isArray(data.to) ? data.to : [{ name: data.to, address: data.to }],
+      to: toRecipients.length > 0 ? toRecipients : [{ name: 'Recipient', address: 'recipient@puvima.com' }],
+      cc: ccRecipients,
+      bcc: bccRecipients,
       date: new Date().toISOString(),
       size: (data.text ? data.text.length : 100) + 2048,
       isRead: true,

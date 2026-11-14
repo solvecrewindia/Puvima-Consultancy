@@ -342,19 +342,22 @@
         <span id="dockFromDisplay" style="font-size: 12px; color: #202124; font-weight: 500;">Principal Consultant &lt;admin@puvima.com&gt;</span>
       </div>
 
-      <div class="dock-field-row">
+      <div class="dock-field-row" id="dockToRow">
         <span class="dock-field-label">To</span>
-        <input type="text" id="dockToInput" class="dock-field-input" placeholder="Recipients" required>
+        <div class="dock-chips-container" id="dockToChips"></div>
+        <input type="text" id="dockToInput" class="dock-field-input" placeholder="Recipients">
         <span class="dock-cc-bcc-btn" id="btnToggleCcBcc">Cc Bcc</span>
       </div>
 
       <div id="ccBccWrapper" style="display: none; flex-direction: column;">
-        <div class="dock-field-row">
+        <div class="dock-field-row" id="dockCcRow">
           <span class="dock-field-label">Cc</span>
+          <div class="dock-chips-container" id="dockCcChips"></div>
           <input type="text" id="dockCcInput" class="dock-field-input" placeholder="Cc">
         </div>
-        <div class="dock-field-row">
+        <div class="dock-field-row" id="dockBccRow">
           <span class="dock-field-label">Bcc</span>
+          <div class="dock-chips-container" id="dockBccChips"></div>
           <input type="text" id="dockBccInput" class="dock-field-input" placeholder="Bcc">
         </div>
       </div>

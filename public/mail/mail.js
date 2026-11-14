@@ -82,10 +82,16 @@
     composeForm: document.getElementById('composeForm'),
     dockFromDisplay: document.getElementById('dockFromDisplay'),
     dockToInput: document.getElementById('dockToInput'),
+    dockToChips: document.getElementById('dockToChips'),
+    dockToRow: document.getElementById('dockToRow'),
     btnToggleCcBcc: document.getElementById('btnToggleCcBcc'),
     ccBccWrapper: document.getElementById('ccBccWrapper'),
     dockCcInput: document.getElementById('dockCcInput'),
+    dockCcChips: document.getElementById('dockCcChips'),
+    dockCcRow: document.getElementById('dockCcRow'),
     dockBccInput: document.getElementById('dockBccInput'),
+    dockBccChips: document.getElementById('dockBccChips'),
+    dockBccRow: document.getElementById('dockBccRow'),
     dockSubjectInput: document.getElementById('dockSubjectInput'),
     dockBodyInput: document.getElementById('dockBodyInput'),
     btnSendDockMail: document.getElementById('btnSendDockMail'),
@@ -818,17 +824,126 @@
     renderAttachmentsList();
   }
 
-  // Handle Send Email
+  // Multi-Recipient Tag / Chip Helpers
+  function addRecipientChip(chipsContainerEl, inputEl, emailText) {
+    if (!chipsContainerEl) return;
+    const clean = String(emailText || '').trim().replace(/^[,;\s]+|[,;\s]+$/g, '');
+    if (!clean) return;
+
+    // Avoid duplicates within the same field
+    const existing = Array.from(chipsContainerEl.querySelectorAll('.recipient-chip'))
+      .map(c => (c.dataset.email || '').toLowerCase());
+    if (existing.includes(clean.toLowerCase())) return;
+
+    const chip = document.createElement('span');
+    chip.className = 'recipient-chip';
+    chip.dataset.email = clean;
+    chip.innerHTML = `
+      <span class="chip-text">${escapeHtml(clean)}</span>
+      <span class="chip-remove" title="Remove">&times;</span>
+    `;
+
+    chip.querySelector('.chip-remove').addEventListener('click', (e) => {
+      e.stopPropagation();
+      chip.remove();
+      if (inputEl) inputEl.focus();
+    });
+
+    chipsContainerEl.appendChild(chip);
+  }
+
+  function clearRecipientChips(chipsContainerEl) {
+    if (chipsContainerEl) chipsContainerEl.innerHTML = '';
+  }
+
+  function getFieldRecipients(inputEl, chipsContainerEl) {
+    const list = [];
+    if (chipsContainerEl) {
+      chipsContainerEl.querySelectorAll('.recipient-chip').forEach(c => {
+        const mail = (c.dataset.email || '').trim();
+        if (mail && !list.includes(mail)) list.push(mail);
+      });
+    }
+    if (inputEl && inputEl.value.trim()) {
+      const parts = inputEl.value.split(/[,;\n\r\s]+/).map(p => p.trim()).filter(Boolean);
+      parts.forEach(p => {
+        if (!list.includes(p)) list.push(p);
+      });
+    }
+    return list;
+  }
+
+  function setupRecipientField(inputEl, chipsContainerEl, rowEl) {
+    if (!inputEl || !chipsContainerEl) return;
+
+    function processDelimiters() {
+      const val = inputEl.value;
+      if (val.includes(',') || val.includes(';') || val.includes('\n')) {
+        const parts = val.split(/[,;\n]+/);
+        for (let i = 0; i < parts.length - 1; i++) {
+          addRecipientChip(chipsContainerEl, inputEl, parts[i]);
+        }
+        inputEl.value = parts[parts.length - 1].trimStart();
+      }
+    }
+
+    inputEl.addEventListener('input', processDelimiters);
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
+        e.preventDefault();
+        const val = inputEl.value.trim();
+        if (val) {
+          addRecipientChip(chipsContainerEl, inputEl, val);
+          inputEl.value = '';
+        }
+      } else if (e.key === 'Backspace' && inputEl.value === '') {
+        const chips = chipsContainerEl.querySelectorAll('.recipient-chip');
+        if (chips.length > 0) {
+          chips[chips.length - 1].remove();
+        }
+      }
+    });
+
+    inputEl.addEventListener('blur', () => {
+      const val = inputEl.value.trim();
+      if (val && (val.includes('@') || val.length > 2)) {
+        addRecipientChip(chipsContainerEl, inputEl, val);
+        inputEl.value = '';
+      }
+    });
+
+    inputEl.addEventListener('paste', (e) => {
+      setTimeout(() => {
+        const val = inputEl.value;
+        if (val.includes(',') || val.includes(';') || val.includes('\n') || val.includes(' ')) {
+          const parts = val.split(/[,;\s\n]+/).map(p => p.trim()).filter(Boolean);
+          parts.forEach(p => addRecipientChip(chipsContainerEl, inputEl, p));
+          inputEl.value = '';
+        }
+      }, 10);
+    });
+
+    if (rowEl) {
+      rowEl.addEventListener('click', (e) => {
+        if (!e.target.closest('.chip-remove')) {
+          inputEl.focus();
+        }
+      });
+    }
+  }
+
+  // Handle Send Email (Multi-Recipient)
   async function handleSendDock(e) {
     e.preventDefault();
 
-    const to = el.dockToInput.value.trim();
-    const cc = el.dockCcInput ? el.dockCcInput.value.trim() : '';
-    const bcc = el.dockBccInput ? el.dockBccInput.value.trim() : '';
+    const toList = getFieldRecipients(el.dockToInput, el.dockToChips);
+    const ccList = getFieldRecipients(el.dockCcInput, el.dockCcChips);
+    const bccList = getFieldRecipients(el.dockBccInput, el.dockBccChips);
     const subject = el.dockSubjectInput.value.trim();
     const body = el.dockBodyInput.value.trim();
 
-    if (!to) {
+    if (toList.length === 0) {
       showToast('Please specify at least one recipient.');
       el.dockToInput.focus();
       return;
@@ -839,9 +954,9 @@
 
     try {
       const formData = new FormData();
-      formData.append('to', to);
-      if (cc) formData.append('cc', cc);
-      if (bcc) formData.append('bcc', bcc);
+      formData.append('to', toList.join(', '));
+      if (ccList.length > 0) formData.append('cc', ccList.join(', '));
+      if (bccList.length > 0) formData.append('bcc', bccList.join(', '));
       formData.append('subject', subject || '(No Subject)');
       formData.append('text', body);
       formData.append('html', `<div style="font-family: Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.5;">${escapeHtml(body).replace(/\n/g, '<br>')}</div>`);
@@ -864,8 +979,11 @@
         throw new Error(data.message || 'Send failed');
       }
 
-      showToast('Message sent successfully!');
+      showToast(`Message sent to ${toList.length} recipient${toList.length > 1 ? 's' : ''}!`);
       el.composeForm.reset();
+      clearRecipientChips(el.dockToChips);
+      clearRecipientChips(el.dockCcChips);
+      clearRecipientChips(el.dockBccChips);
       attachedFiles = [];
       renderAttachmentsList();
       el.gmailComposeDock.classList.remove('active');
@@ -1106,6 +1224,9 @@
     if (el.btnDiscardDockMail) {
       el.btnDiscardDockMail.addEventListener('click', () => {
         el.composeForm.reset();
+        clearRecipientChips(el.dockToChips);
+        clearRecipientChips(el.dockCcChips);
+        clearRecipientChips(el.dockBccChips);
         attachedFiles = [];
         renderAttachmentsList();
         el.gmailComposeDock.classList.remove('active');
@@ -1175,7 +1296,11 @@
       el.btnReadingReply.addEventListener('click', () => {
         if (!activeEmailData) return;
         el.gmailComposeDock.classList.add('active');
-        el.dockToInput.value = activeEmailData.email || activeEmailData.sender;
+        clearRecipientChips(el.dockToChips);
+        const replyEmail = activeEmailData.email || activeEmailData.sender;
+        if (replyEmail) {
+          addRecipientChip(el.dockToChips, el.dockToInput, replyEmail);
+        }
         el.dockSubjectInput.value = `Re: ${activeEmailData.subject}`;
         el.dockBodyInput.focus();
       });
@@ -1185,6 +1310,7 @@
       el.btnReadingForward.addEventListener('click', () => {
         if (!activeEmailData) return;
         el.gmailComposeDock.classList.add('active');
+        clearRecipientChips(el.dockToChips);
         el.dockSubjectInput.value = `Fwd: ${activeEmailData.subject}`;
         el.dockBodyInput.value = `\n\n---------- Forwarded message ---------\nFrom: ${activeEmailData.sender}\nSubject: ${activeEmailData.subject}\n`;
         el.dockToInput.focus();
@@ -1273,6 +1399,11 @@
         document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = checked);
       });
     }
+
+    // Setup Multi-Recipient Fields (To, Cc, Bcc)
+    setupRecipientField(el.dockToInput, el.dockToChips, el.dockToRow);
+    setupRecipientField(el.dockCcInput, el.dockCcChips, el.dockCcRow);
+    setupRecipientField(el.dockBccInput, el.dockBccChips, el.dockBccRow);
   }
 
   if (document.readyState === 'loading') {

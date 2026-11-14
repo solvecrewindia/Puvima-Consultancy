@@ -512,12 +512,30 @@ class MailController {
       const { to, cc, bcc, subject, text, html, inReplyTo, references } = req.body;
       const userEmail = (creds && creds.user) || (req.user && req.user.email) || 'admin@puvima.com';
 
-      if (!to) {
+      // Parse and normalize multi-recipient lists (supports comma, semicolon, space, or newline)
+      const parseRecipients = (input) => {
+        if (!input) return [];
+        if (Array.isArray(input)) return input.flatMap(i => parseRecipients(i));
+        return String(input)
+          .split(/[,;\n\r]+/)
+          .map(e => e.trim())
+          .filter(Boolean);
+      };
+
+      const toList = parseRecipients(to);
+      const ccList = parseRecipients(cc);
+      const bccList = parseRecipients(bcc);
+
+      if (toList.length === 0) {
         return res.status(400).json({
           success: false,
-          message: 'Recipient email address (To) is required.'
+          message: 'At least one recipient email address (To) is required.'
         });
       }
+
+      const toJoined = toList.join(', ');
+      const ccJoined = ccList.length > 0 ? ccList.join(', ') : undefined;
+      const bccJoined = bccList.length > 0 ? bccList.join(', ') : undefined;
 
       const attachments = (req.files || []).map(f => ({
         filename: f.originalname,
@@ -528,9 +546,9 @@ class MailController {
 
       // Store in Corporate Mailbox Sent folder
       const sentMsg = mailStoreService.sendMessage({
-        to,
-        cc,
-        bcc,
+        to: toJoined,
+        cc: ccJoined,
+        bcc: bccJoined,
         subject,
         text,
         html,
@@ -550,7 +568,7 @@ class MailController {
             name: creds.name,
             from: creds.from || creds.user
           };
-          await smtpService.sendMail({ to, cc, bcc, subject, text, html, attachments }, smtpCfg);
+          await smtpService.sendMail({ to: toJoined, cc: ccJoined, bcc: bccJoined, subject, text, html, attachments }, smtpCfg);
           smtpSent = true;
         } catch (e) {
           console.warn('[MailController] Live SMTP dispatch failed, saved to Sent folder:', e.message);
