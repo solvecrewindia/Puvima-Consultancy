@@ -34,44 +34,20 @@
           </svg>
         </div>
         <h1 class="mail-login-title">Sign in to Mail</h1>
-        <p class="mail-login-subtitle">PUVIMA Business Mailbox Access</p>
-      </div>
-
-      <!-- Verified GoDaddy Server Badge -->
-      <div class="login-server-badge">
-        <div class="login-badge-item">
-          <span class="badge-dot"></span>
-          <span>IMAP: <strong>imap.secureserver.net</strong> (Port 993 SSL)</span>
-        </div>
-        <div class="login-badge-item">
-          <span class="badge-dot"></span>
-          <span>SMTP: <strong>smtpout.secureserver.net</strong> (Port 465 SSL)</span>
-        </div>
       </div>
 
       <form id="mailLoginForm" class="mail-login-form">
         <div class="login-field-group">
-          <label class="login-label" for="loginAccountSelect">Account Profile</label>
-          <select id="loginAccountSelect" class="login-select">
-            <option value="admin@puvima.com" selected>admin@puvima.com — Principal Consultant</option>
-            <option value="contact@puvima.com">contact@puvima.com — PUVIMA</option>
-          </select>
-        </div>
-
-        <div class="login-field-group">
-          <label class="login-label" for="loginEmail">Email Address</label>
+          <label class="login-label" for="loginEmail">Email</label>
           <input type="email" id="loginEmail" class="login-input" value="admin@puvima.com" placeholder="admin@puvima.com" required>
         </div>
 
         <div class="login-field-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="login-label" for="loginPassword" style="margin-bottom: 0;">Email Password</label>
+            <label class="login-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
             <button type="button" id="btnToggleLoginPassword" style="background: none; border: none; font-size: 12px; color: #0B57D0; cursor: pointer; font-weight: 500;">Show</button>
           </div>
-          <input type="password" id="loginPassword" class="login-input" placeholder="Enter mailbox or portal password" required autofocus>
-          <div class="login-field-hint" id="loginPasswordHint">
-            Enter your mailbox password or PUVIMA corporate portal password.
-          </div>
+          <input type="password" id="loginPassword" class="login-input" placeholder="Enter password" required autofocus>
         </div>
 
         <div id="loginStatusAlert" class="login-alert-banner" style="display: none;"></div>
@@ -81,10 +57,6 @@
           <svg class="icon-svg" style="width: 18px; height: 18px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
         </button>
       </form>
-
-      <div class="login-card-footer">
-        Protected with 256-bit TLS 1.3 encryption &amp; Secure SSL
-      </div>
     </div>
   </div>
 
