@@ -367,6 +367,12 @@
     }
   }
 
+  function hideLoginAlert() {
+    if (!el.loginStatusAlert) return;
+    el.loginStatusAlert.style.display = 'none';
+    el.loginStatusAlert.innerHTML = '';
+  }
+
   // Render Emails List
   function renderEmailList() {
     el.emailListContainer.style.display = 'block';
