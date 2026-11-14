@@ -340,7 +340,7 @@
           smtpPort: 465
         };
         localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
-        showToast(`Connected live to GoDaddy Mailbox (${email})`);
+        showToast(`Connected live to mailbox (${email})`);
       } else {
         localStorage.removeItem('puvima_mailbox_creds');
         mailboxCreds = null;
@@ -1049,7 +1049,7 @@
               smtpPort: 465
             };
             localStorage.setItem('puvima_mailbox_creds', JSON.stringify(mailboxCreds));
-            showToast(`Connected live to GoDaddy mailbox (${email})`);
+            showToast(`Connected live to mailbox (${email})`);
           } else {
             localStorage.removeItem('puvima_mailbox_creds');
             mailboxCreds = null;

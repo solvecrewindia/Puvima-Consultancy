@@ -72,19 +72,22 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
-.input-with-icon svg {
+.input-with-icon > svg {
   position: absolute;
   left: 14px;
   width: 16px;
   height: 16px;
   color: var(--text-dim);
   pointer-events: none;
+  z-index: 2;
 }
 
 .input-with-icon .form-control {
   padding-left: 40px;
+  width: 100%;
 }
 
 /* ==========================================================================
