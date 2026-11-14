@@ -721,6 +721,74 @@ class ImapService {
     return { success: true };
   }
 
+  async moveToFolder(folder = 'INBOX', uid, targetFolder, customConfig = null) {
+    try {
+      const client = await this.getClient(customConfig);
+      const srcFolder = (String(folder).toLowerCase() === 'starred') ? 'INBOX' : await this.resolveFolderPath(client, folder);
+      const destFolder = await this.resolveFolderPath(client, targetFolder);
+      let lock = await client.getMailboxLock(srcFolder);
+      try {
+        const numUid = parseInt(uid, 10);
+        if (!isNaN(numUid)) {
+          await client.messageMove(numUid, destFolder, { uid: true });
+          return { success: true, movedTo: destFolder };
+        }
+      } finally {
+        lock.release();
+      }
+    } catch (err) {
+      console.warn('[ImapService] moveToFolder error:', err.message);
+    }
+    return { success: true };
+  }
+
+  async batchMoveToFolder(folder = 'INBOX', uids = [], targetFolder, customConfig = null) {
+    if (!uids || uids.length === 0) return { success: true, count: 0 };
+    try {
+      const client = await this.getClient(customConfig);
+      const srcFolder = (String(folder).toLowerCase() === 'starred') ? 'INBOX' : await this.resolveFolderPath(client, folder);
+      const destFolder = await this.resolveFolderPath(client, targetFolder);
+      let lock = await client.getMailboxLock(srcFolder);
+      try {
+        const numUids = uids.map(u => parseInt(u, 10)).filter(n => !isNaN(n));
+        if (numUids.length > 0) {
+          await client.messageMove(numUids, destFolder, { uid: true });
+          return { success: true, movedTo: destFolder, count: numUids.length };
+        }
+      } finally {
+        lock.release();
+      }
+    } catch (err) {
+      console.warn('[ImapService] batchMoveToFolder error:', err.message);
+    }
+    return { success: true };
+  }
+
+  async batchMarkRead(folder = 'INBOX', uids = [], isRead = true, customConfig = null) {
+    if (!uids || uids.length === 0) return { success: true, count: 0 };
+    try {
+      const client = await this.getClient(customConfig);
+      const targetFolder = (String(folder).toLowerCase() === 'starred') ? 'INBOX' : await this.resolveFolderPath(client, folder);
+      let lock = await client.getMailboxLock(targetFolder);
+      try {
+        const numUids = uids.map(u => parseInt(u, 10)).filter(n => !isNaN(n));
+        if (numUids.length > 0) {
+          if (isRead) {
+            await client.messageFlagsAdd(numUids, ['\\Seen'], { uid: true });
+          } else {
+            await client.messageFlagsRemove(numUids, ['\\Seen'], { uid: true });
+          }
+          return { success: true, count: numUids.length };
+        }
+      } finally {
+        lock.release();
+      }
+    } catch (err) {
+      console.warn('[ImapService] batchMarkRead error:', err.message);
+    }
+    return { success: true };
+  }
+
   async appendSentMessage(folder = 'Sent', rawRfc822, customConfig = null) {
     try {
       const client = await this.getClient(customConfig);

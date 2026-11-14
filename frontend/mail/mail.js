@@ -70,8 +70,13 @@
     readingBodyContent: document.getElementById('readingBodyContent'),
     btnReadingReply: document.getElementById('btnReadingReply'),
     btnReadingForward: document.getElementById('btnReadingForward'),
+    btnReadingArchive: document.getElementById('btnReadingArchive'),
+    btnReadingSpam: document.getElementById('btnReadingSpam'),
     btnReadingDelete: document.getElementById('btnReadingDelete'),
+    btnReadingRestore: document.getElementById('btnReadingRestore'),
     btnReadingMarkUnread: document.getElementById('btnReadingMarkUnread'),
+    btnReadingSnooze: document.getElementById('btnReadingSnooze'),
+    btnReadingPrint: document.getElementById('btnReadingPrint'),
 
     gmailComposeDock: document.getElementById('gmailComposeDock'),
     btnOpenCompose: document.getElementById('btnOpenCompose'),
@@ -122,9 +127,12 @@
     passwordHint: document.getElementById('passwordHint'),
 
     btnRefreshInbox: document.getElementById('btnRefreshInbox'),
+    btnToolbarArchive: document.getElementById('btnToolbarArchive'),
+    btnToolbarSpam: document.getElementById('btnToolbarSpam'),
     btnToolbarTrash: document.getElementById('btnToolbarTrash'),
     btnToolbarRestore: document.getElementById('btnToolbarRestore'),
-    btnReadingRestore: document.getElementById('btnReadingRestore'),
+    btnToolbarMarkUnread: document.getElementById('btnToolbarMarkUnread'),
+    btnToolbarSnooze: document.getElementById('btnToolbarSnooze'),
     gmailSearchInput: document.getElementById('gmailSearchInput'),
     masterSelectCheckbox: document.getElementById('masterSelectCheckbox'),
     pageCountDisplay: document.getElementById('pageCountDisplay'),
@@ -408,10 +416,17 @@
       }
     }
 
-    // Toggle Move to Trash and Restore buttons visibility
+    // Toggle selection toolbar buttons visibility
     const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+    const hasSelection = count > 0;
+
+    if (el.btnToolbarArchive) el.btnToolbarArchive.style.display = (hasSelection && !isTrash) ? 'inline-flex' : 'none';
+    if (el.btnToolbarSpam) el.btnToolbarSpam.style.display = (hasSelection && !isTrash) ? 'inline-flex' : 'none';
+    if (el.btnToolbarMarkUnread) el.btnToolbarMarkUnread.style.display = (hasSelection && !isTrash) ? 'inline-flex' : 'none';
+    if (el.btnToolbarSnooze) el.btnToolbarSnooze.style.display = (hasSelection && !isTrash) ? 'inline-flex' : 'none';
+
     if (el.btnToolbarTrash) {
-      if (count > 0) {
+      if (hasSelection) {
         el.btnToolbarTrash.style.display = 'inline-flex';
         el.btnToolbarTrash.title = isTrash ? 'Delete permanently' : 'Move to trash';
       } else {
@@ -420,11 +435,7 @@
     }
 
     if (el.btnToolbarRestore) {
-      if (count > 0 && isTrash) {
-        el.btnToolbarRestore.style.display = 'inline-flex';
-      } else {
-        el.btnToolbarRestore.style.display = 'none';
-      }
+      el.btnToolbarRestore.style.display = (hasSelection && isTrash) ? 'inline-flex' : 'none';
     }
   }
 
@@ -719,6 +730,9 @@
     el.readingDateLabel.textContent = mail.date;
 
     const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+    if (el.btnReadingArchive) el.btnReadingArchive.style.display = isTrash ? 'none' : 'inline-flex';
+    if (el.btnReadingSpam) el.btnReadingSpam.style.display = isTrash ? 'none' : 'inline-flex';
+    if (el.btnReadingSnooze) el.btnReadingSnooze.style.display = isTrash ? 'none' : 'inline-flex';
     if (el.btnReadingDelete) {
       el.btnReadingDelete.title = isTrash ? 'Delete permanently' : 'Delete';
     }
@@ -1434,6 +1448,132 @@
       });
     }
 
+    // Reading View: Archive
+    if (el.btnReadingArchive) {
+      el.btnReadingArchive.addEventListener('click', async () => {
+        if (!activeEmailData) return;
+        const id = activeEmailData.id;
+        const idx = liveMessages.findIndex(m => m.id === id);
+        if (idx !== -1) liveMessages.splice(idx, 1);
+        showToast('Conversation archived');
+        backToInbox();
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Archive`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch(`/api/mail/messages/${id}/move`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ targetFolder: 'Archive', folder: currentFolder })
+          });
+        } catch (e) {}
+      });
+    }
+
+    // Reading View: Report Spam
+    if (el.btnReadingSpam) {
+      el.btnReadingSpam.addEventListener('click', async () => {
+        if (!activeEmailData) return;
+        const id = activeEmailData.id;
+        const idx = liveMessages.findIndex(m => m.id === id);
+        if (idx !== -1) liveMessages.splice(idx, 1);
+        showToast('Conversation marked as spam');
+        backToInbox();
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Spam`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch(`/api/mail/messages/${id}/move`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ targetFolder: 'Spam', folder: currentFolder })
+          });
+        } catch (e) {}
+      });
+    }
+
+    // Reading View: Mark as unread
+    if (el.btnReadingMarkUnread) {
+      el.btnReadingMarkUnread.addEventListener('click', async () => {
+        if (!activeEmailData) return;
+        const id = activeEmailData.id;
+        const mail = liveMessages.find(m => m.id === id);
+        if (mail) mail.isUnread = true;
+        showToast('Conversation marked as unread');
+        backToInbox();
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch(`/api/mail/messages/${id}/read`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify({ read: false, folder: currentFolder })
+          });
+        } catch (e) {}
+      });
+    }
+
+    // Reading View: Snooze
+    if (el.btnReadingSnooze) {
+      el.btnReadingSnooze.addEventListener('click', async () => {
+        if (!activeEmailData) return;
+        const id = activeEmailData.id;
+        const idx = liveMessages.findIndex(m => m.id === id);
+        if (idx !== -1) liveMessages.splice(idx, 1);
+        showToast('Conversation snoozed until tomorrow 8:00 AM');
+        backToInbox();
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Scheduled`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch(`/api/mail/messages/${id}/move`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ targetFolder: 'Scheduled', folder: currentFolder })
+          });
+        } catch (e) {}
+      });
+    }
+
+    // Reading View: Print
+    if (el.btnReadingPrint) {
+      el.btnReadingPrint.addEventListener('click', () => {
+        window.print();
+      });
+    }
+
     if (el.btnReadingDelete) {
       el.btnReadingDelete.addEventListener('click', async () => {
         if (activeEmailData) {
@@ -1506,8 +1646,12 @@
           el.masterSelectCheckbox.checked = false;
           el.masterSelectCheckbox.indeterminate = false;
         }
+        if (el.btnToolbarArchive) el.btnToolbarArchive.style.display = 'none';
+        if (el.btnToolbarSpam) el.btnToolbarSpam.style.display = 'none';
         if (el.btnToolbarTrash) el.btnToolbarTrash.style.display = 'none';
         if (el.btnToolbarRestore) el.btnToolbarRestore.style.display = 'none';
+        if (el.btnToolbarMarkUnread) el.btnToolbarMarkUnread.style.display = 'none';
+        if (el.btnToolbarSnooze) el.btnToolbarSnooze.style.display = 'none';
 
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
@@ -1551,8 +1695,12 @@
           el.masterSelectCheckbox.checked = false;
           el.masterSelectCheckbox.indeterminate = false;
         }
+        if (el.btnToolbarArchive) el.btnToolbarArchive.style.display = 'none';
+        if (el.btnToolbarSpam) el.btnToolbarSpam.style.display = 'none';
         if (el.btnToolbarTrash) el.btnToolbarTrash.style.display = 'none';
         if (el.btnToolbarRestore) el.btnToolbarRestore.style.display = 'none';
+        if (el.btnToolbarMarkUnread) el.btnToolbarMarkUnread.style.display = 'none';
+        if (el.btnToolbarSnooze) el.btnToolbarSnooze.style.display = 'none';
 
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
@@ -1674,6 +1822,175 @@
           });
         } catch (err) {
           console.warn('[Mail] batch restore error:', err.message);
+        }
+      });
+    }
+
+    // Toolbar Archive selected
+    if (el.btnToolbarArchive) {
+      el.btnToolbarArchive.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+        const count = uids.length;
+
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages = liveMessages.filter(m => !uidSet.has(String(m.id)));
+        renderEmailList();
+
+        showToast(`${count} conversation${count > 1 ? 's' : ''} archived`);
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Archive`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-move', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids, targetFolder: 'Archive', folder: currentFolder })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch archive error:', err.message);
+        }
+      });
+    }
+
+    // Toolbar Spam selected
+    if (el.btnToolbarSpam) {
+      el.btnToolbarSpam.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+        const count = uids.length;
+
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages = liveMessages.filter(m => !uidSet.has(String(m.id)));
+        renderEmailList();
+
+        showToast(`${count} conversation${count > 1 ? 's' : ''} marked as spam`);
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Spam`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-move', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids, targetFolder: 'Spam', folder: currentFolder })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch spam error:', err.message);
+        }
+      });
+    }
+
+    // Toolbar Mark as unread selected
+    if (el.btnToolbarMarkUnread) {
+      el.btnToolbarMarkUnread.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+        const count = uids.length;
+
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages.forEach(m => {
+          if (uidSet.has(String(m.id))) m.isUnread = true;
+        });
+        renderEmailList();
+
+        showToast(`${count} conversation${count > 1 ? 's' : ''} marked as unread`);
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-read', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids, read: false, folder: currentFolder })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch mark unread error:', err.message);
+        }
+      });
+    }
+
+    // Toolbar Snooze selected
+    if (el.btnToolbarSnooze) {
+      el.btnToolbarSnooze.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+        const count = uids.length;
+
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages = liveMessages.filter(m => !uidSet.has(String(m.id)));
+        renderEmailList();
+
+        showToast(`${count} conversation${count > 1 ? 's' : ''} snoozed until tomorrow 8:00 AM`);
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Scheduled`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-move', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids, targetFolder: 'Scheduled', folder: currentFolder })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch snooze error:', err.message);
         }
       });
     }

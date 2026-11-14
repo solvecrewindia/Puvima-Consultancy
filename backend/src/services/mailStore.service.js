@@ -519,6 +519,55 @@ class MailStoreService {
     this.saveAll(all);
     return { success: true, count };
   }
+
+  moveToFolder(uid, targetFolder = 'INBOX') {
+    const all = this.readAll();
+    const msg = all.find(m => String(m.uid) === String(uid));
+    if (msg) {
+      msg.folder = targetFolder;
+      if (String(targetFolder).toLowerCase() === 'deleted') {
+        msg.deleted = true;
+      }
+      this.saveAll(all);
+      return { success: true, uid, folder: targetFolder };
+    }
+    return { success: false, message: 'Message not found.' };
+  }
+
+  batchMoveToFolder(uids = [], targetFolder = 'INBOX') {
+    const all = this.readAll();
+    const uidSet = new Set(uids.map(u => String(u)));
+    let count = 0;
+
+    for (const msg of all) {
+      if (uidSet.has(String(msg.uid))) {
+        msg.folder = targetFolder;
+        if (String(targetFolder).toLowerCase() === 'deleted') {
+          msg.deleted = true;
+        }
+        count++;
+      }
+    }
+
+    this.saveAll(all);
+    return { success: true, count, folder: targetFolder };
+  }
+
+  batchMarkRead(uids = [], isRead = true) {
+    const all = this.readAll();
+    const uidSet = new Set(uids.map(u => String(u)));
+    let count = 0;
+
+    for (const msg of all) {
+      if (uidSet.has(String(msg.uid))) {
+        msg.isRead = Boolean(isRead);
+        count++;
+      }
+    }
+
+    this.saveAll(all);
+    return { success: true, count, isRead: Boolean(isRead) };
+  }
 }
 
 module.exports = new MailStoreService();

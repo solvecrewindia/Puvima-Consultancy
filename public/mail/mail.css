@@ -1431,3 +1431,34 @@ input, textarea {
   color: var(--gmail-blue);
 }
 
+/* ==========================================================================
+   PRINT MEDIA STYLES
+   ========================================================================== */
+@media print {
+  body {
+    background: #FFFFFF !important;
+  }
+  .gmail-header,
+  .gmail-sidebar,
+  .inbox-toolbar,
+  .reading-topbar,
+  .gmail-compose-dock,
+  .reading-footer-actions,
+  .gmail-toast-container {
+    display: none !important;
+  }
+  .gmail-main-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .reading-view-pane {
+    display: block !important;
+  }
+  .reading-content-scroll {
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+}
+

@@ -44,8 +44,11 @@ router.patch('/messages/:uid/read', mailController.markRead);
 router.patch('/messages/:uid/star', mailController.markStarred);
 router.post('/messages/batch-trash', mailController.batchMoveToTrash);
 router.post('/messages/batch-restore', mailController.batchRestore);
+router.post('/messages/batch-move', mailController.batchMoveToFolder);
+router.post('/messages/batch-read', mailController.batchMarkRead);
 router.post('/messages/:uid/trash', mailController.moveToTrash);
 router.post('/messages/:uid/restore', mailController.restoreFromTrash);
+router.post('/messages/:uid/move', mailController.moveToFolder);
 
 // Safe attachment downloads
 router.get('/attachments/:uid/:partId/:filename', mailController.downloadAttachment);

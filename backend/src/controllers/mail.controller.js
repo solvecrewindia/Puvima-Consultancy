@@ -724,6 +724,73 @@ class MailController {
     }
   }
 
+  // POST /api/mail/messages/:uid/move
+  async moveToFolder(req, res) {
+    try {
+      const creds = extractCredentials(req);
+      const uid = req.params.uid;
+      const { targetFolder = 'INBOX', folder = 'INBOX' } = req.body;
+
+      if (imapService.isConfigured(creds)) {
+        try { await imapService.moveToFolder(folder, uid, targetFolder, creds); } catch (e) {}
+      }
+
+      const result = mailStoreService.moveToFolder(uid, targetFolder);
+      return res.json(result);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to move message: ' + err.message
+      });
+    }
+  }
+
+  // POST /api/mail/messages/batch-move
+  async batchMoveToFolder(req, res) {
+    try {
+      const creds = extractCredentials(req);
+      const { uids = [], targetFolder = 'INBOX', folder = 'INBOX' } = req.body;
+      if (!Array.isArray(uids) || uids.length === 0) {
+        return res.json({ success: true, count: 0 });
+      }
+
+      if (imapService.isConfigured(creds)) {
+        try { await imapService.batchMoveToFolder(folder, uids, targetFolder, creds); } catch (e) {}
+      }
+
+      const result = mailStoreService.batchMoveToFolder(uids, targetFolder);
+      return res.json(result);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to move messages: ' + err.message
+      });
+    }
+  }
+
+  // POST /api/mail/messages/batch-read
+  async batchMarkRead(req, res) {
+    try {
+      const creds = extractCredentials(req);
+      const { uids = [], read = true, folder = 'INBOX' } = req.body;
+      if (!Array.isArray(uids) || uids.length === 0) {
+        return res.json({ success: true, count: 0 });
+      }
+
+      if (imapService.isConfigured(creds)) {
+        try { await imapService.batchMarkRead(folder, uids, read, creds); } catch (e) {}
+      }
+
+      const result = mailStoreService.batchMarkRead(uids, read);
+      return res.json(result);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update read status: ' + err.message
+      });
+    }
+  }
+
   // GET /api/mail/attachments/:uid/:partId/:filename
   async downloadAttachment(req, res) {
     try {
