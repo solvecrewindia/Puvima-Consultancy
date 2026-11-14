@@ -181,8 +181,11 @@ class ImapService {
         }
       });
 
-      await testClient.connect();
-      await testClient.logout();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Connection timeout to mail server (5s)')), 5000)
+      );
+      await Promise.race([testClient.connect(), timeoutPromise]);
+      try { await testClient.logout(); } catch (e) {}
       return {
         configured: true,
         connected: true,

@@ -146,7 +146,47 @@ class MailController {
         return res.status(400).json({ success: false, message: 'Prohibited SMTP host: ' + smtpVal.reason });
       }
 
-      // 1. Try GoDaddy Live IMAP connectivity
+      // 1. Check if credentials match PUVIMA corporate portal accounts (Fast path: ~1ms)
+      if (isCorporateCredentials(cleanEmail, pass)) {
+        const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
+        const mailboxData = {
+          user: cleanEmail,
+          pass,
+          host: imapCfg.host,
+          port: imapCfg.port,
+          secure: imapCfg.secure,
+          smtpHost: smtpCfg.host,
+          smtpPort: smtpCfg.port,
+          smtpSecure: smtpCfg.secure,
+          name: displayName,
+          mode: 'corporate',
+          from: `"${displayName}" <${cleanEmail}>`
+        };
+
+        connectedMailboxes.set(mailToken, mailboxData);
+
+        const authHeader = req.headers['authorization'];
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.substring(7).trim();
+          connectedMailboxes.set(token, mailboxData);
+        }
+
+        return res.json({
+          success: true,
+          mode: 'corporate',
+          message: 'Signed in to PUVIMA Corporate Mailbox.',
+          token: mailToken,
+          account: {
+            email: cleanEmail,
+            provider: 'puvima',
+            mode: 'corporate',
+            imapHost: 'PUVIMA Corporate Gateway',
+            smtpHost: 'PUVIMA Corporate Gateway'
+          }
+        });
+      }
+
+      // 2. Try GoDaddy Live IMAP connectivity
       const imapTest = await imapService.testConnection(imapCfg);
       if (imapTest.connected) {
         // Also test SMTP
@@ -194,46 +234,6 @@ class MailController {
             mode: 'godaddy',
             imapHost: imapCfg.host,
             smtpHost: smtpCfg.host
-          }
-        });
-      }
-
-      // 2. Check if credentials match PUVIMA corporate portal accounts
-      if (isCorporateCredentials(cleanEmail, pass)) {
-        const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
-        const mailboxData = {
-          user: cleanEmail,
-          pass,
-          host: imapCfg.host,
-          port: imapCfg.port,
-          secure: imapCfg.secure,
-          smtpHost: smtpCfg.host,
-          smtpPort: smtpCfg.port,
-          smtpSecure: smtpCfg.secure,
-          name: displayName,
-          mode: 'corporate',
-          from: `"${displayName}" <${cleanEmail}>`
-        };
-
-        connectedMailboxes.set(mailToken, mailboxData);
-
-        const authHeader = req.headers['authorization'];
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-          const token = authHeader.substring(7).trim();
-          connectedMailboxes.set(token, mailboxData);
-        }
-
-        return res.json({
-          success: true,
-          mode: 'corporate',
-          message: 'Signed in to PUVIMA Corporate Mailbox.',
-          token: mailToken,
-          account: {
-            email: cleanEmail,
-            provider: 'puvima',
-            mode: 'corporate',
-            imapHost: 'PUVIMA Corporate Gateway',
-            smtpHost: 'PUVIMA Corporate Gateway'
           }
         });
       }
