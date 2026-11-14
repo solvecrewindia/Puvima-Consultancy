@@ -1,5 +1,78 @@
 [
   {
+    "uid": "intern-b2c51d21-8af6-4e46-8d2a-4b9d5acf94b3",
+    "seq": 9,
+    "folder": "INBOX",
+    "subject": "New Internship Application: Candidate (Research)",
+    "from": {
+      "name": "Applicant",
+      "address": "esakkimadan10@gmail.com"
+    },
+    "to": [
+      {
+        "name": "PUVIMA HR Operations",
+        "address": "hr@puvima.com"
+      }
+    ],
+    "date": "2026-11-14T05:58:28.427Z",
+    "size": 11200,
+    "isRead": false,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "Candidate submitted application for Research internship. College: SRM Institute of Science and Technology.",
+    "bodyHtml": "\n                <div style=\"font-family: Roboto, sans-serif; color: #202124; line-height: 1.6;\">\n                  <p><strong>New Internship Application Received</strong></p>\n                  <p><strong>Candidate:</strong> undefined<br>\n                  <strong>Email:</strong> esakkimadan10@gmail.com<br>\n                  <strong>Phone:</strong> +919363701023<br>\n                  <strong>Domain:</strong> Research<br>\n                  <strong>Institution:</strong> SRM Institute of Science and Technology</p>\n                  <p>Candidate status: <strong>Pending Review</strong></p>\n                </div>\n              ",
+    "bodyText": "Internship Application from undefined (esakkimadan10@gmail.com) for undefined.",
+    "deleted": false
+  },
+  {
+    "uid": "intern-1794586906512",
+    "seq": 8,
+    "folder": "INBOX",
+    "subject": "New Internship Application: Candidate (Research)",
+    "from": {
+      "name": "Applicant",
+      "address": "john.doe.1794586891944@example.com"
+    },
+    "to": [
+      {
+        "name": "PUVIMA HR Operations",
+        "address": "hr@puvima.com"
+      }
+    ],
+    "date": "2026-11-14T05:58:28.427Z",
+    "size": 11200,
+    "isRead": false,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "Candidate submitted application for Research internship. College: Anna University.",
+    "bodyHtml": "\n                <div style=\"font-family: Roboto, sans-serif; color: #202124; line-height: 1.6;\">\n                  <p><strong>New Internship Application Received</strong></p>\n                  <p><strong>Candidate:</strong> undefined<br>\n                  <strong>Email:</strong> john.doe.1794586891944@example.com<br>\n                  <strong>Phone:</strong> +91 98765 43210<br>\n                  <strong>Domain:</strong> Research<br>\n                  <strong>Institution:</strong> Anna University</p>\n                  <p>Candidate status: <strong>Pending Review</strong></p>\n                </div>\n              ",
+    "bodyText": "Internship Application from undefined (john.doe.1794586891944@example.com) for undefined."
+  },
+  {
+    "uid": "intern-1794586907593",
+    "seq": 7,
+    "folder": "INBOX",
+    "subject": "New Internship Application: Candidate (Research)",
+    "from": {
+      "name": "Applicant",
+      "address": "arun.venkatesh@example.com"
+    },
+    "to": [
+      {
+        "name": "PUVIMA HR Operations",
+        "address": "hr@puvima.com"
+      }
+    ],
+    "date": "2026-11-14T05:58:28.427Z",
+    "size": 11200,
+    "isRead": false,
+    "isStarred": false,
+    "hasAttachments": false,
+    "snippet": "Candidate submitted application for Research internship. College: Madras Institute of Technology.",
+    "bodyHtml": "\n                <div style=\"font-family: Roboto, sans-serif; color: #202124; line-height: 1.6;\">\n                  <p><strong>New Internship Application Received</strong></p>\n                  <p><strong>Candidate:</strong> undefined<br>\n                  <strong>Email:</strong> arun.venkatesh@example.com<br>\n                  <strong>Phone:</strong> +91 93847 87701<br>\n                  <strong>Domain:</strong> Research<br>\n                  <strong>Institution:</strong> Madras Institute of Technology</p>\n                  <p>Candidate status: <strong>Pending Review</strong></p>\n                </div>\n              ",
+    "bodyText": "Internship Application from undefined (arun.venkatesh@example.com) for undefined."
+  },
+  {
     "uid": "sent-1794593781587",
     "seq": 6,
     "folder": "Sent",

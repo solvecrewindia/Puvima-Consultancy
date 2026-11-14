@@ -545,12 +545,16 @@ input, textarea {
   z-index: 2;
 }
 
-.email-row.selected {
-  background: var(--gmail-row-selected);
-}
-
 .email-row.unread {
   background: #FFFFFF;
+}
+
+.email-row.selected {
+  background: var(--gmail-row-selected) !important;
+}
+
+.email-row.selected:hover {
+  background: #B4D3FD !important;
 }
 
 .email-row.unread .row-sender,

@@ -668,6 +668,59 @@ class ImapService {
     }
   }
 
+  async batchMoveToTrash(folder = 'INBOX', uids = [], customConfig = null) {
+    if (!uids || uids.length === 0) return { success: true, count: 0 };
+    try {
+      const client = await this.getClient(customConfig);
+      const targetFolder = (String(folder).toLowerCase() === 'starred')
+        ? 'INBOX'
+        : await this.resolveFolderPath(client, folder);
+      let lock = await client.getMailboxLock(targetFolder);
+      try {
+        const numUids = uids.map(u => parseInt(u, 10)).filter(n => !isNaN(n));
+        if (numUids.length === 0) return { success: true, count: 0 };
+        const mailboxes = await client.list();
+        let trashFolder = mailboxes.find(m => (m.flags && m.flags.has('\\Trash')) || m.path.toLowerCase().includes('trash') || m.path.toLowerCase().includes('bin'));
+        const trashPath = trashFolder ? trashFolder.path : 'Trash';
+
+        if (targetFolder.toLowerCase() === trashPath.toLowerCase()) {
+          await client.messageDelete(numUids, { uid: true });
+          return { success: true, deleted: true, count: numUids.length };
+        } else {
+          await client.messageMove(numUids, trashPath, { uid: true });
+          return { success: true, movedTo: trashPath, count: numUids.length };
+        }
+      } finally {
+        lock.release();
+      }
+    } catch (err) {
+      console.warn('[ImapService] batchMoveToTrash error:', err.message);
+      return { success: false, error: err.message };
+    }
+  }
+
+  async restoreFromTrash(uid, customConfig = null) {
+    try {
+      const client = await this.getClient(customConfig);
+      const mailboxes = await client.list();
+      let trashFolder = mailboxes.find(m => (m.flags && m.flags.has('\\Trash')) || m.path.toLowerCase().includes('trash') || m.path.toLowerCase().includes('bin'));
+      const trashPath = trashFolder ? trashFolder.path : 'Trash';
+      let lock = await client.getMailboxLock(trashPath);
+      try {
+        const numUid = parseInt(uid, 10);
+        if (!isNaN(numUid)) {
+          await client.messageMove(numUid, 'INBOX', { uid: true });
+          return { success: true, movedTo: 'INBOX' };
+        }
+      } finally {
+        lock.release();
+      }
+    } catch (err) {
+      console.warn('[ImapService] restoreFromTrash error:', err.message);
+    }
+    return { success: true };
+  }
+
   async appendSentMessage(folder = 'Sent', rawRfc822, customConfig = null) {
     try {
       const client = await this.getClient(customConfig);

@@ -217,13 +217,22 @@ class MailStoreService {
 
   readAll() {
     this.ensureFile();
+    let messages = [];
     try {
       const raw = fs.readFileSync(MAILBOX_FILE, 'utf8');
-      const messages = JSON.parse(raw);
-      return Array.isArray(messages) ? messages : this.getDefaultSeedMessages();
+      const parsed = JSON.parse(raw);
+      messages = Array.isArray(parsed) ? parsed : this.getDefaultSeedMessages();
     } catch (e) {
-      return this.getDefaultSeedMessages();
+      messages = this.getDefaultSeedMessages();
     }
+
+    const prevCount = messages.length;
+    messages = this.syncWebsiteInquiries(messages);
+    if (messages.length !== prevCount) {
+      this.saveAll(messages);
+    }
+
+    return messages;
   }
 
   saveAll(messages) {
@@ -319,17 +328,17 @@ class MailStoreService {
 
   getMessages(folder = 'INBOX', options = {}, userEmail = 'admin@puvima.com') {
     let all = this.readAll();
-    all = this.syncWebsiteInquiries(all);
 
     const targetFolder = String(folder || 'INBOX').trim().toLowerCase();
     const { page = 1, limit = 50, search = '' } = options;
 
     let filtered = all.filter(m => {
+      if (m.deleted || (m.folder || '').toLowerCase() === 'deleted') return false;
       if (targetFolder === 'starred') {
-        return m.isStarred && m.folder !== 'Trash';
+        return m.isStarred && (m.folder || '').toLowerCase() !== 'trash';
       }
       if (targetFolder === 'scheduled') {
-        return m.folder === 'Scheduled';
+        return (m.folder || '').toLowerCase() === 'scheduled';
       }
       if (targetFolder === 'inbox') {
         return (m.folder || 'INBOX').toUpperCase() === 'INBOX';
@@ -447,11 +456,68 @@ class MailStoreService {
     const all = this.readAll();
     const msg = all.find(m => String(m.uid) === String(uid));
     if (msg) {
-      msg.folder = 'Trash';
-      this.saveAll(all);
-      return { success: true, uid, folder: 'Trash' };
+      if ((msg.folder || '').toLowerCase() === 'trash') {
+        msg.folder = 'Deleted';
+        msg.deleted = true;
+        this.saveAll(all);
+        return { success: true, uid, deleted: true, permanent: true };
+      } else {
+        msg.folder = 'Trash';
+        this.saveAll(all);
+        return { success: true, uid, folder: 'Trash' };
+      }
     }
     return { success: false, message: 'Message not found.' };
+  }
+
+  batchMoveToTrash(uids = []) {
+    const all = this.readAll();
+    const uidSet = new Set(uids.map(u => String(u)));
+    let count = 0;
+
+    for (const msg of all) {
+      if (uidSet.has(String(msg.uid))) {
+        if ((msg.folder || '').toLowerCase() === 'trash') {
+          msg.folder = 'Deleted';
+          msg.deleted = true;
+        } else {
+          msg.folder = 'Trash';
+        }
+        count++;
+      }
+    }
+
+    this.saveAll(all);
+    return { success: true, count };
+  }
+
+  restoreFromTrash(uid) {
+    const all = this.readAll();
+    const msg = all.find(m => String(m.uid) === String(uid));
+    if (msg) {
+      msg.folder = 'INBOX';
+      msg.deleted = false;
+      this.saveAll(all);
+      return { success: true, uid, folder: 'INBOX' };
+    }
+    return { success: false, message: 'Message not found.' };
+  }
+
+  batchRestore(uids = []) {
+    const all = this.readAll();
+    const uidSet = new Set(uids.map(u => String(u)));
+    let count = 0;
+
+    for (const msg of all) {
+      if (uidSet.has(String(msg.uid))) {
+        msg.folder = 'INBOX';
+        msg.deleted = false;
+        count++;
+      }
+    }
+
+    this.saveAll(all);
+    return { success: true, count };
   }
 }
 

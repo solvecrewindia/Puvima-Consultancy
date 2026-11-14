@@ -42,7 +42,10 @@ router.post('/forward', upload.array('attachments', 10), mailController.forwardM
 // Message status & lifecycle
 router.patch('/messages/:uid/read', mailController.markRead);
 router.patch('/messages/:uid/star', mailController.markStarred);
+router.post('/messages/batch-trash', mailController.batchMoveToTrash);
+router.post('/messages/batch-restore', mailController.batchRestore);
 router.post('/messages/:uid/trash', mailController.moveToTrash);
+router.post('/messages/:uid/restore', mailController.restoreFromTrash);
 
 // Safe attachment downloads
 router.get('/attachments/:uid/:partId/:filename', mailController.downloadAttachment);

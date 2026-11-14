@@ -122,6 +122,9 @@
     passwordHint: document.getElementById('passwordHint'),
 
     btnRefreshInbox: document.getElementById('btnRefreshInbox'),
+    btnToolbarTrash: document.getElementById('btnToolbarTrash'),
+    btnToolbarRestore: document.getElementById('btnToolbarRestore'),
+    btnReadingRestore: document.getElementById('btnReadingRestore'),
     gmailSearchInput: document.getElementById('gmailSearchInput'),
     masterSelectCheckbox: document.getElementById('masterSelectCheckbox'),
     pageCountDisplay: document.getElementById('pageCountDisplay'),
@@ -379,6 +382,52 @@
     el.loginStatusAlert.innerHTML = '';
   }
 
+  // Update selection toolbar visibility and row highlights
+  function updateSelectionToolbar() {
+    const allCheckboxes = el.emailListContainer ? el.emailListContainer.querySelectorAll('.item-checkbox') : [];
+    const checkedCheckboxes = el.emailListContainer ? el.emailListContainer.querySelectorAll('.item-checkbox:checked') : [];
+    const count = checkedCheckboxes.length;
+
+    // Toggle row .selected highlight
+    allCheckboxes.forEach(cb => {
+      const row = cb.closest('.email-row');
+      if (row) row.classList.toggle('selected', cb.checked);
+    });
+
+    // Update master select checkbox state
+    if (el.masterSelectCheckbox) {
+      if (count === 0) {
+        el.masterSelectCheckbox.checked = false;
+        el.masterSelectCheckbox.indeterminate = false;
+      } else if (count === allCheckboxes.length && allCheckboxes.length > 0) {
+        el.masterSelectCheckbox.checked = true;
+        el.masterSelectCheckbox.indeterminate = false;
+      } else {
+        el.masterSelectCheckbox.checked = false;
+        el.masterSelectCheckbox.indeterminate = true;
+      }
+    }
+
+    // Toggle Move to Trash and Restore buttons visibility
+    const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+    if (el.btnToolbarTrash) {
+      if (count > 0) {
+        el.btnToolbarTrash.style.display = 'inline-flex';
+        el.btnToolbarTrash.title = isTrash ? 'Delete permanently' : 'Move to trash';
+      } else {
+        el.btnToolbarTrash.style.display = 'none';
+      }
+    }
+
+    if (el.btnToolbarRestore) {
+      if (count > 0 && isTrash) {
+        el.btnToolbarRestore.style.display = 'inline-flex';
+      } else {
+        el.btnToolbarRestore.style.display = 'none';
+      }
+    }
+  }
+
   // Render Emails List
   function renderEmailList() {
     el.emailListContainer.style.display = 'block';
@@ -456,9 +505,11 @@
           <p style="font-size: 13px; color: #70757A; margin-top: 4px;">${emptySub}</p>
         </div>
       `;
+      updateSelectionToolbar();
       return;
     }
 
+    const isTrash = (currentFolder || '').toLowerCase() === 'trash';
     let html = '';
     displayList.forEach(mail => {
       const isUnread = mail.isUnread;
@@ -484,12 +535,18 @@
 
           <!-- Hover Quick Actions -->
           <div class="row-hover-actions" onclick="event.stopPropagation();">
-            <button class="btn-tool" data-action="delete" data-id="${mail.id}" title="Delete" style="width: 32px; height: 32px;">
+            <button class="btn-tool" data-action="delete" data-id="${mail.id}" title="${isTrash ? 'Delete permanently' : 'Delete'}" style="width: 32px; height: 32px;">
               ${ICONS.trash}
             </button>
-            <button class="btn-tool" data-action="toggle-read" data-id="${mail.id}" title="${isUnread ? 'Mark as read' : 'Mark as unread'}" style="width: 32px; height: 32px;">
-              ${ICONS.mailOpen}
-            </button>
+            ${isTrash ? `
+              <button class="btn-tool" data-action="restore" data-id="${mail.id}" title="Restore to Inbox" style="width: 32px; height: 32px;">
+                <svg class="icon-svg" style="width: 16px; height: 16px;" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+              </button>
+            ` : `
+              <button class="btn-tool" data-action="toggle-read" data-id="${mail.id}" title="${isUnread ? 'Mark as read' : 'Mark as unread'}" style="width: 32px; height: 32px;">
+                ${ICONS.mailOpen}
+              </button>
+            `}
           </div>
         </div>
       `;
@@ -503,6 +560,17 @@
         const id = row.getAttribute('data-id');
         const mail = displayList.find(m => m.id === id);
         if (mail) openEmail(mail);
+      });
+    });
+
+    // Bind item checkbox change & prevent click bubbling
+    el.emailListContainer.querySelectorAll('.item-checkbox').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        e.stopPropagation();
+        updateSelectionToolbar();
+      });
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
     });
 
@@ -538,11 +606,18 @@
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
+        const isTrashFolder = (currentFolder || '').toLowerCase() === 'trash';
         const idx = liveMessages.findIndex(m => m.id === id);
         if (idx !== -1) {
           liveMessages.splice(idx, 1);
           renderEmailList();
-          showToast('Conversation moved to Trash');
+          showToast(isTrashFolder ? 'Conversation deleted forever' : 'Conversation moved to Trash');
+
+          try {
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+          } catch (e) {}
 
           try {
             const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
@@ -554,6 +629,37 @@
               method: 'POST',
               headers,
               body: JSON.stringify({ folder: currentFolder })
+            });
+          } catch (e) {}
+        }
+      });
+    });
+
+    // Bind restore click (in Trash)
+    el.emailListContainer.querySelectorAll('[data-action="restore"]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const idx = liveMessages.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          liveMessages.splice(idx, 1);
+          renderEmailList();
+          showToast('Conversation restored to Inbox');
+
+          try {
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+          } catch (e) {}
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/restore`, {
+              method: 'POST',
+              headers
             });
           } catch (e) {}
         }
@@ -585,6 +691,9 @@
         }
       });
     });
+
+    // Update toolbar actions and row selection state
+    updateSelectionToolbar();
   }
 
   // Open & Read Real Email
@@ -608,6 +717,14 @@
     el.readingSenderEmail.textContent = `<${mail.email || mail.sender}>`;
     el.readingSenderAvatar.textContent = (senderDisplay[0] || 'P').toUpperCase();
     el.readingDateLabel.textContent = mail.date;
+
+    const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+    if (el.btnReadingDelete) {
+      el.btnReadingDelete.title = isTrash ? 'Delete permanently' : 'Delete';
+    }
+    if (el.btnReadingRestore) {
+      el.btnReadingRestore.style.display = isTrash ? 'inline-flex' : 'none';
+    }
 
     if (mail.bodyHtml) {
       el.readingBodyContent.innerHTML = mail.bodyHtml;
@@ -1318,12 +1435,62 @@
     }
 
     if (el.btnReadingDelete) {
-      el.btnReadingDelete.addEventListener('click', () => {
+      el.btnReadingDelete.addEventListener('click', async () => {
         if (activeEmailData) {
-          const idx = liveMessages.findIndex(m => m.id === activeEmailData.id);
+          const id = activeEmailData.id;
+          const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+          const idx = liveMessages.findIndex(m => m.id === id);
           if (idx !== -1) liveMessages.splice(idx, 1);
-          showToast('Conversation moved to Trash');
+          showToast(isTrash ? 'Conversation deleted forever' : 'Conversation moved to Trash');
           backToInbox();
+
+          try {
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+          } catch (e) {}
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/trash`, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify({ folder: currentFolder })
+            });
+          } catch (e) {}
+        }
+      });
+    }
+
+    if (el.btnReadingRestore) {
+      el.btnReadingRestore.addEventListener('click', async () => {
+        if (activeEmailData) {
+          const id = activeEmailData.id;
+          const idx = liveMessages.findIndex(m => m.id === id);
+          if (idx !== -1) liveMessages.splice(idx, 1);
+          showToast('Conversation restored to Inbox');
+          backToInbox();
+
+          try {
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+            localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+          } catch (e) {}
+
+          try {
+            const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+            if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+            await fetch(`/api/mail/messages/${id}/restore`, {
+              method: 'POST',
+              headers
+            });
+          } catch (e) {}
         }
       });
     }
@@ -1334,6 +1501,13 @@
         document.querySelectorAll('.folder-row[data-folder]').forEach(r => r.classList.remove('active'));
         row.classList.add('active');
         currentFolder = row.getAttribute('data-folder') || 'INBOX';
+
+        if (el.masterSelectCheckbox) {
+          el.masterSelectCheckbox.checked = false;
+          el.masterSelectCheckbox.indeterminate = false;
+        }
+        if (el.btnToolbarTrash) el.btnToolbarTrash.style.display = 'none';
+        if (el.btnToolbarRestore) el.btnToolbarRestore.style.display = 'none';
 
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
@@ -1373,6 +1547,13 @@
           r.classList.toggle('active', (r.getAttribute('data-folder') || '').toUpperCase() === 'INBOX');
         });
         currentFolder = 'INBOX';
+        if (el.masterSelectCheckbox) {
+          el.masterSelectCheckbox.checked = false;
+          el.masterSelectCheckbox.indeterminate = false;
+        }
+        if (el.btnToolbarTrash) el.btnToolbarTrash.style.display = 'none';
+        if (el.btnToolbarRestore) el.btnToolbarRestore.style.display = 'none';
+
         if (el.readingViewPane) el.readingViewPane.style.display = 'none';
         if (el.emailListContainer) el.emailListContainer.style.display = 'block';
         fetchLiveInbox();
@@ -1396,7 +1577,104 @@
     if (el.masterSelectCheckbox) {
       el.masterSelectCheckbox.addEventListener('change', (e) => {
         const checked = e.target.checked;
-        document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = checked);
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+          cb.checked = checked;
+        });
+        updateSelectionToolbar();
+      });
+    }
+
+    // Toolbar Move to Trash / Delete selected
+    if (el.btnToolbarTrash) {
+      el.btnToolbarTrash.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+
+        const isTrash = (currentFolder || '').toLowerCase() === 'trash';
+        const count = uids.length;
+
+        // Optimistic UI update: Remove selected from liveMessages
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages = liveMessages.filter(m => !uidSet.has(String(m.id)));
+        renderEmailList();
+
+        showToast(isTrash 
+          ? `${count} conversation${count > 1 ? 's' : ''} deleted forever`
+          : `${count} conversation${count > 1 ? 's' : ''} moved to Trash`
+        );
+
+        // Clear cached folder data to force fresh sync
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_${currentFolder}`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+        } catch (e) {}
+
+        // Dispatch to backend API
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-trash', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids, folder: currentFolder })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch trash dispatch error:', err.message);
+        }
+      });
+    }
+
+    // Toolbar Restore selected (when in Trash)
+    if (el.btnToolbarRestore) {
+      el.btnToolbarRestore.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) return;
+
+        const uids = checkedBoxes.map(cb => {
+          const row = cb.closest('.email-row');
+          return row ? row.getAttribute('data-id') : null;
+        }).filter(Boolean);
+
+        if (uids.length === 0) return;
+        const count = uids.length;
+
+        // Optimistic UI update: remove from Trash
+        const uidSet = new Set(uids.map(u => String(u)));
+        liveMessages = liveMessages.filter(m => !uidSet.has(String(m.id)));
+        renderEmailList();
+
+        showToast(`${count} conversation${count > 1 ? 's' : ''} restored to Inbox`);
+
+        try {
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_Trash`);
+          localStorage.removeItem(`puvima_mail_cache_${(userEmail || 'default')}_INBOX`);
+        } catch (e) {}
+
+        try {
+          const activeToken = localStorage.getItem('puvima_mail_token') || localStorage.getItem('puvima_admin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (activeToken) headers['Authorization'] = 'Bearer ' + activeToken;
+          if (mailboxCreds) headers['x-mailbox-auth'] = btoa(JSON.stringify(mailboxCreds));
+
+          await fetch('/api/mail/messages/batch-restore', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ uids })
+          });
+        } catch (err) {
+          console.warn('[Mail] batch restore error:', err.message);
+        }
       });
     }
 
