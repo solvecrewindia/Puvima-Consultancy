@@ -976,13 +976,78 @@
     renderAttachmentsList();
   }
 
+  // Robust Email Extractor supporting:
+  // - Comma separated: user1@gmail.com, user2@puvima.com
+  // - Semicolon separated: user1@gmail.com; user2@puvima.com
+  // - Newlines / tabs / spaces / pipes / slashes: user1@gmail.com | user2@puvima.com
+  // - Name <email> brackets: "John Doe" <john@puvima.com>
+  // - Stuck-together without delimiters: user1@gmail.comuser2@puvima.com
+  // - Conversational / unstructured paragraphs containing emails
+  function extractEmailsFromText(text) {
+    if (!text) return [];
+    let s = String(text).trim();
+    if (!s) return [];
+
+    // Separate stuck-together emails where known TLD is immediately followed by next email's local part
+    const tldList = [
+      'co\\.in', 'org\\.in', 'ac\\.in', 'gov\\.in', 'net\\.in', 'res\\.in', 'gen\\.in',
+      'co\\.uk', 'org\\.uk', 'me\\.uk', 'ltd\\.uk', 'plc\\.uk',
+      'com\\.au', 'net\\.au', 'org\\.au', 'edu\\.au',
+      'com', 'org', 'net', 'in', 'co', 'io', 'ai', 'edu', 'gov', 'mil',
+      'biz', 'info', 'me', 'tech', 'online', 'dev', 'app', 'xyz', 'site',
+      'club', 'store', 'live', 'cloud', 'pro', 'space', 'website', 'digital',
+      'solutions', 'agency', 'company', 'center', 'group', 'media', 'network',
+      'services', 'world', 'zone', 'systems', 'design', 'global',
+      'us', 'uk', 'ca', 'au', 'de', 'fr', 'jp', 'ru', 'cn', 'br', 'ch', 'nl', 'se', 'es', 'it'
+    ].join('|');
+
+    const stuckTldRegex = new RegExp(`\\.(${tldList})([a-zA-Z0-9._%+-]+@)`, 'gi');
+    s = s.replace(stuckTldRegex, '.$1 $2');
+    s = s.replace(/>\s*</g, '> <')
+         .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([<])/gi, '$1 $2');
+
+    // Extract all valid RFC email addresses via regex
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
+    const matches = s.match(emailRegex) || [];
+
+    if (matches.length === 0) {
+      return s.split(/[,;\n\r\t\s|/<>]+/)
+        .map(p => p.trim().replace(/^["'<]+|[>"']+$/g, ''))
+        .filter(p => p.includes('@') && p.length > 4);
+    }
+
+    const seen = new Set();
+    const result = [];
+    for (const m of matches) {
+      const clean = m.trim().toLowerCase();
+      if (!seen.has(clean)) {
+        seen.add(clean);
+        result.push(m.trim());
+      }
+    }
+    return result;
+  }
+
+  // Update input placeholder based on whether chips exist
+  function updatePlaceholder(chipsContainerEl, inputEl) {
+    if (!chipsContainerEl) return;
+    const targetInput = inputEl || (chipsContainerEl.parentElement ? chipsContainerEl.parentElement.querySelector('.dock-field-input') : null);
+    if (!targetInput) return;
+    const chipCount = chipsContainerEl.querySelectorAll('.recipient-chip').length;
+    if (chipCount > 0) {
+      targetInput.placeholder = '';
+    } else {
+      targetInput.placeholder = targetInput.dataset.defaultPlaceholder || 'Recipients';
+    }
+  }
+
   // Multi-Recipient Tag / Chip Helpers
   function addRecipientChip(chipsContainerEl, inputEl, emailText) {
     if (!chipsContainerEl) return;
-    const clean = String(emailText || '').trim().replace(/^[,;\s]+|[,;\s]+$/g, '');
+    const clean = String(emailText || '').trim().replace(/^["'<,\s;]+|[>"',\s;]+$/g, '');
     if (!clean) return;
 
-    // Avoid duplicates within the same field
+    // Avoid duplicates within the same field (case-insensitive)
     const existing = Array.from(chipsContainerEl.querySelectorAll('.recipient-chip'))
       .map(c => (c.dataset.email || '').toLowerCase());
     if (existing.includes(clean.toLowerCase())) return;
@@ -998,14 +1063,17 @@
     chip.querySelector('.chip-remove').addEventListener('click', (e) => {
       e.stopPropagation();
       chip.remove();
+      updatePlaceholder(chipsContainerEl, inputEl);
       if (inputEl) inputEl.focus();
     });
 
     chipsContainerEl.appendChild(chip);
+    updatePlaceholder(chipsContainerEl, inputEl);
   }
 
-  function clearRecipientChips(chipsContainerEl) {
+  function clearRecipientChips(chipsContainerEl, inputEl) {
     if (chipsContainerEl) chipsContainerEl.innerHTML = '';
+    updatePlaceholder(chipsContainerEl, inputEl);
   }
 
   function getFieldRecipients(inputEl, chipsContainerEl) {
@@ -1017,68 +1085,141 @@
       });
     }
     if (inputEl && inputEl.value.trim()) {
-      const parts = inputEl.value.split(/[,;\n\r\s]+/).map(p => p.trim()).filter(Boolean);
-      parts.forEach(p => {
+      const residuals = extractEmailsFromText(inputEl.value);
+      residuals.forEach(p => {
         if (!list.includes(p)) list.push(p);
       });
+      if (residuals.length === 0 && inputEl.value.includes('@')) {
+        const raw = inputEl.value.trim().replace(/^["'<,\s;]+|[>"',\s;]+$/g, '');
+        if (raw && !list.includes(raw)) list.push(raw);
+      }
     }
     return list;
   }
 
   function setupRecipientField(inputEl, chipsContainerEl, rowEl) {
     if (!inputEl || !chipsContainerEl) return;
+    inputEl.dataset.defaultPlaceholder = inputEl.placeholder || 'Recipients';
 
-    function processDelimiters() {
+    function chipifyInput(options = {}) {
       const val = inputEl.value;
-      if (val.includes(',') || val.includes(';') || val.includes('\n')) {
-        const parts = val.split(/[,;\n]+/);
-        for (let i = 0; i < parts.length - 1; i++) {
-          addRecipientChip(chipsContainerEl, inputEl, parts[i]);
-        }
-        inputEl.value = parts[parts.length - 1].trimStart();
-      }
-    }
-
-    inputEl.addEventListener('input', processDelimiters);
-
-    inputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
-        e.preventDefault();
-        const val = inputEl.value.trim();
-        if (val) {
-          addRecipientChip(chipsContainerEl, inputEl, val);
+      if (!val) return;
+      const emails = extractEmailsFromText(val);
+      if (emails.length > 0) {
+        emails.forEach(email => addRecipientChip(chipsContainerEl, inputEl, email));
+        if (options.keepRemainder) {
+          const lastDelimIdx = Math.max(
+            val.lastIndexOf(','),
+            val.lastIndexOf(';'),
+            val.lastIndexOf('\n'),
+            val.lastIndexOf('\t'),
+            val.lastIndexOf(' ')
+          );
+          if (lastDelimIdx !== -1 && lastDelimIdx < val.length - 1) {
+            const rem = val.slice(lastDelimIdx + 1).trim();
+            inputEl.value = emails.some(e => e.toLowerCase() === rem.toLowerCase()) ? '' : rem;
+          } else {
+            inputEl.value = '';
+          }
+        } else {
           inputEl.value = '';
         }
+      } else if (options.force && (val.includes('@') || val.length > 3)) {
+        addRecipientChip(chipsContainerEl, inputEl, val);
+        inputEl.value = '';
+      }
+      updatePlaceholder(chipsContainerEl, inputEl);
+    }
+
+    // 1. Paste event: instant recognition, chips creation, clears input, keeps focus for next
+    inputEl.addEventListener('paste', (e) => {
+      e.preventDefault();
+      let text = '';
+      if (e.clipboardData && e.clipboardData.getData) {
+        text = e.clipboardData.getData('text/plain') || e.clipboardData.getData('text') || '';
+      } else if (window.clipboardData && window.clipboardData.getData) {
+        text = window.clipboardData.getData('Text') || '';
+      }
+
+      const full = (inputEl.value ? (inputEl.value + ' ') : '') + (text || '');
+      const emails = extractEmailsFromText(full);
+      if (emails.length > 0) {
+        emails.forEach(email => addRecipientChip(chipsContainerEl, inputEl, email));
+        inputEl.value = '';
+      } else if (text) {
+        inputEl.value = full;
+      }
+      updatePlaceholder(chipsContainerEl, inputEl);
+      setTimeout(() => inputEl.focus(), 0);
+    });
+
+    // 2. Drag & Drop event
+    inputEl.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const text = (e.dataTransfer && e.dataTransfer.getData('text')) || '';
+      if (text) {
+        const full = (inputEl.value ? (inputEl.value + ' ') : '') + text;
+        const emails = extractEmailsFromText(full);
+        if (emails.length > 0) {
+          emails.forEach(email => addRecipientChip(chipsContainerEl, inputEl, email));
+          inputEl.value = '';
+        } else {
+          inputEl.value = full;
+        }
+        updatePlaceholder(chipsContainerEl, inputEl);
+        setTimeout(() => inputEl.focus(), 0);
+      }
+    });
+
+    // 3. Input event: captures typing delimiters, mobile virtual keyboards, autocomplete
+    inputEl.addEventListener('input', () => {
+      const val = inputEl.value;
+      if (!val) return;
+      if (
+        val.includes(',') ||
+        val.includes(';') ||
+        val.includes('\n') ||
+        val.includes('\t') ||
+        (val.match(/@/g) || []).length > 1
+      ) {
+        chipifyInput({ keepRemainder: true });
+      }
+    });
+
+    // 4. Keydown: Enter, Comma, Semicolon, Tab, Space (when contains @), Backspace to remove chip
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ',' || e.key === ';' || e.key === 'Tab') {
+        if (inputEl.value.trim()) {
+          e.preventDefault();
+          chipifyInput({ force: true });
+        }
+      } else if (e.key === ' ' && inputEl.value.includes('@')) {
+        e.preventDefault();
+        chipifyInput({ force: true });
       } else if (e.key === 'Backspace' && inputEl.value === '') {
         const chips = chipsContainerEl.querySelectorAll('.recipient-chip');
         if (chips.length > 0) {
           chips[chips.length - 1].remove();
+          updatePlaceholder(chipsContainerEl, inputEl);
         }
       }
     });
 
+    // 5. Blur: convert any residual valid email to chip
     inputEl.addEventListener('blur', () => {
-      const val = inputEl.value.trim();
-      if (val && (val.includes('@') || val.length > 2)) {
-        addRecipientChip(chipsContainerEl, inputEl, val);
-        inputEl.value = '';
+      if (inputEl.value.trim()) {
+        chipifyInput({ force: true });
       }
     });
 
-    inputEl.addEventListener('paste', (e) => {
-      setTimeout(() => {
-        const val = inputEl.value;
-        if (val.includes(',') || val.includes(';') || val.includes('\n') || val.includes(' ')) {
-          const parts = val.split(/[,;\s\n]+/).map(p => p.trim()).filter(Boolean);
-          parts.forEach(p => addRecipientChip(chipsContainerEl, inputEl, p));
-          inputEl.value = '';
-        }
-      }, 10);
-    });
-
+    // 6. Click on row focuses the input
     if (rowEl) {
       rowEl.addEventListener('click', (e) => {
-        if (!e.target.closest('.chip-remove')) {
+        if (
+          !e.target.closest('.chip-remove') &&
+          !e.target.closest('.dock-row-actions') &&
+          !e.target.closest('.dock-cc-bcc-btn')
+        ) {
           inputEl.focus();
         }
       });

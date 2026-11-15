@@ -536,14 +536,48 @@ class MailController {
       const { to, cc, bcc, subject, text, html, inReplyTo, references } = req.body;
       const userEmail = (creds && creds.user) || (req.user && req.user.email) || 'admin@puvima.com';
 
-      // Parse and normalize multi-recipient lists (supports comma, semicolon, space, or newline)
+      // Parse and normalize multi-recipient lists (supports comma, semicolon, space, newline, stuck without delimiters, and RFC angle brackets)
       const parseRecipients = (input) => {
         if (!input) return [];
         if (Array.isArray(input)) return input.flatMap(i => parseRecipients(i));
-        return String(input)
-          .split(/[,;\n\r]+/)
-          .map(e => e.trim())
-          .filter(Boolean);
+        let s = String(input).trim();
+        if (!s) return [];
+
+        const tldList = [
+          'co\\.in', 'org\\.in', 'ac\\.in', 'gov\\.in', 'net\\.in', 'res\\.in', 'gen\\.in',
+          'co\\.uk', 'org\\.uk', 'me\\.uk', 'ltd\\.uk', 'plc\\.uk',
+          'com\\.au', 'net\\.au', 'org\\.au', 'edu\\.au',
+          'com', 'org', 'net', 'in', 'co', 'io', 'ai', 'edu', 'gov', 'mil',
+          'biz', 'info', 'me', 'tech', 'online', 'dev', 'app', 'xyz', 'site',
+          'club', 'store', 'live', 'cloud', 'pro', 'space', 'website', 'digital',
+          'solutions', 'agency', 'company', 'center', 'group', 'media', 'network',
+          'services', 'world', 'zone', 'systems', 'design', 'global',
+          'us', 'uk', 'ca', 'au', 'de', 'fr', 'jp', 'ru', 'cn', 'br', 'ch', 'nl', 'se', 'es', 'it'
+        ].join('|');
+
+        s = s.replace(new RegExp(`\\.(${tldList})([a-zA-Z0-9._%+-]+@)`, 'gi'), '.$1 $2');
+        s = s.replace(/>\s*</g, '> <')
+             .replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})([<])/gi, '$1 $2');
+
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
+        const matches = s.match(emailRegex) || [];
+
+        if (matches.length === 0) {
+          return s.split(/[,;\n\r\t\s|/<>]+/)
+            .map(p => p.trim().replace(/^["'<]+|[>"']+$/g, ''))
+            .filter(p => p.includes('@') && p.length > 4);
+        }
+
+        const seen = new Set();
+        const result = [];
+        for (const m of matches) {
+          const clean = m.trim().toLowerCase();
+          if (!seen.has(clean)) {
+            seen.add(clean);
+            result.push(m.trim());
+          }
+        }
+        return result;
       };
 
       const toList = parseRecipients(to);
