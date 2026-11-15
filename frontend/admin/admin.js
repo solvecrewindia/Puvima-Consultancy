@@ -111,33 +111,41 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
   async function verifySession(token) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+
       const res = await fetch(`${API_BASE}/api/admin/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${token}` },
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
+
       if (res.ok) {
         const data = await res.json();
         currentAdmin = data.user;
         return true;
       }
     } catch (e) {
-      console.error('Session verification network error', e);
+      console.warn('Session verification notice:', e);
     }
     clearStoredToken();
     return false;
   }
 
   function showLogin() {
-    window.location.replace('/login');
+    if (adminShell) adminShell.style.display = 'none';
+    if (loginView) loginView.style.display = 'flex';
   }
 
   function showDashboard() {
-    loginView.style.display = 'none';
-    adminShell.style.display = 'flex';
-    if (currentAdmin && currentAdmin.email) {
-      adminEmailDisplay.textContent = currentAdmin.email;
-      userAvatar.textContent = currentAdmin.email.charAt(0).toUpperCase();
+    if (loginView) loginView.style.display = 'none';
+    if (adminShell) adminShell.style.display = 'flex';
+    if (currentAdmin && (currentAdmin.name || currentAdmin.email)) {
+      const displayName = currentAdmin.name || currentAdmin.email;
+      if (adminEmailDisplay) adminEmailDisplay.textContent = displayName;
+      if (userAvatar) userAvatar.textContent = displayName.charAt(0).toUpperCase();
     }
-    refreshAllData();
+    refreshAllData().catch(e => console.warn('refreshAllData notice:', e));
   }
 
   // ==========================================================================
@@ -180,11 +188,20 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
   // 3. EVENT LISTENERS
   // ==========================================================================
   function setupEventListeners() {
-    // Quick Demo Autofill
+    // Quick Demo Autofill: Administrator & Super Administrator
     if (demoChipBtn) {
       demoChipBtn.addEventListener('click', () => {
-        loginEmailInput.value = 'admin@puvima.com';
+        loginEmailInput.value = 'admin';
         loginPassInput.value = 'admin123';
+        loginEmailInput.focus();
+      });
+    }
+
+    const demoSuperChipBtn = document.getElementById('demoSuperChipBtn');
+    if (demoSuperChipBtn) {
+      demoSuperChipBtn.addEventListener('click', () => {
+        loginEmailInput.value = 'admin0001';
+        loginPassInput.value = 'Puvima@1818';
         loginEmailInput.focus();
       });
     }
@@ -380,19 +397,22 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
         setStoredToken(data.token);
         currentAdmin = data.user;
         try {
+          const role = (data.user && data.user.role) === 'superadmin' ? 'SuperAdmin' : 'Admin';
+          const name = (data.user && data.user.name) || (role === 'SuperAdmin' ? 'admin0001' : 'admin');
+          const code = (data.user && data.user.user_code) || (role === 'SuperAdmin' ? 'admin0001' : 'admin');
           localStorage.setItem('puvima_portal_auth_user', JSON.stringify({
-            id: 'usr-admin-1',
-            userId: 'ADM0001',
-            user_code: 'ADM0001',
-            name: (data.user && data.user.name) || 'Administrator',
-            email: email,
-            role: 'SuperAdmin',
-            department: 'Executive Board',
+            id: role === 'SuperAdmin' ? 'usr-admin-1' : 'usr-admin-2',
+            userId: code,
+            user_code: code,
+            name: name,
+            email: (data.user && data.user.email) || 'admin@puvima.com',
+            role: role,
+            department: role === 'SuperAdmin' ? 'Executive Board' : 'Executive Administration',
             isActive: true
           }));
         } catch (e) {}
         showDashboard();
-        showToast('Administrative session established.', 'success');
+        showToast(`Welcome back, ${data.user.name || 'Admin'}!`, 'success');
       } else {
         showLoginError(data.message || 'Authentication failed. Please verify credentials.');
       }
@@ -967,7 +987,6 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     const searchInput = document.getElementById('internshipSearchInput');
     if (searchInput) searchInput.value = '';
     renderInternshipsTable();
-  }
   }
 
   // ==========================================================================

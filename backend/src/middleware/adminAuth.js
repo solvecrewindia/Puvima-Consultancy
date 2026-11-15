@@ -22,7 +22,7 @@ function adminAuth(req, res, next) {
   }
 
   const payload = verifyToken(token);
-  if (!payload || payload.role !== 'admin') {
+  if (!payload || (payload.role !== 'admin' && payload.role !== 'superadmin')) {
     return res.status(401).json({
       success: false,
       message: 'Access denied: Invalid or expired admin session. Please log in again.'

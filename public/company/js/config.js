@@ -43,12 +43,21 @@ const CONFIG = {
   // Demo Credentials for Instant Test Sign-In
   DEMO_ACCOUNTS: [
     {
+      role: 'Admin',
+      roleLabel: 'Website Administrator',
+      code: 'admin',
+      email: 'admin@puvima.com',
+      password: 'admin123',
+      name: 'admin',
+      department: 'Executive Administration',
+    },
+    {
       role: 'SuperAdmin',
       roleLabel: 'Super Administrator',
-      code: 'ADM0001',
+      code: 'admin0001',
       email: 'admin@puvima.com',
-      password: 'Password123!',
-      name: 'superadmin',
+      password: 'Puvima@1818',
+      name: 'admin0001',
       department: 'Executive Board',
     },
     {
@@ -56,7 +65,7 @@ const CONFIG = {
       roleLabel: 'Human Resources Lead',
       code: 'HR0001',
       email: 'hr@puvima.com',
-      password: 'Password123!',
+      password: 'hr123',
       name: 'puvima hr',
       department: 'Human Resources',
     },

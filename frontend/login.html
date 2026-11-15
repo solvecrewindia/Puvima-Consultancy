@@ -37,15 +37,19 @@
         </button>
       </div>
 
-      <!-- Quick Demo Fill Helpers -->
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button type="button" id="btnAutofillAdmin" style="flex: 1; text-align: left; padding: 8px 12px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
-          <div style="font-size: 11px; font-weight: 700; color: #0072CE; text-transform: uppercase;">Website Admin</div>
-          <div style="font-size: 12px; color: #475569;">admin / admin123</div>
+      <!-- Quick Demo Fill Helpers: Admin, Super Admin, HR -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+        <button type="button" id="btnAutofillAdmin" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
+          <div style="font-size: 10px; font-weight: 700; color: #0072CE; text-transform: uppercase;">Admin</div>
+          <div style="font-size: 11px; color: #475569;">admin<br>admin123</div>
         </button>
-        <button type="button" id="btnAutofillHr" style="flex: 1; text-align: left; padding: 8px 12px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
-          <div style="font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase;">Company HR</div>
-          <div style="font-size: 12px; color: #475569;">HR0001 / hr123</div>
+        <button type="button" id="btnAutofillSuperAdmin" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(124, 58, 237, 0.3); background: #FAF5FF; cursor: pointer;">
+          <div style="font-size: 10px; font-weight: 700; color: #7C3AED; text-transform: uppercase;">Super Admin</div>
+          <div style="font-size: 11px; color: #5B21B6;">admin0001<br>Puvima@1818</div>
+        </button>
+        <button type="button" id="btnAutofillHr" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
+          <div style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase;">Company HR</div>
+          <div style="font-size: 11px; color: #475569;">HR0001<br>hr123</div>
         </button>
       </div>
 
@@ -157,12 +161,23 @@
       tabWebsiteAdmin.addEventListener('click', () => setMode('website-admin'));
       tabCompanyPortal.addEventListener('click', () => setMode('company'));
 
+      const btnAutofillSuperAdmin = document.getElementById('btnAutofillSuperAdmin');
+
       btnAutofillAdmin.addEventListener('click', () => {
         setMode('website-admin');
-        userField.value = 'admin@puvima.com';
+        userField.value = 'admin';
         passField.value = 'admin123';
         userField.focus();
       });
+
+      if (btnAutofillSuperAdmin) {
+        btnAutofillSuperAdmin.addEventListener('click', () => {
+          setMode('website-admin');
+          userField.value = 'admin0001';
+          passField.value = 'Puvima@1818';
+          userField.focus();
+        });
+      }
 
       btnAutofillHr.addEventListener('click', () => {
         setMode('company');
@@ -193,7 +208,7 @@
         setLoading(true);
 
         const lowUser = userVal.toLowerCase();
-        const isKnownAdmin = ['admin', 'superadmin', 'adm0001', 'admin@puvima.com', 'superadmin@puvima.com', 'contact@puvima.com', 'puvimaconsultancy@gmail.com'].includes(lowUser);
+        const isKnownAdmin = ['admin', 'superadmin', 'adm0001', 'admin0001', 'admin@puvima.com', 'superadmin@puvima.com', 'contact@puvima.com', 'puvimaconsultancy@gmail.com'].includes(lowUser);
 
         // Case 1: If user is logging in as admin (or mode is website-admin, or username doesn't start with hr)
         if (currentMode === 'website-admin' || isKnownAdmin || !lowUser.startsWith('hr')) {
@@ -208,19 +223,23 @@
               localStorage.setItem('puvima_admin_token', data.token);
               sessionStorage.setItem('puvima_admin_token', data.token);
 
+              const role = data.user && data.user.role === 'superadmin' ? 'SuperAdmin' : 'Admin';
+              const name = (data.user && data.user.name) || (role === 'SuperAdmin' ? 'admin0001' : 'admin');
+              const code = (data.user && data.user.user_code) || (role === 'SuperAdmin' ? 'admin0001' : 'admin');
+
               window.Auth.setCurrentUser({
-                id: 'usr-admin-1',
-                userId: 'ADM0001',
-                user_code: 'ADM0001',
-                name: (data.user && data.user.name) || 'admin',
+                id: role === 'SuperAdmin' ? 'usr-admin-1' : 'usr-admin-2',
+                userId: code,
+                user_code: code,
+                name: name,
                 email: (data.user && data.user.email) || 'admin@puvima.com',
-                role: 'Admin',
-                department: 'Executive Board',
+                role: role,
+                department: role === 'SuperAdmin' ? 'Executive Board' : 'Executive Administration',
                 isActive: true
               });
 
               if (window.UI) {
-                window.UI.showToast('Sign In Successful', 'Welcome to PUVIMA Website Administration!', 'success');
+                window.UI.showToast('Sign In Successful', `Welcome to PUVIMA Website Administration (${name})!`, 'success');
               }
 
               // Always redirect admin to the Website Admin page (/admin) unless a specific redirect was requested

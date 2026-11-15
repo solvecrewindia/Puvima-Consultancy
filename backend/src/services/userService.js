@@ -28,13 +28,25 @@ class UserService {
       profiles: [
         {
           id: 'usr-admin-1',
-          user_code: 'ADM0001',
+          user_code: 'admin0001',
           user_id: 'usr-admin-1',
-          name: 'superadmin',
+          name: 'admin0001',
           email: 'admin@puvima.com',
           role: 'SuperAdmin',
           department: 'Executive Board',
-          password: 'Password123!',
+          password: 'Puvima@1818',
+          is_active: true,
+          created_at: '2026-09-08T00:00:00.000Z'
+        },
+        {
+          id: 'usr-admin-2',
+          user_code: 'admin',
+          user_id: 'usr-admin-2',
+          name: 'admin',
+          email: 'admin@puvima.com',
+          role: 'Admin',
+          department: 'Executive Administration',
+          password: 'admin123',
           is_active: true,
           created_at: '2026-09-08T00:00:00.000Z'
         },
@@ -46,7 +58,7 @@ class UserService {
           email: 'hr@puvima.com',
           role: 'HR',
           department: 'Human Resources',
-          password: 'Password123!',
+          password: 'hr123',
           is_active: true,
           created_at: '2026-11-08T06:55:00.000Z'
         }
