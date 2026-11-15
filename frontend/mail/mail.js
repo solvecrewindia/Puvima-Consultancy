@@ -141,6 +141,8 @@
     btnToggleMoreFolders: document.getElementById('btnToggleMoreFolders'),
     iconToggleMore: document.getElementById('iconToggleMore'),
     textToggleMore: document.getElementById('textToggleMore'),
+    headerUserEmailWrap: document.getElementById('headerUserEmailWrap'),
+    headerUserEmail: document.getElementById('headerUserEmail'),
     moreFoldersCollapsible: document.getElementById('moreFoldersCollapsible'),
     gmailToastContainer: document.getElementById('gmailToastContainer')
   };
@@ -180,6 +182,12 @@
       if (el.btnAccountAvatar) {
         el.btnAccountAvatar.textContent = initial;
         el.btnAccountAvatar.title = `${displayName} (${userEmail}) — Click to Manage`;
+      }
+      if (el.headerUserEmail) {
+        el.headerUserEmail.textContent = `(${userEmail})`;
+      }
+      if (el.headerUserEmailWrap) {
+        el.headerUserEmailWrap.title = `${displayName} (${userEmail}) — Click to Manage`;
       }
       if (el.menuAvatarLarge) el.menuAvatarLarge.textContent = initial;
       if (el.menuUserName) el.menuUserName.textContent = displayName;
@@ -1313,6 +1321,16 @@
     // Avatar Dropdown Menu
     if (el.btnAccountAvatar) {
       el.btnAccountAvatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (el.avatarDropdownMenu) {
+          const isVis = el.avatarDropdownMenu.style.display === 'block';
+          el.avatarDropdownMenu.style.display = isVis ? 'none' : 'block';
+        }
+      });
+    }
+
+    if (el.headerUserEmailWrap) {
+      el.headerUserEmailWrap.addEventListener('click', (e) => {
         e.stopPropagation();
         if (el.avatarDropdownMenu) {
           const isVis = el.avatarDropdownMenu.style.display === 'block';
