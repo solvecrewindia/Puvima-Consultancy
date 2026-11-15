@@ -15,7 +15,7 @@
 </head>
 <body class="login-page-body">
 
-  <div class="login-container" style="max-width: 500px;">
+  <div class="login-container" style="max-width: 460px;">
     <div class="login-card" style="padding: 36px 32px;">
       
       <!-- Brand Header -->
@@ -23,34 +23,8 @@
         <a href="/" style="display: inline-block; margin-bottom: 12px;">
           <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="Puvima IT Service and Research Consultancy" style="height: 44px; max-width: 100%; object-fit: contain;">
         </a>
-        <h1 class="login-title" id="loginHeaderTitle" style="font-size: 22px;">Website Administration Sign In</h1>
-        <p class="login-subtitle" id="loginHeaderSubtitle">Manage client inquiries, consultation bookings, reviews, and website content.</p>
-      </div>
-
-      <!-- Portal Switcher: Website Admin vs Company Portal -->
-      <div class="portal-switch" style="display: flex; gap: 6px; margin-bottom: 20px; background: #F1F5F9; padding: 4px; border-radius: 8px;">
-        <button type="button" id="tabWebsiteAdmin" class="btn-portal-tab active" style="flex: 1; padding: 9px 12px; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; background: #FFFFFF; color: #0072CE; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s;">
-          🌐 Website Admin
-        </button>
-        <button type="button" id="tabCompanyPortal" class="btn-portal-tab" style="flex: 1; padding: 9px 12px; border: none; border-radius: 6px; font-weight: 500; font-size: 13px; cursor: pointer; background: transparent; color: #64748B; transition: all 0.2s;">
-          👥 Company HR
-        </button>
-      </div>
-
-      <!-- Quick Demo Fill Helpers: Admin, Super Admin, HR -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
-        <button type="button" id="btnAutofillAdmin" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
-          <div style="font-size: 10px; font-weight: 700; color: #0072CE; text-transform: uppercase;">Admin</div>
-          <div style="font-size: 11px; color: #475569;">admin<br>admin123</div>
-        </button>
-        <button type="button" id="btnAutofillSuperAdmin" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(124, 58, 237, 0.3); background: #FAF5FF; cursor: pointer;">
-          <div style="font-size: 10px; font-weight: 700; color: #7C3AED; text-transform: uppercase;">Super Admin</div>
-          <div style="font-size: 11px; color: #5B21B6;">admin0001<br>Puvima@1818</div>
-        </button>
-        <button type="button" id="btnAutofillHr" style="text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
-          <div style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase;">Company HR</div>
-          <div style="font-size: 11px; color: #475569;">HR0001<br>hr123</div>
-        </button>
+        <h1 class="login-title" id="loginHeaderTitle" style="font-size: 22px;">Executive &amp; Workforce Sign In</h1>
+        <p class="login-subtitle" id="loginHeaderSubtitle">Enter your administrative or corporate credentials to access your portal.</p>
       </div>
 
       <!-- Alert Box -->
@@ -59,10 +33,10 @@
       <!-- Form -->
       <form id="centralLoginForm" novalidate>
         <div class="form-group">
-          <label class="form-label" for="centralUserEmail" id="userEmailLabel">Administrative Email / Username</label>
+          <label class="form-label" for="centralUserEmail" id="userEmailLabel">Username or Email</label>
           <div class="input-with-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <input type="text" id="centralUserEmail" class="form-control" placeholder="admin@puvima.com" required autocomplete="username">
+            <input type="text" id="centralUserEmail" class="form-control" placeholder="e.g. admin or HR0001" required autocomplete="username">
           </div>
         </div>
 
@@ -78,7 +52,7 @@
         </div>
 
         <button type="submit" id="centralSubmitBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
-          <span>Sign In to Website Admin</span>
+          <span>Sign In</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
@@ -87,7 +61,7 @@
 
       <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 16px; font-size: 13px;">
         <a href="/" style="color: var(--text-muted);">&larr; Return to PUVIMA Website</a>
-        <a href="/admin" style="color: #0072CE; font-weight: 500;">Go to /admin &rarr;</a>
+        <a href="/admin" style="color: #0072CE; font-weight: 500;">Website Admin (/admin) &rarr;</a>
       </div>
 
     </div>
@@ -108,83 +82,8 @@
       const form = document.getElementById('centralLoginForm');
       const togglePass = document.getElementById('togglePassBtn');
 
-      const tabWebsiteAdmin = document.getElementById('tabWebsiteAdmin');
-      const tabCompanyPortal = document.getElementById('tabCompanyPortal');
-      const btnAutofillAdmin = document.getElementById('btnAutofillAdmin');
-      const btnAutofillHr = document.getElementById('btnAutofillHr');
-      const loginHeaderTitle = document.getElementById('loginHeaderTitle');
-      const loginHeaderSubtitle = document.getElementById('loginHeaderSubtitle');
-      const userEmailLabel = document.getElementById('userEmailLabel');
-
-      let currentMode = 'website-admin'; // Default to Website Admin
-
       const urlParams = new URLSearchParams(window.location.search);
       const redirectParam = urlParams.get('redirect');
-
-      if (redirectParam && (redirectParam.includes('/company/hr') || redirectParam.includes('/company'))) {
-        setMode('company');
-      } else {
-        setMode('website-admin');
-      }
-
-      function setMode(mode) {
-        currentMode = mode;
-        if (mode === 'website-admin') {
-          tabWebsiteAdmin.style.background = '#FFFFFF';
-          tabWebsiteAdmin.style.color = '#0072CE';
-          tabWebsiteAdmin.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
-          tabCompanyPortal.style.background = 'transparent';
-          tabCompanyPortal.style.color = '#64748B';
-          tabCompanyPortal.style.boxShadow = 'none';
-
-          loginHeaderTitle.textContent = 'Website Administration Sign In';
-          loginHeaderSubtitle.textContent = 'Manage client inquiries, consultation bookings, reviews, and website content.';
-          userEmailLabel.textContent = 'Administrative Email or Username';
-          userField.placeholder = 'admin@puvima.com';
-          submitBtn.querySelector('span').textContent = 'Sign In to Website Admin';
-        } else {
-          tabCompanyPortal.style.background = '#FFFFFF';
-          tabCompanyPortal.style.color = '#059669';
-          tabCompanyPortal.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
-          tabWebsiteAdmin.style.background = 'transparent';
-          tabWebsiteAdmin.style.color = '#64748B';
-          tabWebsiteAdmin.style.boxShadow = 'none';
-
-          loginHeaderTitle.textContent = 'Company Workforce Portal Sign In';
-          loginHeaderSubtitle.textContent = 'Access employee directory, project pipelines, and HR management.';
-          userEmailLabel.textContent = 'Corporate Email or User Code';
-          userField.placeholder = 'HR0001 or hr@puvima.com';
-          submitBtn.querySelector('span').textContent = 'Sign In to Company Portal';
-        }
-      }
-
-      tabWebsiteAdmin.addEventListener('click', () => setMode('website-admin'));
-      tabCompanyPortal.addEventListener('click', () => setMode('company'));
-
-      const btnAutofillSuperAdmin = document.getElementById('btnAutofillSuperAdmin');
-
-      btnAutofillAdmin.addEventListener('click', () => {
-        setMode('website-admin');
-        userField.value = 'admin';
-        passField.value = 'admin123';
-        userField.focus();
-      });
-
-      if (btnAutofillSuperAdmin) {
-        btnAutofillSuperAdmin.addEventListener('click', () => {
-          setMode('website-admin');
-          userField.value = 'admin0001';
-          passField.value = 'Puvima@1818';
-          userField.focus();
-        });
-      }
-
-      btnAutofillHr.addEventListener('click', () => {
-        setMode('company');
-        userField.value = 'HR0001';
-        passField.value = 'hr123';
-        userField.focus();
-      });
 
       // Toggle password
       if (togglePass && passField) {
@@ -208,10 +107,14 @@
         setLoading(true);
 
         const lowUser = userVal.toLowerCase();
-        const isKnownAdmin = ['admin', 'superadmin', 'adm0001', 'admin0001', 'admin@puvima.com', 'superadmin@puvima.com', 'contact@puvima.com', 'puvimaconsultancy@gmail.com'].includes(lowUser);
+        const isKnownAdmin = [
+          'admin', 'superadmin', 'adm0001', 'admin0001',
+          'admin@puvima.com', 'superadmin@puvima.com',
+          'contact@puvima.com', 'puvimaconsultancy@gmail.com'
+        ].includes(lowUser);
 
-        // Case 1: If user is logging in as admin (or mode is website-admin, or username doesn't start with hr)
-        if (currentMode === 'website-admin' || isKnownAdmin || !lowUser.startsWith('hr')) {
+        // Case 1: Try Website Admin authentication
+        if (isKnownAdmin || !lowUser.startsWith('hr')) {
           try {
             const res = await fetch('/api/admin/login', {
               method: 'POST',
@@ -239,18 +142,17 @@
               });
 
               if (window.UI) {
-                window.UI.showToast('Sign In Successful', `Welcome to PUVIMA Website Administration (${name})!`, 'success');
+                window.UI.showToast('Sign In Successful', `Welcome back, ${name}!`, 'success');
               }
 
-              // Always redirect admin to the Website Admin page (/admin) unless a specific redirect was requested
               const target = (redirectParam && !redirectParam.includes('/company/admin')) ? redirectParam : '/admin';
               setTimeout(() => {
                 window.location.href = target;
-              }, 250);
+              }, 200);
               return;
             }
           } catch (err) {
-            console.warn('Website Admin login endpoint error:', err);
+            console.warn('Admin login notice:', err);
           }
         }
 
@@ -263,13 +165,12 @@
             }
 
             const role = String(result.user.role || '').toLowerCase();
-            // If an Admin/SuperAdmin signed in through Company Auth, still ensure they get admin token and go to Website Admin (/admin)!
             if (role === 'admin' || role === 'superadmin') {
               try {
                 const res = await fetch('/api/admin/login', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email: 'admin@puvima.com', password: 'admin123' })
+                  body: JSON.stringify({ email: userVal, password: passVal })
                 });
                 const data = await res.json();
                 if (res.ok && data.token) {
@@ -280,18 +181,18 @@
 
               setTimeout(() => {
                 window.location.href = '/admin';
-              }, 250);
+              }, 200);
               return;
             }
 
             const target = redirectParam || window.Auth.getDashboardUrl(result.user.role);
             setTimeout(() => {
               window.location.href = target;
-            }, 250);
+            }, 200);
             return;
           }
 
-          showError(result.error || 'Invalid credentials. Please verify your company ID or email.');
+          showError((result && result.error) || 'Invalid credentials. Please verify your username and password.');
         } catch (err) {
           showError(err.message || 'Unable to sign in. Please try again.');
         } finally {
@@ -310,7 +211,7 @@
         submitBtn.disabled = loading;
         submitBtn.innerHTML = loading
           ? '<span>Authenticating...</span>'
-          : `<span>Sign In to ${currentMode === 'website-admin' ? 'Website Admin' : 'Company Portal'}</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+          : `<span>Sign In</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
       }
     });
   </script>
