@@ -29,7 +29,7 @@ const Auth = (function () {
     switch (normalized) {
       case 'superadmin':
       case 'admin':
-        return '/company/admin';
+        return '/admin';
       case 'hr':
         return '/company/hr';
       case 'employee':

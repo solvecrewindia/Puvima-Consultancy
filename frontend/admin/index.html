@@ -13,7 +13,7 @@
   <script>
     // If not authenticated, immediately redirect to unified login portal
     if (!localStorage.getItem('puvima_admin_token') && !sessionStorage.getItem('puvima_admin_token')) {
-      window.location.replace('/login');
+      window.location.replace('/login?redirect=/admin');
     }
   </script>
 </head>

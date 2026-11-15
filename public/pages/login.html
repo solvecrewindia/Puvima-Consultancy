@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puvima IT Service and Research Consultancy — Central Operations & Executive Sign In</title>
+  <title>Puvima IT Service and Research Consultancy — Central Sign In</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 </head>
 <body class="login-page-body">
 
-  <div class="login-container" style="max-width: 520px;">
+  <div class="login-container" style="max-width: 500px;">
     <div class="login-card" style="padding: 36px 32px;">
       
       <!-- Brand Header -->
@@ -23,20 +23,42 @@
         <a href="/" style="display: inline-block; margin-bottom: 12px;">
           <img src="/assets/images/logo/puvima-logo-clean-dark.png" alt="Puvima IT Service and Research Consultancy" style="height: 44px; max-width: 100%; object-fit: contain;">
         </a>
-        <h1 class="login-title" style="font-size: 22px;">Central Operations Sign In</h1>
-        <p class="login-subtitle">Sign in to access PUVIMA Website Administration or the Company Workforce Management Portal.</p>
+        <h1 class="login-title" id="loginHeaderTitle" style="font-size: 22px;">Website Administration Sign In</h1>
+        <p class="login-subtitle" id="loginHeaderSubtitle">Manage client inquiries, consultation bookings, reviews, and website content.</p>
       </div>
 
-      <!-- Alert -->
+      <!-- Portal Switcher: Website Admin vs Company Portal -->
+      <div class="portal-switch" style="display: flex; gap: 6px; margin-bottom: 20px; background: #F1F5F9; padding: 4px; border-radius: 8px;">
+        <button type="button" id="tabWebsiteAdmin" class="btn-portal-tab active" style="flex: 1; padding: 9px 12px; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; background: #FFFFFF; color: #0072CE; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s;">
+          🌐 Website Admin
+        </button>
+        <button type="button" id="tabCompanyPortal" class="btn-portal-tab" style="flex: 1; padding: 9px 12px; border: none; border-radius: 6px; font-weight: 500; font-size: 13px; cursor: pointer; background: transparent; color: #64748B; transition: all 0.2s;">
+          👥 Company HR
+        </button>
+      </div>
+
+      <!-- Quick Demo Fill Helpers -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button type="button" id="btnAutofillAdmin" style="flex: 1; text-align: left; padding: 8px 12px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
+          <div style="font-size: 11px; font-weight: 700; color: #0072CE; text-transform: uppercase;">Website Admin</div>
+          <div style="font-size: 12px; color: #475569;">admin / admin123</div>
+        </button>
+        <button type="button" id="btnAutofillHr" style="flex: 1; text-align: left; padding: 8px 12px; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer;">
+          <div style="font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase;">Company HR</div>
+          <div style="font-size: 12px; color: #475569;">HR0001 / hr123</div>
+        </button>
+      </div>
+
+      <!-- Alert Box -->
       <div id="loginAlertBox" class="form-error" style="display: none; background: var(--color-rose-bg); border: 1px solid rgba(220, 38, 38, 0.2); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px;"></div>
 
       <!-- Form -->
       <form id="centralLoginForm" novalidate>
         <div class="form-group">
-          <label class="form-label" for="centralUserEmail">Corporate Email or Company User ID</label>
+          <label class="form-label" for="centralUserEmail" id="userEmailLabel">Administrative Email / Username</label>
           <div class="input-with-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <input type="text" id="centralUserEmail" class="form-control" placeholder="e.g. admin@puvima.com or HR0001" required autocomplete="username">
+            <input type="text" id="centralUserEmail" class="form-control" placeholder="admin@puvima.com" required autocomplete="username">
           </div>
         </div>
 
@@ -52,7 +74,7 @@
         </div>
 
         <button type="submit" id="centralSubmitBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 10px;">
-          <span>Sign In</span>
+          <span>Sign In to Website Admin</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
@@ -61,13 +83,13 @@
 
       <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 16px; font-size: 13px;">
         <a href="/" style="color: var(--text-muted);">&larr; Return to PUVIMA Website</a>
+        <a href="/admin" style="color: #0072CE; font-weight: 500;">Go to /admin &rarr;</a>
       </div>
 
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/company/js/config.js"></script>
   <script src="/company/js/supabaseClient.js"></script>
   <script src="/company/js/auth.js"></script>
@@ -82,7 +104,72 @@
       const form = document.getElementById('centralLoginForm');
       const togglePass = document.getElementById('togglePassBtn');
 
-      let selectedType = 'auto';
+      const tabWebsiteAdmin = document.getElementById('tabWebsiteAdmin');
+      const tabCompanyPortal = document.getElementById('tabCompanyPortal');
+      const btnAutofillAdmin = document.getElementById('btnAutofillAdmin');
+      const btnAutofillHr = document.getElementById('btnAutofillHr');
+      const loginHeaderTitle = document.getElementById('loginHeaderTitle');
+      const loginHeaderSubtitle = document.getElementById('loginHeaderSubtitle');
+      const userEmailLabel = document.getElementById('userEmailLabel');
+
+      let currentMode = 'website-admin'; // Default to Website Admin
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect');
+
+      if (redirectParam && (redirectParam.includes('/company/hr') || redirectParam.includes('/company'))) {
+        setMode('company');
+      } else {
+        setMode('website-admin');
+      }
+
+      function setMode(mode) {
+        currentMode = mode;
+        if (mode === 'website-admin') {
+          tabWebsiteAdmin.style.background = '#FFFFFF';
+          tabWebsiteAdmin.style.color = '#0072CE';
+          tabWebsiteAdmin.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+          tabCompanyPortal.style.background = 'transparent';
+          tabCompanyPortal.style.color = '#64748B';
+          tabCompanyPortal.style.boxShadow = 'none';
+
+          loginHeaderTitle.textContent = 'Website Administration Sign In';
+          loginHeaderSubtitle.textContent = 'Manage client inquiries, consultation bookings, reviews, and website content.';
+          userEmailLabel.textContent = 'Administrative Email or Username';
+          userField.placeholder = 'admin@puvima.com';
+          submitBtn.querySelector('span').textContent = 'Sign In to Website Admin';
+        } else {
+          tabCompanyPortal.style.background = '#FFFFFF';
+          tabCompanyPortal.style.color = '#059669';
+          tabCompanyPortal.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+          tabWebsiteAdmin.style.background = 'transparent';
+          tabWebsiteAdmin.style.color = '#64748B';
+          tabWebsiteAdmin.style.boxShadow = 'none';
+
+          loginHeaderTitle.textContent = 'Company Workforce Portal Sign In';
+          loginHeaderSubtitle.textContent = 'Access employee directory, project pipelines, and HR management.';
+          userEmailLabel.textContent = 'Corporate Email or User Code';
+          userField.placeholder = 'HR0001 or hr@puvima.com';
+          submitBtn.querySelector('span').textContent = 'Sign In to Company Portal';
+        }
+      }
+
+      tabWebsiteAdmin.addEventListener('click', () => setMode('website-admin'));
+      tabCompanyPortal.addEventListener('click', () => setMode('company'));
+
+      btnAutofillAdmin.addEventListener('click', () => {
+        setMode('website-admin');
+        userField.value = 'admin@puvima.com';
+        passField.value = 'admin123';
+        userField.focus();
+      });
+
+      btnAutofillHr.addEventListener('click', () => {
+        setMode('company');
+        userField.value = 'HR0001';
+        passField.value = 'hr123';
+        userField.focus();
+      });
 
       // Toggle password
       if (togglePass && passField) {
@@ -99,14 +186,17 @@
         const passVal = passField.value.trim();
 
         if (!userVal || !passVal) {
-          showError('Please enter your corporate email or user ID, and password.');
+          showError('Please enter your email or username, and password.');
           return;
         }
 
         setLoading(true);
 
-        // Case 1: Check PUVIMA Website Admin API first if user entered admin email
-        if (userVal.toLowerCase() === 'admin@puvima.com' && passVal === 'admin123' || selectedType === 'website-admin') {
+        const lowUser = userVal.toLowerCase();
+        const isKnownAdmin = ['admin', 'superadmin', 'adm0001', 'admin@puvima.com', 'superadmin@puvima.com', 'contact@puvima.com', 'puvimaconsultancy@gmail.com'].includes(lowUser);
+
+        // Case 1: If user is logging in as admin (or mode is website-admin, or username doesn't start with hr)
+        if (currentMode === 'website-admin' || isKnownAdmin || !lowUser.startsWith('hr')) {
           try {
             const res = await fetch('/api/admin/login', {
               method: 'POST',
@@ -116,33 +206,36 @@
             const data = await res.json();
             if (res.ok && data.token) {
               localStorage.setItem('puvima_admin_token', data.token);
-              
-              // Also sync with Company SuperAdmin session so they have access to /company/admin too
+              sessionStorage.setItem('puvima_admin_token', data.token);
+
               window.Auth.setCurrentUser({
                 id: 'usr-admin-1',
                 userId: 'ADM0001',
                 user_code: 'ADM0001',
-                name: 'superadmin',
-                email: 'admin@puvima.com',
-                role: 'SuperAdmin',
+                name: (data.user && data.user.name) || 'admin',
+                email: (data.user && data.user.email) || 'admin@puvima.com',
+                role: 'Admin',
                 department: 'Executive Board',
                 isActive: true
               });
 
               if (window.UI) {
-                window.UI.showToast('Sign In Successful', 'Welcome to PUVIMA Administration!', 'success');
+                window.UI.showToast('Sign In Successful', 'Welcome to PUVIMA Website Administration!', 'success');
               }
+
+              // Always redirect admin to the Website Admin page (/admin) unless a specific redirect was requested
+              const target = (redirectParam && !redirectParam.includes('/company/admin')) ? redirectParam : '/admin';
               setTimeout(() => {
-                window.location.href = '/admin';
-              }, 400);
+                window.location.href = target;
+              }, 250);
               return;
             }
           } catch (err) {
-            console.warn('Direct admin login error, checking company portal auth:', err);
+            console.warn('Website Admin login endpoint error:', err);
           }
         }
 
-        // Case 2: Authenticate via Company Management Portal (Supabase / local profiles)
+        // Case 2: Authenticate via Company Management Portal (HR, Employee, Intern)
         try {
           const result = await window.Auth.login({ userId: userVal, password: passVal });
           if (result && result.success && result.user) {
@@ -150,10 +243,32 @@
               window.UI.showToast('Sign In Successful', `Welcome, ${result.user.name}!`, 'success');
             }
 
-            const target = window.Auth.getDashboardUrl(result.user.role);
+            const role = String(result.user.role || '').toLowerCase();
+            // If an Admin/SuperAdmin signed in through Company Auth, still ensure they get admin token and go to Website Admin (/admin)!
+            if (role === 'admin' || role === 'superadmin') {
+              try {
+                const res = await fetch('/api/admin/login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: 'admin@puvima.com', password: 'admin123' })
+                });
+                const data = await res.json();
+                if (res.ok && data.token) {
+                  localStorage.setItem('puvima_admin_token', data.token);
+                  sessionStorage.setItem('puvima_admin_token', data.token);
+                }
+              } catch (e) {}
+
+              setTimeout(() => {
+                window.location.href = '/admin';
+              }, 250);
+              return;
+            }
+
+            const target = redirectParam || window.Auth.getDashboardUrl(result.user.role);
             setTimeout(() => {
               window.location.href = target;
-            }, 400);
+            }, 250);
             return;
           }
 
@@ -176,7 +291,7 @@
         submitBtn.disabled = loading;
         submitBtn.innerHTML = loading
           ? '<span>Authenticating...</span>'
-          : '<span>Sign In</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+          : `<span>Sign In to ${currentMode === 'website-admin' ? 'Website Admin' : 'Company Portal'}</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
       }
     });
   </script>
