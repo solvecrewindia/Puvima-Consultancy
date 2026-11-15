@@ -80,17 +80,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
 
   async function loadData() {
-    if (window.UI) window.UI.showLoading('Loading Executive Portal...');
+    // 1. Instant optimistic render from local cache (0ms delay)
     try {
-      allUsers = await window.UserService.getUsers();
-      allProjects = await window.ProjectService.getProjects();
-      await fetchAdminApplicationsData();
+      allUsers = (window.UserService && window.UserService.getLocalUsers) ? window.UserService.getLocalUsers() : [];
+      allProjects = (window.ProjectService && window.ProjectService.getLocalProjects) ? window.ProjectService.getLocalProjects() : [];
+      updateStatCards();
+      renderCurrentTab();
+    } catch (cacheErr) {
+      console.warn('[adminController] Cache render notice:', cacheErr);
+    }
+
+    // 2. Fetch live updates in parallel without blocking screen
+    try {
+      const [users, projects] = await Promise.all([
+        window.UserService.getUsers().catch(() => allUsers),
+        window.ProjectService.getProjects().catch(() => allProjects),
+        fetchAdminApplicationsData().catch(() => {})
+      ]);
+
+      if (users && users.length) allUsers = users;
+      if (projects && projects.length) allProjects = projects;
       updateStatCards();
       renderCurrentTab();
     } catch (e) {
-      if (window.UI) window.UI.showToast('Data Error', 'Unable to load executive metrics.', 'error');
-    } finally {
-      if (window.UI) window.UI.hideLoading();
+      console.warn('[adminController] Background sync note:', e);
     }
   }
 

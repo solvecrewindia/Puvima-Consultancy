@@ -87,17 +87,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
 
   async function loadData() {
-    if (window.UI) window.UI.showLoading('Loading Workforce & Project Pipeline...');
+    // 1. Instant optimistic render from local cache (0ms delay)
     try {
-      allUsers = await window.UserService.getUsers();
-      allProjects = await window.ProjectService.getProjects();
-      await fetchApplicationsData();
+      allUsers = (window.UserService && window.UserService.getLocalUsers) ? window.UserService.getLocalUsers() : [];
+      allProjects = (window.ProjectService && window.ProjectService.getLocalProjects) ? window.ProjectService.getLocalProjects() : [];
+      updateStats();
+      renderCurrentTab();
+    } catch (cacheErr) {
+      console.warn('[hrController] Cache render notice:', cacheErr);
+    }
+
+    // 2. Fetch live updates in parallel without blocking screen
+    try {
+      const [users, projects] = await Promise.all([
+        window.UserService.getUsers().catch(() => allUsers),
+        window.ProjectService.getProjects().catch(() => allProjects),
+        fetchApplicationsData().catch(() => {})
+      ]);
+
+      if (users && users.length) allUsers = users;
+      if (projects && projects.length) allProjects = projects;
       updateStats();
       renderCurrentTab();
     } catch (e) {
-      if (window.UI) window.UI.showToast('Error', 'Unable to load HR data.', 'error');
-    } finally {
-      if (window.UI) window.UI.hideLoading();
+      console.warn('[hrController] Background sync note:', e);
     }
   }
 

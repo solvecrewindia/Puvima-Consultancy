@@ -8,8 +8,11 @@
   const url = (window.CONFIG && window.CONFIG.SUPABASE_URL) || 'https://dcecmefvywxzgqndmcdg.supabase.co';
   const anonKey = (window.CONFIG && window.CONFIG.SUPABASE_ANON_KEY) || 'sb_publishable_wwXhe3J_RJ_tvTbMha71Gg_00NeLor2';
 
-  // Initialize Supabase Client if library is loaded
-  if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+  // Check if Supabase URL is a dead/placeholder host to prevent browser DNS hangs (7-15s timeouts)
+  const isDeadHost = !url || url.includes('jarrtmqdhfcijarbuntl.supabase.co') || url.includes('dcecmefvywxzgqndmcdg.supabase.co');
+
+  // Initialize Supabase Client only if host is valid
+  if (!isDeadHost && typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
     try {
       client = window.supabase.createClient(url, anonKey, {
         auth: {
@@ -197,7 +200,7 @@
   initStore('puvima_portal_notifications', initialNotifications);
 
   window.portalClient = {
-    supabase: client,
-    hasSupabase: !!client,
+    supabase: isDeadHost ? null : client,
+    hasSupabase: !isDeadHost && !!client,
   };
 })();

@@ -183,6 +183,7 @@ const UserService = (function () {
   }
 
   return {
+    getLocalUsers,
     getUsers,
     getUserById,
     createUser,

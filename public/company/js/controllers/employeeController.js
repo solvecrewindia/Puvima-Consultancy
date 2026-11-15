@@ -49,22 +49,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
 
   async function loadData() {
-    if (window.UI) window.UI.showLoading('Loading Member Workspace...');
+    // 1. Instant optimistic render from local cache (0ms delay)
     try {
-      allUsers = await window.UserService.getUsers();
-      const allProjects = await window.ProjectService.getProjects();
-
-      // Check worker onboarding status
-      await checkMemberOnboarding();
-
-      // Check LOR status
-      if (window.MemberLorView) {
-        const lorBadge = document.getElementById('memberLorBadge');
-        await window.MemberLorView.checkAndRenderBadge(currentUser, lorBadge);
-      }
-
-      // Find projects where user is lead or member
-      userProjects = allProjects.filter(
+      allUsers = (window.UserService && window.UserService.getLocalUsers) ? window.UserService.getLocalUsers() : [];
+      const cachedProjects = (window.ProjectService && window.ProjectService.getLocalProjects) ? window.ProjectService.getLocalProjects() : [];
+      userProjects = cachedProjects.filter(
         (p) =>
           p.lead_id === currentUser.id ||
           (p.members && p.members.includes(currentUser.id)) ||
@@ -72,6 +61,33 @@ document.addEventListener('DOMContentLoaded', async () => {
           currentUser.role === 'SuperAdmin' ||
           currentUser.role === 'HR'
       );
+      if (!activeProject && userProjects.length > 0) {
+        activeProject = userProjects.find((p) => p.status === 'In Progress' || p.status === 'Published') || userProjects[0];
+      }
+      renderCurrentTab();
+    } catch (cacheErr) {
+      console.warn('[employeeController] Cache render notice:', cacheErr);
+    }
+
+    // 2. Fetch live updates in parallel without blocking screen
+    try {
+      const [users, allProjects] = await Promise.all([
+        window.UserService.getUsers().catch(() => allUsers),
+        window.ProjectService.getProjects().catch(() => userProjects),
+        checkMemberOnboarding().catch(() => {}),
+        window.MemberLorView ? window.MemberLorView.checkAndRenderBadge(currentUser, document.getElementById('memberLorBadge')).catch(() => {}) : Promise.resolve()
+      ]);
+      if (users && users.length) allUsers = users;
+      if (allProjects && allProjects.length) {
+        userProjects = allProjects.filter(
+          (p) =>
+            p.lead_id === currentUser.id ||
+            (p.members && p.members.includes(currentUser.id)) ||
+            currentUser.role === 'Admin' ||
+            currentUser.role === 'SuperAdmin' ||
+            currentUser.role === 'HR'
+        );
+      }
 
       if (requestedProjectId) {
         activeProject = allProjects.find((p) => p.id === requestedProjectId);
@@ -101,8 +117,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderCurrentTab();
     } catch (e) {
       if (window.UI) window.UI.showToast('Error', 'Unable to load member project data.', 'error');
-    } finally {
-      if (window.UI) window.UI.hideLoading();
     }
   }
 

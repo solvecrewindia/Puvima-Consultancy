@@ -22,7 +22,7 @@ const ProjectService = (function () {
   async function getProjects(options = {}) {
     const { status, category, search, userId } = options;
 
-    if (window.portalClient && window.portalClient.supabase) {
+    if (window.portalClient && window.portalClient.hasSupabase && window.portalClient.supabase) {
       try {
         let q = window.portalClient.supabase
           .from('projects')
@@ -45,7 +45,8 @@ const ProjectService = (function () {
           q = q.ilike('name', `%${search.trim()}%`);
         }
 
-        const { data, error } = await q;
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500));
+        const { data, error } = await Promise.race([q, timeoutPromise]);
         if (!error && data && data.length > 0) {
           return data;
         }
@@ -163,6 +164,7 @@ const ProjectService = (function () {
   }
 
   return {
+    getLocalProjects,
     getProjects,
     getProjectById,
     createProject,
