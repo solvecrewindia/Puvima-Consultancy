@@ -348,6 +348,16 @@
       localStorage.setItem('puvima_current_email', email);
       localStorage.removeItem('puvima_mail_logged_out');
 
+      // Clear any prior cache so fresh live IMAP data loads directly
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('puvima_mail_cache_')) keys.push(k);
+        }
+        keys.forEach(k => localStorage.removeItem(k));
+      } catch (e) {}
+
       mailboxCreds = {
         user: email,
         pass: password,
@@ -854,6 +864,9 @@
         liveMessages = data.messages.map(m => {
           const fromAddr = (m.from && m.from.address ? m.from.address : '').toLowerCase();
           let senderName = (m.from && m.from.name ? m.from.name : m.from?.address) || 'Unknown';
+          if (typeof senderName === 'string') {
+            senderName = senderName.replace(/^["']|["']$/g, '').trim();
+          }
 
           if (currentFolder === 'Sent' && m.to && m.to.length > 0) {
             const toRecipient = m.to[0].name || m.to[0].address || 'Recipient';

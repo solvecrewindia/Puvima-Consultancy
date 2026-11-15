@@ -100,7 +100,10 @@ const Auth = (function () {
       const match = profiles.find(
         (p) =>
           (p.user_code && p.user_code.toUpperCase() === query) ||
-          (p.email && p.email.toLowerCase() === queryEmail)
+          (p.email && p.email.toLowerCase() === queryEmail) ||
+          (p.name && p.name.toLowerCase() === queryEmail) ||
+          (queryEmail === 'superadmin' && String(p.role).toLowerCase() === 'superadmin') ||
+          (queryEmail === 'puvima hr' && String(p.role).toLowerCase() === 'hr')
       );
 
       if (!match) {
@@ -119,7 +122,10 @@ const Auth = (function () {
         const demo = window.CONFIG.DEMO_ACCOUNTS.find(
           (d) =>
             (d.code && d.code.toUpperCase() === query) ||
-            (d.email && d.email.toLowerCase() === queryEmail)
+            (d.email && d.email.toLowerCase() === queryEmail) ||
+            (d.name && d.name.toLowerCase() === queryEmail) ||
+            (queryEmail === 'superadmin' && String(d.role).toLowerCase() === 'superadmin') ||
+            (queryEmail === 'puvima hr' && String(d.role).toLowerCase() === 'hr')
         );
         if (demo && demo.password) {
           if (password === demo.password || password === 'admin123') {

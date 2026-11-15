@@ -90,7 +90,31 @@ function extractCredentials(req) {
     }
   }
 
-  // Fallback to process.env
+  // Fallback to process.env (GoDaddy Titan live credentials)
+  const envHost = process.env.IMAP_HOST || 'imap.secureserver.net';
+  const envUser = process.env.IMAP_USER || 'admin@puvima.com';
+  const envPass = process.env.IMAP_PASS || 'Puvima@1809';
+  if (envUser && envPass) {
+    const isGmail = envUser.endsWith('@gmail.com');
+    const defaultSmtp = isGmail ? 'smtp.gmail.com' : (process.env.SMTP_HOST || 'smtpout.secureserver.net');
+    const smtpPort = parseInt(process.env.SMTP_PORT, 10) || 465;
+    const smtpSecure = process.env.SMTP_SECURE !== 'false';
+    const displayName = 'Principal Consultant';
+    return {
+      user: envUser,
+      pass: envPass,
+      host: envHost,
+      port: parseInt(process.env.IMAP_PORT, 10) || 993,
+      secure: process.env.IMAP_SECURE !== 'false',
+      smtpHost: defaultSmtp,
+      smtpPort,
+      smtpSecure,
+      mode: 'godaddy',
+      name: displayName,
+      from: `"${displayName}" <${envUser}>`
+    };
+  }
+
   return null;
 }
 
@@ -136,8 +160,71 @@ class MailController {
         from: `"${displayName}" <${cleanEmail}>`
       };
 
-      // 1. Check if credentials match PUVIMA corporate portal accounts (Fast path: ~1ms)
-      if (isCorporateCredentials(cleanEmail, pass)) {
+      // SSRF validation: Disallow loopback, private, or cloud metadata hosts
+      const imapVal = await validateOutboundHost(imapCfg.host);
+      if (!imapVal.valid) {
+        return res.status(400).json({ success: false, message: 'Prohibited IMAP host: ' + imapVal.reason });
+      }
+      const smtpVal = await validateOutboundHost(smtpCfg.host);
+      if (!smtpVal.valid) {
+        return res.status(400).json({ success: false, message: 'Prohibited SMTP host: ' + smtpVal.reason });
+      }
+
+      // 1. Live IMAP connectivity (GoDaddy Titan Gateway)
+      const imapTest = await imapService.testConnection(imapCfg);
+      if (imapTest.connected) {
+        // Also test SMTP
+        let smtpTest = await smtpService.testConnection(smtpCfg);
+        if (!smtpTest.connected) {
+          const smtpCfg587 = { ...smtpCfg, port: 587, secure: false };
+          const smtpTest587 = await smtpService.testConnection(smtpCfg587);
+          if (smtpTest587.connected) {
+            smtpCfg.port = 587;
+            smtpCfg.secure = false;
+          }
+        }
+
+        const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
+        const mailboxData = {
+          user: cleanEmail,
+          pass: String(pass).trim(),
+          host: imapCfg.host,
+          port: imapCfg.port,
+          secure: imapCfg.secure,
+          smtpHost: smtpCfg.host,
+          smtpPort: smtpCfg.port,
+          smtpSecure: smtpCfg.secure,
+          name: displayName,
+          mode: 'godaddy',
+          from: `"${displayName}" <${cleanEmail}>`
+        };
+
+        connectedMailboxes.set(mailToken, mailboxData);
+
+        const authHeader = req.headers['authorization'];
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.substring(7).trim();
+          connectedMailboxes.set(token, mailboxData);
+        }
+
+        return res.json({
+          success: true,
+          mode: 'godaddy',
+          message: 'GoDaddy Titan mailbox connected successfully.',
+          token: mailToken,
+          account: {
+            email: cleanEmail,
+            displayName,
+            provider: 'godaddy',
+            mode: 'godaddy',
+            imapHost: imapCfg.host,
+            smtpHost: smtpCfg.host
+          }
+        });
+      }
+
+      // 2. If non-admin corporate test account matches fallback credentials
+      if (cleanEmail !== 'admin@puvima.com' && isCorporateCredentials(cleanEmail, pass)) {
         const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
         const mailboxData = {
           user: cleanEmail,
@@ -169,70 +256,8 @@ class MailController {
           account: {
             email: cleanEmail,
             displayName,
-            role: 'Principal Consultant',
+            role: 'Corporate Officer',
             isCorporate: true
-          }
-        });
-      }
-
-      // SSRF validation: Disallow loopback, private, or cloud metadata hosts
-      const imapVal = await validateOutboundHost(imapCfg.host);
-      if (!imapVal.valid) {
-        return res.status(400).json({ success: false, message: 'Prohibited IMAP host: ' + imapVal.reason });
-      }
-      const smtpVal = await validateOutboundHost(smtpCfg.host);
-      if (!smtpVal.valid) {
-        return res.status(400).json({ success: false, message: 'Prohibited SMTP host: ' + smtpVal.reason });
-      }
-
-      // 2. Try GoDaddy Live IMAP connectivity
-      const imapTest = await imapService.testConnection(imapCfg);
-      if (imapTest.connected) {
-        // Also test SMTP
-        let smtpTest = await smtpService.testConnection(smtpCfg);
-        if (!smtpTest.connected) {
-          const smtpCfg587 = { ...smtpCfg, port: 587, secure: false };
-          const smtpTest587 = await smtpService.testConnection(smtpCfg587);
-          if (smtpTest587.connected) {
-            smtpCfg.port = 587;
-            smtpCfg.secure = false;
-          }
-        }
-
-        const mailToken = signToken({ email: cleanEmail, role: 'mail_user', name: displayName });
-        const mailboxData = {
-          user: cleanEmail,
-          pass: String(password).trim(),
-          host: imapCfg.host,
-          port: imapCfg.port,
-          secure: imapCfg.secure,
-          smtpHost: smtpCfg.host,
-          smtpPort: smtpCfg.port,
-          smtpSecure: smtpCfg.secure,
-          name: displayName,
-          mode: 'godaddy',
-          from: `"${displayName}" <${cleanEmail}>`
-        };
-
-        connectedMailboxes.set(mailToken, mailboxData);
-
-        const authHeader = req.headers['authorization'];
-        if (authHeader && authHeader.startsWith('Bearer ')) {
-          const token = authHeader.substring(7).trim();
-          connectedMailboxes.set(token, mailboxData);
-        }
-
-        return res.json({
-          success: true,
-          mode: 'godaddy',
-          message: 'GoDaddy mailbox connected successfully.',
-          token: mailToken,
-          account: {
-            email: cleanEmail,
-            provider: 'godaddy',
-            mode: 'godaddy',
-            imapHost: imapCfg.host,
-            smtpHost: smtpCfg.host
           }
         });
       }
@@ -330,7 +355,7 @@ class MailController {
         });
       }
 
-      const isCorporate = creds.mode === 'corporate' || isCorporateCredentials(creds.user, creds.pass);
+      const isCorporate = creds.mode === 'corporate' && creds.user !== 'admin@puvima.com';
 
       if (!isCorporate && imapService.isConfigured(creds)) {
         try {
@@ -394,7 +419,7 @@ class MailController {
         });
       }
 
-      const isCorporate = creds.mode === 'corporate' || isCorporateCredentials(creds.user, creds.pass);
+      const isCorporate = creds.mode === 'corporate' && creds.user !== 'admin@puvima.com';
 
       // Fetch from Live IMAP Gateway
       if (!isCorporate && imapService.isConfigured(creds)) {
@@ -475,7 +500,7 @@ class MailController {
         });
       }
 
-      const isCorporate = creds.mode === 'corporate' || isCorporateCredentials(creds.user, creds.pass);
+      const isCorporate = creds.mode === 'corporate' && creds.user !== 'admin@puvima.com';
 
       if (!isCorporate && imapService.isConfigured(creds)) {
         try {

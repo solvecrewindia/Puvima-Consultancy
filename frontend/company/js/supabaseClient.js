@@ -30,7 +30,7 @@
       id: 'usr-admin-1',
       user_code: 'ADM0001',
       user_id: 'usr-admin-1',
-      name: 'Dr. P. Sundaram',
+      name: 'superadmin',
       email: 'admin@puvima.com',
       role: 'SuperAdmin',
       department: 'Executive Board',
@@ -41,56 +41,12 @@
       id: 'usr-hr-1',
       user_code: 'HR0001',
       user_id: 'usr-hr-1',
-      name: 'Ananya Sharma',
+      name: 'puvima hr',
       email: 'hr@puvima.com',
       role: 'HR',
       department: 'Human Resources',
       is_active: true,
       created_at: new Date(Date.now() - 45 * 86400000).toISOString(),
-    },
-    {
-      id: 'usr-emp-1',
-      user_code: 'EMP0001',
-      user_id: 'usr-emp-1',
-      name: 'Karthik Raman',
-      email: 'karthik@puvima.com',
-      role: 'Employee',
-      department: 'Robotics & Autonomous Systems',
-      is_active: true,
-      created_at: new Date(Date.now() - 30 * 86400000).toISOString(),
-    },
-    {
-      id: 'usr-emp-2',
-      user_code: 'EMP0002',
-      user_id: 'usr-emp-2',
-      name: 'Priya Narayanan',
-      email: 'priya@puvima.com',
-      role: 'Employee',
-      department: 'FinTech & Stock Analytics',
-      is_active: true,
-      created_at: new Date(Date.now() - 25 * 86400000).toISOString(),
-    },
-    {
-      id: 'usr-int-1',
-      user_code: 'INT0001',
-      user_id: 'usr-int-1',
-      name: 'Sneha Patel',
-      email: 'sneha@puvima.com',
-      role: 'Intern',
-      department: 'AI/ML & Research Solutions',
-      is_active: true,
-      created_at: new Date(Date.now() - 15 * 86400000).toISOString(),
-    },
-    {
-      id: 'usr-int-2',
-      user_code: 'INT0002',
-      user_id: 'usr-int-2',
-      name: 'Arjun Verma',
-      email: 'arjun@puvima.com',
-      role: 'Intern',
-      department: 'Robotics & Autonomous Systems',
-      is_active: true,
-      created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
     },
   ];
 
@@ -227,6 +183,12 @@
     if (!localStorage.getItem(key)) {
       localStorage.setItem(key, JSON.stringify(initialData));
     }
+  }
+
+  const PROFILES_VERSION = 'v2_superadmin_puvimahr';
+  if (localStorage.getItem('puvima_portal_profiles_ver') !== PROFILES_VERSION) {
+    localStorage.setItem('puvima_portal_profiles', JSON.stringify(initialProfiles));
+    localStorage.setItem('puvima_portal_profiles_ver', PROFILES_VERSION);
   }
 
   initStore('puvima_portal_profiles', initialProfiles);

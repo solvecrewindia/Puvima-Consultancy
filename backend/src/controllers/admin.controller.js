@@ -27,7 +27,7 @@ class AdminController {
     const cleanEmail = String(email).trim().toLowerCase();
     const cleanPass = String(password).trim();
 
-    const allowedEmails = [DEFAULT_ADMIN_EMAIL.toLowerCase(), 'contact@puvima.com', 'puvimaconsultancy@gmail.com', 'admin@puvima.com'];
+    const allowedEmails = [DEFAULT_ADMIN_EMAIL.toLowerCase(), 'contact@puvima.com', 'puvimaconsultancy@gmail.com', 'admin@puvima.com', 'superadmin', 'superadmin@puvima.com'];
     const emailAllowed = allowedEmails.includes(cleanEmail);
     const passValid = await verifyPassword(cleanPass, DEFAULT_ADMIN_PASSWORD);
 
@@ -42,13 +42,13 @@ class AdminController {
     const token = signToken({
       email: cleanEmail,
       role: 'admin',
-      name: 'PUVIMA Administrator'
+      name: 'superadmin'
     });
 
     const userObj = {
       email: cleanEmail,
       role: 'admin',
-      name: 'PUVIMA Administrator'
+      name: 'superadmin'
     };
 
     await auditService.logAuthSuccess(req, userObj);
