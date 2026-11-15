@@ -111,7 +111,6 @@
     menuAvatarLarge: document.getElementById('menuAvatarLarge'),
     menuUserName: document.getElementById('menuUserName'),
     menuUserEmail: document.getElementById('menuUserEmail'),
-    btnMenuSwitchAccount: document.getElementById('btnMenuSwitchAccount'),
     btnMenuSignOut: document.getElementById('btnMenuSignOut'),
 
     btnOpenMailboxSettings: document.getElementById('btnOpenMailboxSettings'),
@@ -1486,13 +1485,6 @@
 
     if (el.btnMenuSignOut) {
       el.btnMenuSignOut.addEventListener('click', (e) => {
-        e.stopPropagation();
-        signOut();
-      });
-    }
-
-    if (el.btnMenuSwitchAccount) {
-      el.btnMenuSwitchAccount.addEventListener('click', (e) => {
         e.stopPropagation();
         signOut();
       });
