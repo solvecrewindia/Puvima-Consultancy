@@ -40,8 +40,6 @@ async function verifyDns(urlStr) {
 }
 
 function getSupabaseClient() {
-  // If connection has been determined dead or unresolvable, avoid blocking calls
-  if (!isConnected && lastCheckTime > 0) return null;
   if (client) return client;
   if (!SUPABASE_KEY || !SUPABASE_URL) {
     lastError = 'SUPABASE_KEY is not defined in backend/.env';
@@ -76,15 +74,6 @@ async function testConnection(force = false) {
     return { isConnected: false, message: lastError };
   }
 
-  // Fast DNS check to avoid hanging on expired or dead hosts (prevents 7-second timeouts)
-  const dnsOk = await verifyDns(SUPABASE_URL);
-  if (!dnsOk) {
-    isConnected = false;
-    client = null;
-    lastError = `Supabase host DNS unresolvable (${SUPABASE_URL})`;
-    return { isConnected: false, message: lastError };
-  }
-
   const sb = getSupabaseClient();
   if (!sb) {
     isConnected = false;
@@ -92,9 +81,9 @@ async function testConnection(force = false) {
   }
 
   try {
-    // 2-second timeout for query check
+    // 2.5-second timeout for query check
     const queryPromise = sb.from('site_settings').select('id').limit(1);
-    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase ping timeout')), 2000));
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase ping timeout')), 2500));
     const { error } = await Promise.race([queryPromise, timeoutPromise]);
 
     if (error && error.code !== 'PGRST116') {

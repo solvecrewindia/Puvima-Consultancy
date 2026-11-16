@@ -5,11 +5,11 @@
 
 (function () {
   let client = null;
-  const url = (window.CONFIG && window.CONFIG.SUPABASE_URL) || 'https://dcecmefvywxzgqndmcdg.supabase.co';
-  const anonKey = (window.CONFIG && window.CONFIG.SUPABASE_ANON_KEY) || 'sb_publishable_wwXhe3J_RJ_tvTbMha71Gg_00NeLor2';
+  const url = (window.CONFIG && window.CONFIG.SUPABASE_URL) || 'https://jarrtmqdhfcijarbuntl.supabase.co';
+  const anonKey = (window.CONFIG && window.CONFIG.SUPABASE_ANON_KEY) || 'sb_publishable_RXvkWbFuePqt-QdXDt1jzA_sxiJo4ZR';
 
-  // Check if Supabase URL is a dead/placeholder host to prevent browser DNS hangs (7-15s timeouts)
-  const isDeadHost = !url || url.includes('jarrtmqdhfcijarbuntl.supabase.co') || url.includes('dcecmefvywxzgqndmcdg.supabase.co');
+  // Check if Supabase URL is empty or unconfigured
+  const isDeadHost = !url || url.includes('placeholder') || url.includes('dcecmefvywxzgqndmcdg.supabase.co');
 
   // Initialize Supabase Client only if host is valid
   if (!isDeadHost && typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {

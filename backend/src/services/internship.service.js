@@ -1151,12 +1151,10 @@ class InternshipService {
         seenRefs.add(key);
       }
     }
-    // Filter out archived & automated test records
+    // Filter out archived records
     apps = apps.filter((a) => {
       const s = String(a.recruitment_status || '').toLowerCase();
-      const n = String(a.full_name || '').toLowerCase();
-      const e = String(a.email || '').toLowerCase();
-      return s !== 'archived' && !n.includes('live verification') && !n.includes('john doe') && !e.endsWith('@example.com');
+      return s !== 'archived';
     });
 
     stats.total = apps.length;
@@ -1285,12 +1283,10 @@ class InternshipService {
       }
     }
 
-    // Filter out archived and test candidate entries
+    // Filter out archived records
     apps = apps.filter((a) => {
       const s = String(a.recruitment_status || '').toLowerCase();
-      const n = String(a.full_name || '').toLowerCase();
-      const e = String(a.email || '').toLowerCase();
-      return s !== 'archived' && !n.includes('live verification') && !n.includes('john doe') && !e.endsWith('@example.com');
+      return s !== 'archived';
     });
 
     // Normalize applications from either store

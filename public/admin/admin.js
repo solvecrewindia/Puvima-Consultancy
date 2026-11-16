@@ -411,6 +411,14 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
             isActive: true
           }));
         } catch (e) {}
+        if (role === 'SuperAdmin') {
+          showToast(`Welcome Super Admin (${data.user.name || 'admin0001'})! Redirecting to Company Management...`, 'success');
+          setTimeout(() => {
+            window.location.href = '/company/admin';
+          }, 350);
+          return;
+        }
+
         showDashboard();
         showToast(`Welcome back, ${data.user.name || 'Admin'}!`, 'success');
       } else {

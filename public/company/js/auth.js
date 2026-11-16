@@ -28,6 +28,7 @@ const Auth = (function () {
     const normalized = String(role || '').trim().toLowerCase();
     switch (normalized) {
       case 'superadmin':
+        return '/company/admin';
       case 'admin':
         return '/admin';
       case 'hr':
