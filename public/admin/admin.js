@@ -963,13 +963,16 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
   }
 
   function populateSettingsForm(s) {
-    // Announcement
-    const ann = s.announcement || {};
-    document.getElementById('announcementEnabled').checked = ann.enabled !== false;
-    document.getElementById('announcementBadge').value = ann.badge || 'NEW';
-    document.getElementById('announcementText').value = ann.text || '';
-    document.getElementById('announcementLinkText').value = ann.linkText || '';
-    document.getElementById('announcementLinkUrl').value = ann.linkUrl || '';
+    // Announcement (if element exists)
+    const annEl = document.getElementById('announcementEnabled');
+    if (annEl) {
+      const ann = s.announcement || {};
+      annEl.checked = ann.enabled !== false;
+      if (document.getElementById('announcementBadge')) document.getElementById('announcementBadge').value = ann.badge || 'NEW';
+      if (document.getElementById('announcementText')) document.getElementById('announcementText').value = ann.text || '';
+      if (document.getElementById('announcementLinkText')) document.getElementById('announcementLinkText').value = ann.linkText || '';
+      if (document.getElementById('announcementLinkUrl')) document.getElementById('announcementLinkUrl').value = ann.linkUrl || '';
+    }
 
     // Hero
     const hero = s.hero || {};
@@ -1003,12 +1006,18 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     const careersUrlVal = (document.getElementById('careersFormUrlSetting')?.value || '').trim();
 
     const payload = {
-      announcement: {
+      announcement: document.getElementById('announcementEnabled') ? {
         enabled: document.getElementById('announcementEnabled').checked,
-        badge: document.getElementById('announcementBadge').value.trim(),
-        text: document.getElementById('announcementText').value.trim(),
-        linkText: document.getElementById('announcementLinkText').value.trim(),
-        linkUrl: document.getElementById('announcementLinkUrl').value.trim()
+        badge: (document.getElementById('announcementBadge')?.value || '').trim(),
+        text: (document.getElementById('announcementText')?.value || '').trim(),
+        linkText: (document.getElementById('announcementLinkText')?.value || '').trim(),
+        linkUrl: (document.getElementById('announcementLinkUrl')?.value || '').trim()
+      } : {
+        enabled: false,
+        badge: '',
+        text: '',
+        linkText: '',
+        linkUrl: ''
       },
       hero: {
         eyebrow: (document.getElementById('heroEyebrow')?.value || '').trim(),
