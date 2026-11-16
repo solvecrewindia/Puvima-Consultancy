@@ -168,6 +168,9 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
 
     const kpiApproved = document.getElementById('kpiApprovedReviews');
     if (kpiApproved) kpiApproved.textContent = approvedReviews;
+
+    const kpiTotalRev = document.getElementById('kpiTotalReviews');
+    if (kpiTotalRev) kpiTotalRev.textContent = reviewsList.length;
   }
 
   // ==========================================================================
@@ -996,14 +999,16 @@ window.PUVIMA_ADMIN = window.PUVIMA_ADMIN || {};
     document.getElementById('statDomains').value = stats.researchDomains || '4';
     document.getElementById('statSatisfaction').value = stats.clientSatisfaction || '99.4%';
 
-    // Careers Application Form URL
-    const careersUrl = s.careersFormUrl || (s.careers && s.careers.formUrl) || '';
+    // Careers Application Form URL (if present in DOM)
     const careersSettingInput = document.getElementById('careersFormUrlSetting');
-    if (careersSettingInput) careersSettingInput.value = careersUrl;
+    if (careersSettingInput) {
+      const careersUrl = s.careersFormUrl || (s.careers && s.careers.formUrl) || '';
+      careersSettingInput.value = careersUrl;
+    }
   }
 
   async function handleSaveSettings() {
-    const careersUrlVal = (document.getElementById('careersFormUrlSetting')?.value || '').trim();
+    const careersUrlVal = (document.getElementById('careersFormUrlSetting')?.value || siteSettings.careersFormUrl || '').trim();
 
     const payload = {
       announcement: document.getElementById('announcementEnabled') ? {
